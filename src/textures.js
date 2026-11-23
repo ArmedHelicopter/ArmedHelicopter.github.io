@@ -227,7 +227,7 @@ export function createTextureFactory(renderer) {
     const c = makeCanvas(S, S);
     const ctx = c.getContext('2d');
     const rand = mulberry32(seed);
-    ctx.fillStyle = '#e7e4de';
+    ctx.fillStyle = '#cfc9bd';
     ctx.fillRect(0, 0, S, S);
 
     for (let i = 0; i < 40; i++) {

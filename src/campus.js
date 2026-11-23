@@ -31,13 +31,13 @@ export function createCampusDiorama(textures) {
   /* ---------------------------------------------------------------------- */
   /* 1. Shared Procedural Textures & Materials                              */
   /* ---------------------------------------------------------------------- */
-  const pavingMap = textures.paving('plaza-paving', [16, 22], '#f2efe9', '#d8d3cb', 29);
-  const avenueMap = textures.paving('avenue-paving', [6, 16], '#eae6df', '#cec8bf', 37);
+  const pavingMap = textures.paving('plaza-paving', [16, 22], '#e8e3d7', '#c9c3b7', 29);
+  const avenueMap = textures.paving('avenue-paving', [6, 16], '#e0dbd1', '#c2bcb1', 37);
   const grassMap = textures.grass('luojia-grass', [22, 22], 53);
   const hillGrassMap = textures.grass('hill-grass', [10, 10], 67);
-  const graniteMap = textures.granite('campus-granite', '#f5f2ec', 61);
-  const warmStoneMap = textures.granite('warm-limestone', '#efe7d8', 73);
-  const ashlarMap = textures.ashlarStone('campus-ashlar', '#ebe0cf', 79);
+  const graniteMap = textures.granite('campus-granite', '#e6e0d4', 61);
+  const warmStoneMap = textures.granite('warm-limestone', '#e3d9c6', 73);
+  const ashlarMap = textures.ashlarStone('campus-ashlar', '#ded2be', 79);
   const pierConcreteMap = textures.concretePier('pier-concrete', 83);
   const barkMap = textures.bark('cherry-bark');
   const tileMaps = textures.glazedTiles('campus-glazed');
@@ -1438,11 +1438,12 @@ export function createCampusDiorama(textures) {
         float shallowMask = 1.0 - smoothstep(0.0, 7.2, distShore);
         vec3 baseWater = mix(uDeepColor, uShallowColor, clamp(absorption.g * 0.65 + shallowMask * 0.36, 0.0, 1.0));
 
-        // Soft directional shadow reception + smooth contact AO beneath Lingbo Pier & Pavilion plinth
+        // Soft directional shadow reception + contact AO beneath pier, pavilion & all shoreline
         float shadowFactor = sampleKeyShadow(vShadowCoord);
         float pierAO = mix(0.80, 1.0, smoothstep(-0.35, 1.85, dPier));
         float pavAO = mix(0.80, 1.0, smoothstep(0.0, 1.1, dPav));
-        float litDiffuse = mix(0.48, 1.0, shadowFactor) * pierAO * pavAO;
+        float shoreContact = mix(0.72, 1.0, smoothstep(0.0, 2.6, distShore)); // waterline darkening
+        float litDiffuse = mix(0.48, 1.0, shadowFactor) * pierAO * pavAO * shoreContact;
         baseWater *= litDiffuse;
 
         // Dual-scale planar reflection lookup + reflected sky fallback
@@ -1590,55 +1591,6 @@ export function createCampusDiorama(textures) {
     }
   }
 
-  // Low far-shore bank (grounding the far side of East Lake, tucked ~0.3m under the water line)
-  const distantShoreMat = new THREE.MeshStandardMaterial({
-    color: new THREE.Color('#6f9284'),
-    roughness: 1.0,
-    metalness: 0.0,
-  });
-  attachHorizonHaze(distantShoreMat);
-  {
-    const ridgeSegU = 96;
-    const ridgeSegV = 6;
-    const ridgeVerts = [];
-    const ridgeIdx = [];
-    const islandCz = 5.2;
-    for (let iv = 0; iv <= ridgeSegV; iv++) {
-      const v = iv / ridgeSegV;
-      const rad = 96 + v * 22;
-      const profile = Math.sin(v * Math.PI);
-      for (let iu = 0; iu <= ridgeSegU; iu++) {
-        const u = iu / ridgeSegU;
-        const ang = -1.12 + u * (1.42 - -1.12);
-        const hx = Math.cos(ang) * rad;
-        const hz = islandCz - Math.sin(ang) * rad;
-        const ridgeH =
-          1.9 +
-          0.7 * Math.sin(ang * 3.0 + 0.5) +
-          0.45 * Math.cos(ang * 6.0 - 1.0) +
-          0.25 * Math.sin(ang * 9.0);
-        const y = iv === 0 ? -0.45 : -0.35 + profile * Math.max(1.4, ridgeH);
-        ridgeVerts.push(hx, y, hz);
-      }
-    }
-    for (let iv = 0; iv < ridgeSegV; iv++) {
-      for (let iu = 0; iu < ridgeSegU; iu++) {
-        const a = iv * (ridgeSegU + 1) + iu;
-        const b = a + 1;
-        const c = a + (ridgeSegU + 1);
-        const d = c + 1;
-        ridgeIdx.push(a, b, c, b, d, c);
-      }
-    }
-    const farShoreGeo = new THREE.BufferGeometry();
-    farShoreGeo.setAttribute('position', new THREE.Float32BufferAttribute(ridgeVerts, 3));
-    farShoreGeo.setIndex(ridgeIdx);
-    farShoreGeo.computeVertexNormals();
-    const farShoreMesh = new THREE.Mesh(farShoreGeo, distantShoreMat);
-    farShoreMesh.receiveShadow = false;
-    group.add(farShoreMesh);
-  }
-
   // Faint distant Wuhan city skyline: layered low/mid blocks + wide towers + TV tower, hazed to blue (not white)
   const cityHazeColor = { value: new THREE.Color('#9fb9cd') };
 
@@ -1720,6 +1672,12 @@ export function createCampusDiorama(textures) {
     metalness: 0.0,
   });
   attachCityHaze(farCityMat);
+  const cityFootMat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color('#5a6e6a'),
+    roughness: 1.0,
+    metalness: 0.0,
+  });
+  attachCityHaze(cityFootMat);
   {
     const cityGeos = [];
     const cityRand = mulberry32(271103);
@@ -1774,6 +1732,30 @@ export function createCampusDiorama(textures) {
     cityMesh.receiveShadow = false;
     cityMesh.renderOrder = 3;
     group.add(cityMesh);
+
+    // Dark low landmass under the city feet (replaces the pale washed-out far-shore band)
+    const shoreGeos = [];
+    for (let i = 0; i < 40; i++) {
+      const ang = -1.35 + (1.75 - -1.35) * (i / 40);
+      const r0 = 118;
+      const r1 = 132;
+      const seg = new THREE.BoxGeometry(
+        Math.hypot(Math.cos(ang) * r1 - Math.cos(ang) * r0, Math.sin(ang) * r1 - Math.sin(ang) * r0) + 4.2,
+        2.6,
+        15
+      );
+      const midR = (r0 + r1) * 0.5;
+      const yaw = ang + Math.PI * 0.5;
+      const b = new THREE.Mesh(seg, cityFootMat);
+      b.position.set(cityX(ang, midR), -0.6, cityZ(ang, midR));
+      b.rotation.y = -yaw;
+      b.updateMatrix();
+      shoreGeos.push(b);
+    }
+    const shoreBand = new THREE.Group();
+    shoreGeos.forEach((b) => shoreBand.add(b));
+    shoreBand.renderOrder = 2;
+    group.add(shoreBand);
   }
 
   // Continuous dressed granite seawalls wrapping West shore (x=8.0), South shore (z=9.05) & North shore (z=-15.2)
@@ -2578,12 +2560,10 @@ export function createCampusDiorama(textures) {
       glazedTileMat.emissiveIntensity = 0.12;
       sakuraOuterMat.color.set('#ffeaf2');
       sakuraInnerMat.color.set('#ffc2da');
-      distantShoreMat.color.set('#7e8fa0');
-      farCityMat.color.set('#9ab0c4');
-      cityHazeColor.value.set('#b8a9c8');
+      cityFootMat.color.set('#5e5a70');
       horizonColorUniform.value.set('#ffd2c5');
       waterUniforms.uDeepColor.value.set('#233b66');
-      waterUniforms.uShallowColor.value.set('#5686a2');
+      waterUniforms.uShallowColor.value.set('#5a8ba6');
       waterUniforms.uSkyColor.value.set('#d993b8');
       waterUniforms.uSunColor.value.set('#ffd29c');
       petalMat.color.set('#df9eb8');
@@ -2600,12 +2580,12 @@ export function createCampusDiorama(textures) {
       glazedTileMat.emissiveIntensity = 0.06;
       sakuraOuterMat.color.set('#fff9fc');
       sakuraInnerMat.color.set('#ffdbe9');
-      distantShoreMat.color.set('#6f9284');
+      cityFootMat.color.set('#5a6e6a');
       farCityMat.color.set('#8da0b2');
       cityHazeColor.value.set('#9fb9cd');
       horizonColorUniform.value.set('#f7ebf2');
-      waterUniforms.uDeepColor.value.set('#135988');
-      waterUniforms.uShallowColor.value.set('#4eb7cf');
+      waterUniforms.uDeepColor.value.set('#0d4f63');
+      waterUniforms.uShallowColor.value.set('#3d9aa8');
       waterUniforms.uSkyColor.value.set('#cfe9ff');
       waterUniforms.uSunColor.value.set('#fff6e4');
       petalMat.color.set('#ffcadf');
