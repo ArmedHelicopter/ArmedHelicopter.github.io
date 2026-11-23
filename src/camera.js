@@ -45,52 +45,58 @@ export function createCameraController(
 
   const posCurve = new THREE.CatmullRomCurve3([
     new THREE.Vector3(0, 3.25, 31.2),
-    new THREE.Vector3(0, 2.95, 21.0),
-    new THREE.Vector3(0, 2.85, 13.8),
-    new THREE.Vector3(5.6, 8.8, 11.4),
+    new THREE.Vector3(0, 2.7, 21.0),
+    new THREE.Vector3(0, 2.7, 13.8),
+    new THREE.Vector3(0, 4.8, 6.2),
     OVERVIEW_POS.clone(),
   ]);
 
   const lookCurve = new THREE.CatmullRomCurve3([
     new THREE.Vector3(0, 4.15, 15.5),
-    new THREE.Vector3(0, 3.8, 6.5),
-    new THREE.Vector3(0, 4.2, -4.5),
+    new THREE.Vector3(0, 3.6, 6.5),
+    new THREE.Vector3(0, 4.7, -2.0),
     OVERVIEW_TARGET.clone(),
   ]);
 
-  // Verified collision-free FPV spline points (牌坊 -> 老斋舍 -> 老图 -> 凌波门 -> 俯瞰)
+  // Straight-in central-axis FPV: 牌坊 → 中轴 carpet → 百步梯 → 老斋舍 → 老图拉升 → 凌波门 → 俯瞰
   const autoplayPosPoints = [
     new THREE.Vector3(0.0, 2.55, 36.2), // 0: South Plaza approach
     new THREE.Vector3(0.0, 2.35, 31.2), // 1: Stop 01 - 国立武汉大学牌坊 (all 4 冲天柱 finials + 抱鼓石 + sky headroom)
     new THREE.Vector3(0.0, 1.95, 14.4), // 2: Through central bay (x∈[-2.04,2.04], y<4.52)
-    new THREE.Vector3(-1.8, 1.92, 13.7), // 3: Banking onto Sakura Ave clear of inner drum buttress
-    new THREE.Vector3(-3.8, 1.95, 13.4), // 4: Stop 02 - Foot of 108-step staircase & 老斋舍
-    new THREE.Vector3(-1.2, 8.4, 3.6), // 5: Ascending clear above Old Dormitory pavilions (crest y=7.19)
-    new THREE.Vector3(0.6, 8.75, 1.2), // 6: Stop 03 - Lion Hill & 樱顶老图书馆
-    new THREE.Vector3(5.2, 8.1, -1.5), // 7: Across Library east terrace
-    new THREE.Vector3(10.6, 5.8, -1.6), // 8: Clear east retaining wall toward East Lake
-    new THREE.Vector3(13.8, 3.6, 1.6), // 9: Lakeside promenade approach
-    new THREE.Vector3(15.2, 3.05, 2.2), // 10: Stop 04 - Hero Lingbo Pavilion + Lingbo Pier + East Lake vista
-    new THREE.Vector3(18.6, 3.3, -2.0), // 11: Sweeping past eastern pier & ripples
-    new THREE.Vector3(21.5, 5.6, 1.5), // 12: Ascent above East Lake
-    new THREE.Vector3(22.6, 11.2, 12.5), // 13: Wide banking sweep
-    OVERVIEW_POS.clone(), // 14: Final Overview
+    new THREE.Vector3(0.0, 1.95, 10.6), // 3: Straight along the ceremonial carpet
+    new THREE.Vector3(0.0, 2.15, 7.6), // 4: Foot of the 108-step staircase
+    new THREE.Vector3(0.0, 3.0, 6.0), // 5: Ascending the stairs
+    new THREE.Vector3(0.0, 4.4, 3.4), // 6: Stop 02 - Crest onto Tier 1, 老斋舍 dead ahead
+    new THREE.Vector3(0.0, 7.6, -0.6), // 7: Rising over the dormitory roofline (central 歇山顶 crest ≈ 7.19)
+    new THREE.Vector3(0.0, 8.6, -4.8), // 8: Over Tier 2 south edge, library ahead
+    new THREE.Vector3(0.2, 9.5, -6.2), // 9: Stop 03 - 樱顶老图书馆 hero
+    new THREE.Vector3(4.0, 8.2, -4.0), // 10: 拉升 - begin eastward pull-up over the cliff
+    new THREE.Vector3(9.5, 6.4, -6.0), // 11: Over the lakeside promenade
+    new THREE.Vector3(13.5, 4.4, -7.6), // 12: Lingbo Pier approach
+    new THREE.Vector3(15.6, 3.4, -9.8), // 13: Stop 04 - 凌波亭 + pier + open lake
+    new THREE.Vector3(19.5, 4.6, -6.4), // 14: Sweep past the pier
+    new THREE.Vector3(21.5, 6.6, 1.2), // 15: Ascent above East Lake
+    new THREE.Vector3(22.6, 11.2, 12.5), // 16: Wide banking sweep
+    OVERVIEW_POS.clone(), // 17: Final Overview
   ];
 
   const autoplayLookPoints = [
     new THREE.Vector3(0.0, 4.5, 15.5),
     new THREE.Vector3(0.0, 4.65, 15.5),
-    new THREE.Vector3(-0.8, 2.75, 4.0),
-    new THREE.Vector3(-2.6, 2.5, 2.0),
-    new THREE.Vector3(-3.8, 2.25, -0.8),
-    new THREE.Vector3(-0.6, 7.6, -5.8),
-    new THREE.Vector3(0.2, 9.0, -9.8),
-    new THREE.Vector3(3.2, 6.2, -8.5),
-    new THREE.Vector3(11.8, 2.6, -5.2),
-    new THREE.Vector3(12.6, 1.5, -6.0),
-    new THREE.Vector3(12.6, 1.45, -6.2),
-    new THREE.Vector3(14.2, 1.2, -7.2),
-    new THREE.Vector3(10.0, 2.5, -2.5),
+    new THREE.Vector3(0.0, 3.2, 7.0),
+    new THREE.Vector3(0.0, 3.0, 4.0),
+    new THREE.Vector3(0.0, 3.4, 2.2),
+    new THREE.Vector3(0.0, 4.2, 0.5),
+    new THREE.Vector3(0.0, 5.2, -1.5),
+    new THREE.Vector3(0.0, 6.4, -5.5),
+    new THREE.Vector3(0.0, 7.4, -9.8),
+    new THREE.Vector3(0.0, 8.2, -9.8),
+    new THREE.Vector3(1.0, 7.2, -8.4),
+    new THREE.Vector3(12.0, 2.8, -7.4),
+    new THREE.Vector3(13.5, 1.8, -8.4),
+    new THREE.Vector3(14.6, 1.5, -10.8),
+    new THREE.Vector3(16.0, 1.4, -12.0),
+    new THREE.Vector3(12.0, 3.2, -2.0),
     new THREE.Vector3(2.0, 3.4, 0.2),
     OVERVIEW_TARGET.clone(),
   ];
@@ -112,9 +118,9 @@ export function createCameraController(
   const knotTable = [
     { t: 0.0, u: 0.0 },
     { t: 0.14, u: findCurveUForControlPoint(1) }, // Archway
-    { t: 0.38, u: findCurveUForControlPoint(4) }, // Old Dormitory
-    { t: 0.61, u: findCurveUForControlPoint(6) }, // Old Library
-    { t: 0.83, u: findCurveUForControlPoint(10) }, // Lingbo Pavilion & Pier
+    { t: 0.38, u: findCurveUForControlPoint(6) }, // 108 Steps & Old Dormitory
+    { t: 0.61, u: findCurveUForControlPoint(9) }, // Old Library hero
+    { t: 0.83, u: findCurveUForControlPoint(13) }, // Lingbo Pavilion & Pier
     { t: 1.0, u: 1.0 },
   ];
 

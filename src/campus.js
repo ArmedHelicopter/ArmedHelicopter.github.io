@@ -656,13 +656,13 @@ export function createCampusDiorama(textures) {
   xform(tier1Lawn, [-3.6, 2.08, -3.2]);
   grassGeos.push(tier1Lawn);
 
-  // Split Tier 1 South balustrade cleanly around the 108-step stair landing (x ∈ [-5.20, -2.40])
-  const tier1BalustradeL = new THREE.BoxGeometry(10.2, 0.26, 0.22);
-  xform(tier1BalustradeL, [-10.3, 2.26, 4.32]);
+  // Split Tier 1 South balustrade cleanly around the 108-step stair landing now on the central axis (x ∈ [-1.5, 1.5])
+  const tier1BalustradeL = new THREE.BoxGeometry(13.9, 0.26, 0.22);
+  xform(tier1BalustradeL, [-8.45, 2.26, 4.32]);
   graniteGeos.push(tier1BalustradeL);
 
-  const tier1BalustradeR = new THREE.BoxGeometry(10.6, 0.26, 0.22);
-  xform(tier1BalustradeR, [2.9, 2.26, 4.32]);
+  const tier1BalustradeR = new THREE.BoxGeometry(6.7, 0.26, 0.22);
+  xform(tier1BalustradeR, [4.85, 2.26, 4.32]);
   graniteGeos.push(tier1BalustradeR);
 
   // Tier 1 East cliff balustrade along x = 8.08, z ∈ [-1.6, 4.32]
@@ -826,7 +826,7 @@ export function createCampusDiorama(textures) {
   /* 3. Old Dormitory (老斋舍) + 3 Roman Arches + 3 Pavilions + 百步梯      */
   /* ---------------------------------------------------------------------- */
   const dormGroup = new THREE.Group();
-  dormGroup.position.set(-3.8, 2.15, -0.8);
+  dormGroup.position.set(0, 2.15, -0.8);
   group.add(dormGroup);
 
   const wingXPositions = [-6.6, -2.35, 2.35, 6.6];
@@ -839,7 +839,7 @@ export function createCampusDiorama(textures) {
     dormGroup.add(wing);
 
     // 3D colonnade pilasters, horizontal stringcourses & eave cornice on Dormitory wings
-    const worldWingX = wx - 3.8;
+    const worldWingX = wx;
     for (const pxOff of [-wLen * 0.44, 0, wLen * 0.44]) {
       for (const sz of [-1, 1]) {
         const dPil = new THREE.BoxGeometry(0.18, 2.58, 0.20);
@@ -894,7 +894,7 @@ export function createCampusDiorama(textures) {
 
   const gateOffsets = [-4.55, 0, 4.55];
   gateOffsets.forEach((gx) => {
-    const worldX = -3.8 + gx;
+    const worldX = gx;
     const worldY = 2.15;
     const worldZ = -0.8;
 
@@ -936,40 +936,40 @@ export function createCampusDiorama(textures) {
     group.add(pavRoof);
   });
 
-  // Grand 108-Step Staircase (百步梯) ascending from Sakura Avenue up to Tier 1 terrace + stone walkway to Tier 2 blind-arch courtyard portal
+  // Grand 108-Step Staircase (百步梯) ascending straight up the central axis from the ceremonial carpet
   const stepCount = 18;
   for (let i = 0; i < stepCount; i++) {
     const t = i / (stepCount - 1);
     const sy = 0.14 + t * 2.01;
     const sz = 8.15 - t * 3.85;
     const step = new THREE.BoxGeometry(2.55, 0.16, 0.28);
-    xform(step, [-3.8, sy, sz]);
+    xform(step, [0, sy, sz]);
     graniteGeos.push(step);
   }
   for (const sx of [-1.36, 1.36]) {
     const ramp = new THREE.BoxGeometry(0.18, 0.38, 4.15);
-    xform(ramp, [-3.8 + sx, 1.24, 6.22], [0.48, 0, 0]);
+    xform(ramp, [sx, 1.24, 6.22], [0.48, 0, 0]);
     graniteGeos.push(ramp);
   }
   const terraceWalk = new THREE.BoxGeometry(2.6, 0.12, 8.75);
-  xform(terraceWalk, [-3.8, 2.16, 0.02]);
+  xform(terraceWalk, [0, 2.16, 0.02]);
   graniteGeos.push(terraceWalk);
 
   // Tier 2 South Courtyard recessed blind-arch stone portal visible cleanly through central arch
   const courtyardPortal = buildArchedGateTower(1.85, 2.45, 0.28, 0.56, 1.85);
-  xform(courtyardPortal, [-3.8, 2.15, -4.30]);
+  xform(courtyardPortal, [0, 2.15, -4.30]);
   warmStoneGeos.push(courtyardPortal);
   const courtyardCornice = new THREE.BoxGeometry(2.04, 0.18, 0.42);
-  xform(courtyardCornice, [-3.8, 4.64, -4.30]);
+  xform(courtyardCornice, [0, 4.64, -4.30]);
   graniteGeos.push(courtyardCornice);
   const courtyardDoor = new THREE.Mesh(new THREE.BoxGeometry(1.20, 1.92, 0.14), darkTimberMat);
-  courtyardDoor.position.set(-3.8, 3.12, -4.36);
+  courtyardDoor.position.set(0, 3.12, -4.36);
   courtyardDoor.castShadow = true;
   courtyardDoor.receiveShadow = true;
   group.add(courtyardDoor);
   for (const sx of [-1.25, 1.25]) {
     const cPlanter = new THREE.BoxGeometry(0.68, 0.28, 0.68);
-    xform(cPlanter, [-3.8 + sx, 2.29, -3.85]);
+    xform(cPlanter, [sx, 2.29, -3.85]);
     graniteGeos.push(cPlanter);
   }
 
@@ -977,16 +977,16 @@ export function createCampusDiorama(textures) {
   /* 4. Old Library (樱顶老图书馆) on Lion Hill Crest                       */
   /* ---------------------------------------------------------------------- */
   const libGroup = new THREE.Group();
-  libGroup.position.set(0.2, 4.55, -9.8);
+  libGroup.position.set(0, 4.55, -9.8);
   group.add(libGroup);
 
   const podium = new THREE.BoxGeometry(9.6, 0.55, 7.2);
-  xform(podium, [0.2, 4.55 + 0.27, -9.8]);
+  xform(podium, [0, 4.55 + 0.27, -9.8]);
   graniteGeos.push(podium);
 
   for (let s = 0; s < 6; s++) {
     const st = new THREE.BoxGeometry(3.2, 0.12, 0.34);
-    xform(st, [0.2, 4.55 + s * 0.09, -6.1 + s * -0.22]);
+    xform(st, [0, 4.55 + s * 0.09, -6.1 + s * -0.22]);
     graniteGeos.push(st);
   }
 
@@ -999,7 +999,7 @@ export function createCampusDiorama(textures) {
   for (const sx of [-1, 1]) {
     for (const sz of [-1, 1]) {
       const pilaster = new THREE.BoxGeometry(0.42, 2.9, 0.42);
-      xform(pilaster, [0.2 + sx * 3.8, 4.55 + 0.55 + 1.45, -9.8 + sz * 2.6]);
+      xform(pilaster, [sx * 3.8, 4.55 + 0.55 + 1.45, -9.8 + sz * 2.6]);
       warmStoneGeos.push(pilaster);
     }
   }
@@ -1061,7 +1061,7 @@ export function createCampusDiorama(textures) {
   for (const sx of [-1, 1]) {
     for (const sz of [-1, 1]) {
       const uPil = new THREE.BoxGeometry(0.32, 1.5, 0.32);
-      xform(uPil, [0.2 + sx * 2.74, 4.55 + 0.55 + 4.18, -9.8 + sz * 1.78]);
+      xform(uPil, [sx * 2.74, 4.55 + 0.55 + 4.18, -9.8 + sz * 1.78]);
       warmStoneGeos.push(uPil);
     }
   }
@@ -1080,7 +1080,7 @@ export function createCampusDiorama(textures) {
   libGroup.add(upperFrieze);
 
   const upperBalustrade = new THREE.BoxGeometry(6.15, 0.28, 4.2);
-  xform(upperBalustrade, [0.2, 4.55 + 0.55 + 3.58, -9.8]);
+  xform(upperBalustrade, [0, 4.55 + 0.55 + 3.58, -9.8]);
   graniteGeos.push(upperBalustrade);
 
   const upperMainRoof = roofGroup(
@@ -1103,10 +1103,10 @@ export function createCampusDiorama(textures) {
 
   // Sculpted 2-tier octagonal lotus pedestal integrated into the roof ridge under the 宝顶 spire
   const finialBaseTier = new THREE.CylinderGeometry(0.46, 0.54, 0.16, 8);
-  xform(finialBaseTier, [0.2, 4.55 + 0.55 + 6.32, -9.8]);
+  xform(finialBaseTier, [0, 4.55 + 0.55 + 6.32, -9.8]);
   graniteGeos.push(finialBaseTier);
   const finialUpperTier = new THREE.CylinderGeometry(0.36, 0.44, 0.14, 8);
-  xform(finialUpperTier, [0.2, 4.55 + 0.55 + 6.45, -9.8]);
+  xform(finialUpperTier, [0, 4.55 + 0.55 + 6.45, -9.8]);
   graniteGeos.push(finialUpperTier);
 
   const baodingPts = [];
@@ -1134,7 +1134,7 @@ export function createCampusDiorama(textures) {
   /* 5. Flanking Cherry Crest Courtyard Wings (理学楼 / 文学院侧翼)          */
   /* ---------------------------------------------------------------------- */
   for (const sx of [-1, 1]) {
-    const wingX = -1.2 + sx * 7.6;
+    const wingX = sx * 7.6;
     const wingY = 4.55;
     const wingZ = -8.6;
 
@@ -1590,52 +1590,92 @@ export function createCampusDiorama(textures) {
     }
   }
 
-  // Continuous sculpted Moshan (磨山) eastern ridges anchored cleanly into North & South shorelines
+  // Low far-shore bank (grounding the far side of East Lake, tucked ~0.3m under the water line)
   const distantShoreMat = new THREE.MeshStandardMaterial({
-    color: new THREE.Color('#92b5b2'),
-    roughness: 0.96,
+    color: new THREE.Color('#6f9284'),
+    roughness: 1.0,
     metalness: 0.0,
   });
   attachHorizonHaze(distantShoreMat);
-  const ridgeSegU = 96;
-  const ridgeSegV = 10;
-  const ridgeVerts = [];
-  const ridgeIdx = [];
-  const islandCz = 5.2;
-  for (let iv = 0; iv <= ridgeSegV; iv++) {
-    const v = iv / ridgeSegV;
-    const rad = 98 + v * 58;
-    const profile = Math.sin(v * Math.PI);
-    for (let iu = 0; iu <= ridgeSegU; iu++) {
-      const u = iu / ridgeSegU;
-      const ang = -1.12 + u * (1.42 - -1.12);
-      const hx = Math.cos(ang) * rad;
-      const hz = islandCz - Math.sin(ang) * rad;
-      const ridgeH =
-        5.6 +
-        2.4 * Math.sin(ang * 3.0 + 0.5) +
-        1.6 * Math.cos(ang * 6.0 - 1.0) +
-        0.9 * Math.sin(ang * 11.0);
-      const y = iv === 0 ? -0.45 : -0.35 + profile * Math.max(3.8, ridgeH);
-      ridgeVerts.push(hx, y, hz);
+  {
+    const ridgeSegU = 96;
+    const ridgeSegV = 6;
+    const ridgeVerts = [];
+    const ridgeIdx = [];
+    const islandCz = 5.2;
+    for (let iv = 0; iv <= ridgeSegV; iv++) {
+      const v = iv / ridgeSegV;
+      const rad = 96 + v * 22;
+      const profile = Math.sin(v * Math.PI);
+      for (let iu = 0; iu <= ridgeSegU; iu++) {
+        const u = iu / ridgeSegU;
+        const ang = -1.12 + u * (1.42 - -1.12);
+        const hx = Math.cos(ang) * rad;
+        const hz = islandCz - Math.sin(ang) * rad;
+        const ridgeH =
+          1.9 +
+          0.7 * Math.sin(ang * 3.0 + 0.5) +
+          0.45 * Math.cos(ang * 6.0 - 1.0) +
+          0.25 * Math.sin(ang * 9.0);
+        const y = iv === 0 ? -0.45 : -0.35 + profile * Math.max(1.4, ridgeH);
+        ridgeVerts.push(hx, y, hz);
+      }
     }
-  }
-  for (let iv = 0; iv < ridgeSegV; iv++) {
-    for (let iu = 0; iu < ridgeSegU; iu++) {
-      const a = iv * (ridgeSegU + 1) + iu;
-      const b = a + 1;
-      const c = a + (ridgeSegU + 1);
-      const d = c + 1;
-      ridgeIdx.push(a, b, c, b, d, c);
+    for (let iv = 0; iv < ridgeSegV; iv++) {
+      for (let iu = 0; iu < ridgeSegU; iu++) {
+        const a = iv * (ridgeSegU + 1) + iu;
+        const b = a + 1;
+        const c = a + (ridgeSegU + 1);
+        const d = c + 1;
+        ridgeIdx.push(a, b, c, b, d, c);
+      }
     }
+    const farShoreGeo = new THREE.BufferGeometry();
+    farShoreGeo.setAttribute('position', new THREE.Float32BufferAttribute(ridgeVerts, 3));
+    farShoreGeo.setIndex(ridgeIdx);
+    farShoreGeo.computeVertexNormals();
+    const farShoreMesh = new THREE.Mesh(farShoreGeo, distantShoreMat);
+    farShoreMesh.receiveShadow = false;
+    group.add(farShoreMesh);
   }
-  const distantHillsGeo = new THREE.BufferGeometry();
-  distantHillsGeo.setAttribute('position', new THREE.Float32BufferAttribute(ridgeVerts, 3));
-  distantHillsGeo.setIndex(ridgeIdx);
-  distantHillsGeo.computeVertexNormals();
-  const distantHillsMesh = new THREE.Mesh(distantHillsGeo, distantShoreMat);
-  distantHillsMesh.receiveShadow = false;
-  group.add(distantHillsMesh);
+
+  // Faint distant Wuhan city skyline rising beyond the far shore (隐隐约约的江城天际线)
+  const farCityMat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color('#8fa4b8'),
+    roughness: 1.0,
+    metalness: 0.0,
+  });
+  attachHorizonHaze(farCityMat);
+  {
+    const cityGeos = [];
+    const cityRand = mulberry32(271103);
+    const addBuilding = (cx, cz, w, d, h) => {
+      const g = new THREE.BoxGeometry(w, h, d);
+      xform(g, [cx, h * 0.5, cz]);
+      cityGeos.push(g);
+    };
+    // Sparse, gapped skyline: distinct towers rising above the far-shore bank
+    for (let i = 0; i < 10; i++) {
+      const ang = -1.95 + i * 0.19 + cityRand() * 0.07;
+      const r = 140 + cityRand() * 16;
+      addBuilding(Math.cos(ang) * r, 6 + Math.sin(ang) * r * 0.92, 8 + cityRand() * 7, 8 + cityRand() * 7, 12 + cityRand() * 22);
+    }
+    for (let i = 0; i < 9; i++) {
+      const ang = 0.95 + i * 0.13 + cityRand() * 0.05;
+      const r = 142 + cityRand() * 18;
+      addBuilding(Math.cos(ang) * r, 6 + Math.sin(ang) * r, 7 + cityRand() * 6, 7 + cityRand() * 6, 11 + cityRand() * 18);
+    }
+    // A few landmark towers to break the silhouette
+    for (let i = 0; i < 5; i++) {
+      const ang = -1.5 + i * 0.62 + cityRand() * 0.12;
+      const r = 156 + cityRand() * 12;
+      addBuilding(Math.cos(ang) * r, 6 + Math.sin(ang) * r, 10, 10, 44 + cityRand() * 30);
+    }
+    const cityMesh = new THREE.Mesh(mergeSafe(cityGeos), farCityMat);
+    cityMesh.receiveShadow = false;
+    cityMesh.renderOrder = 3;
+    group.add(cityMesh);
+  }
 
   // Continuous dressed granite seawalls wrapping West shore (x=8.0), South shore (z=9.05) & North shore (z=-15.2)
   const westWall = new THREE.BoxGeometry(0.45, 0.95, 24.4);
@@ -1817,6 +1857,95 @@ export function createCampusDiorama(textures) {
     group.add(colM);
   }
 
+  // East Lake sightseeing tour boats (东湖游船) — gentle patrol + bobbing
+  const boatHullMat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color('#f7f5f0'),
+    roughness: 0.45,
+    metalness: 0.05,
+  });
+  const boatDeckMat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color('#d9c8a8'),
+    roughness: 0.7,
+    metalness: 0.0,
+  });
+  const boatRoofMat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color('#2f6f8f'),
+    roughness: 0.5,
+    metalness: 0.05,
+  });
+  const boatTrimMat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color('#c7363a'),
+    roughness: 0.5,
+    metalness: 0.05,
+  });
+  const boatWindowMat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color('#bfe3f2'),
+    roughness: 0.25,
+    metalness: 0.1,
+  });
+
+  function buildTourBoat(seed) {
+    const r = mulberry32(seed);
+    const b = new THREE.Group();
+
+    // Hull (soft trapezoid via tapered box + bow wedge)
+    const hull = new THREE.Mesh(new THREE.BoxGeometry(3.5, 0.62, 1.5), boatHullMat);
+    hull.position.y = 0.31;
+    hull.castShadow = true;
+    b.add(hull);
+    const bow = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.5, 0.8), boatHullMat);
+    bow.position.set(1.9, 0.26, 0);
+    bow.rotation.z = -0.5;
+    bow.castShadow = true;
+    b.add(bow);
+
+    // Waterline trim + deck
+    const trim = new THREE.Mesh(new THREE.BoxGeometry(3.54, 0.12, 1.54), boatTrimMat);
+    trim.position.y = 0.12;
+    b.add(trim);
+    const deck = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.12, 1.3), boatDeckMat);
+    deck.position.set(-0.2, 0.66, 0);
+    b.add(deck);
+
+    // Cabin with glazed windows
+    const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.78, 1.14), boatHullMat);
+    cabin.position.set(-0.75, 1.08, 0);
+    cabin.castShadow = true;
+    b.add(cabin);
+    const glazing = new THREE.Mesh(new THREE.BoxGeometry(1.72, 0.42, 1.16), boatWindowMat);
+    glazing.position.set(-0.75, 1.12, 0);
+    b.add(glazing);
+    const roof = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.16, 1.32), boatRoofMat);
+    roof.position.set(-0.75, 1.56, 0);
+    roof.castShadow = true;
+    b.add(roof);
+
+    // Mast + small pennant
+    const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.5, 6), boatTrimMat);
+    mast.position.set(1.35, 0.9, 0);
+    b.add(mast);
+    const pennant = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.34, 0.02), boatTrimMat);
+    pennant.position.set(1.44, 1.1, 0);
+    b.add(pennant);
+
+    b.traverse((o) => {
+      o.matrixAutoUpdate = false;
+      o.updateMatrix();
+    });
+    return b;
+  }
+
+  const tourBoats = [
+    { cx: 34, cz: -34, radius: 3.4, omega: 0.16, phase: 0.0, seed: 4101 },
+    { cx: 52, cz: 18, radius: 4.0, omega: 0.13, phase: 1.7, seed: 4102 },
+    { cx: 58, cz: -82, radius: 4.4, omega: 0.10, phase: 3.1, seed: 4103 },
+  ].map((cfg) => {
+    const boat = buildTourBoat(cfg.seed);
+    boat.renderOrder = 2;
+    group.add(boat);
+    return { config: cfg, boat };
+  });
+
   /* ---------------------------------------------------------------------- */
   /* 7. Realistic Branching Yoshino Cherry Trees & Camphor Foliage Sprays   */
   /* ---------------------------------------------------------------------- */
@@ -1923,21 +2052,21 @@ export function createCampusDiorama(textures) {
     { pos: [-10.2, 0.25, 5.0], scale: 1.06 },
     { pos: [6.8, 0.15, 4.2], scale: 1.16 }, // Screens right archway sightline from Lingbo Pier
 
-    // Flanking Old Dormitory & 108-Step Staircase (clear all 3 gatehouse silhouettes)
+    // Flanking Old Dormitory & 108-Step Staircase (clear all 3 gatehouse silhouettes, mirrored on the axis)
     { pos: [-11.4, 2.15, 1.8], scale: 1.1 },
     { pos: [-11.2, 2.15, 2.0], scale: 1.02 },
-    { pos: [3.4, 2.15, 2.1], scale: 1.02 },
-    { pos: [5.4, 2.15, 1.8], scale: 1.1 },
+    { pos: [7.0, 2.15, 2.1], scale: 1.02 },
+    { pos: [7.3, 2.15, 1.8], scale: 1.1 },
     { pos: [-12.2, 2.15, -0.5], scale: 1.08 },
-    { pos: [4.8, 2.15, -0.4], scale: 1.1 },
+    { pos: [7.1, 2.15, -0.4], scale: 1.1 },
 
-    // Around Old Library on Lion Hill Crest (樱顶老图樱云, clear behind Old Dormitory pavilions)
+    // Around Old Library on Lion Hill Crest (樱顶老图樱云, mirrored on the axis)
     { pos: [-5.9, 4.55, -7.0], scale: 1.15 },
-    { pos: [4.8, 4.55, -5.8], scale: 1.15 },
-    { pos: [-10.2, 4.55, -6.4], scale: 1.1 },
-    { pos: [7.0, 4.55, -6.5], scale: 1.1 },
+    { pos: [5.9, 4.55, -7.0], scale: 1.15 },
+    { pos: [-7.2, 4.55, -6.4], scale: 1.1 },
+    { pos: [7.2, 4.55, -6.5], scale: 1.1 },
     { pos: [-5.0, 4.55, -11.2], scale: 1.12 },
-    { pos: [5.4, 4.55, -11.2], scale: 1.12 },
+    { pos: [5.0, 4.55, -11.2], scale: 1.12 },
 
     // Lakeside & retaining-wall overhang sakura along promenade
     { pos: [6.9, 0.35, 1.6], scale: 1.1 },
@@ -2032,6 +2161,25 @@ export function createCampusDiorama(textures) {
     [22.0, 0, 22.0, 1.34],
     [28.0, 0, 16.5, 1.30],
     [18.0, 0, 28.0, 1.36],
+    // Distant Luojia ridge camphor stands (grounded via luojiaHeight) — horizon forest veil
+    [-46.0, 0, -40.0, 1.5],
+    [-54.0, 0, -34.0, 1.52],
+    [-60.0, 0, -26.0, 1.5],
+    [-64.0, 0, -16.0, 1.46],
+    [-56.0, 0, -44.0, 1.5],
+    [-40.0, 0, -52.0, 1.48],
+    [-24.0, 0, -56.0, 1.44],
+    [-4.0, 0, -56.0, 1.4],
+    [16.0, 0, -52.0, 1.36],
+    [30.0, 0, -48.0, 1.32],
+    [-50.0, 0, -8.0, 1.46],
+    [-58.0, 0, 2.0, 1.42],
+    [-52.0, 0, 14.0, 1.4],
+    [-44.0, 0, 30.0, 1.38],
+    [-36.0, 0, 42.0, 1.34],
+    [30.0, 0, 24.0, 1.3],
+    [40.0, 0, 20.0, 1.32],
+    [48.0, 0, 16.0, 1.34],
   ];
 
   const camphorSprayMatrices = [];
@@ -2065,23 +2213,7 @@ export function createCampusDiorama(textures) {
     });
   });
 
-  // Soft rounded forested canopy mounds along mid-to-far Luojia mountain ridges
-  const canopyMoundGeos = [];
-  const moundCoords = [
-    [-54, 18, 6.2], [-58, -4, 6.8], [-52, -26, 6.5], [-40, -44, 6.4],
-    [-22, -52, 6.2], [0, -50, 5.8], [18, -48, 5.6], [-48, 36, 6.0],
-    [-36, 46, 5.8], [-64, 34, 7.2], [-68, -18, 7.4], [-56, -46, 7.0],
-    [-32, -62, 6.8], [-8, -64, 6.6], [14, -62, 6.2], [32, 34, 5.4],
-  ];
-  moundCoords.forEach(([mx, mz, mr], idx) => {
-    const mh = luojiaHeight(mx, mz) + mr * 0.25;
-    const g = new THREE.IcosahedronGeometry(mr, 1);
-    xform(g, [mx, mh, mz], [0, idx * 0.8, 0], [1.2, 0.58, 1.1]);
-    canopyMoundGeos.push(g);
-  });
-  const canopyMoundMesh = new THREE.Mesh(mergeSafe(canopyMoundGeos), hillMat);
-  canopyMoundMesh.receiveShadow = true;
-  group.add(canopyMoundMesh);
+  // Far Luojia ridges are read through terrain undulation + camphor canopy (no smooth "bun" blobs)
 
   // Cascading ivy & shrubbery safely tucked inward on Tier 2 lawn + North/South shore banks (zero mid-wall/pier clipping)
   const shrubCoords = [
@@ -2347,7 +2479,8 @@ export function createCampusDiorama(textures) {
       glazedTileMat.emissiveIntensity = 0.12;
       sakuraOuterMat.color.set('#ffeaf2');
       sakuraInnerMat.color.set('#ffc2da');
-      distantShoreMat.color.set('#9688a6');
+      distantShoreMat.color.set('#7e8fa0');
+      farCityMat.color.set('#8fa4b8');
       horizonColorUniform.value.set('#ffd2c5');
       waterUniforms.uDeepColor.value.set('#233b66');
       waterUniforms.uShallowColor.value.set('#5686a2');
@@ -2367,7 +2500,8 @@ export function createCampusDiorama(textures) {
       glazedTileMat.emissiveIntensity = 0.06;
       sakuraOuterMat.color.set('#fff9fc');
       sakuraInnerMat.color.set('#ffdbe9');
-      distantShoreMat.color.set('#92b5b2');
+      distantShoreMat.color.set('#6f9284');
+      farCityMat.color.set('#8fa4b8');
       horizonColorUniform.value.set('#f7ebf2');
       waterUniforms.uDeepColor.value.set('#135988');
       waterUniforms.uShallowColor.value.set('#4eb7cf');
@@ -2382,6 +2516,23 @@ export function createCampusDiorama(textures) {
 
   function updateCampus(dt, elapsed, camPos = null) {
     sharedTimeUniform.value = elapsed;
+
+    // East Lake tour boats: gentle circular patrol + wave bob + roll
+    for (const { config, boat } of tourBoats) {
+      const t = elapsed * config.omega + config.phase;
+      const px = config.cx + Math.cos(t) * config.radius;
+      const pz = config.cz + Math.sin(t) * config.radius * 0.7;
+      const heading = Math.atan2(Math.cos(t) * config.radius * 0.7, -Math.sin(t) * config.radius);
+      const bob = Math.sin(elapsed * 1.6 + config.phase) * 0.06;
+      const roll = Math.sin(elapsed * 1.2 + config.phase) * 0.05;
+      boat.position.set(
+        px,
+        WATER_Y + 0.18 + bob,
+        pz
+      );
+      boat.rotation.set(roll, -heading + Math.PI * 0.5, roll * 0.4);
+      boat.updateMatrix();
+    }
 
     for (let i = 0; i < airPetalCount; i++) {
       const p = petalState[i];
