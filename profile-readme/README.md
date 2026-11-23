@@ -1,13 +1,13 @@
 <p align="center">
   <a href="https://armedhelicopter.github.io/">
-    <img src="./portal-banner.svg" alt="Ruining Yang — 推门入珈 · 国立武汉大学 2.5D 立体校园交互主页" width="100%" />
+    <img src="./portal-banner.webp" alt="推门入珈" width="100%" />
   </a>
 </p>
 
 <h3 align="center">Ruining Yang · <code>@ArmedHelicopter</code></h3>
 <p align="center">
   武汉大学人工智能本科生 · <code>@projectluojia</code> · Deep Learning / AI4S / BCI<br/>
-  <a href="https://armedhelicopter.github.io/"><strong>→ 推门入珈：打开交互式 HD-2D 武汉大学立体沙盘主页</strong></a>
+  <a href="https://armedhelicopter.github.io/"><strong>推门入珈 →</strong></a>
 </p>
 
 ---
@@ -24,5 +24,5 @@
 
 ### Connect
 
-- Interactive 3D Homepage: **https://armedhelicopter.github.io/**
-- Email: `2025302193007@whu.edu.cn`
+- 3D 校园主页：**https://armedhelicopter.github.io/**
+- 邮箱：`2025302193007@whu.edu.cn`
