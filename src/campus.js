@@ -1333,10 +1333,10 @@ export function createCampusDiorama(textures) {
         float freqs[5];
         freqs[0] = 0.72; freqs[1] = 1.38; freqs[2] = 2.65; freqs[3] = 5.40; freqs[4] = 10.80;
         float amps[5];
-        amps[0] = 0.032; amps[1] = 0.028; amps[2] = 0.024; amps[3] = 0.020; amps[4] = 0.015;
+        amps[0] = 0.040; amps[1] = 0.034; amps[2] = 0.026; amps[3] = 0.020; amps[4] = 0.015;
         vec2 vels[5];
-        vels[0] = vec2(0.28, -0.22); vels[1] = vec2(-0.34, 0.25);
-        vels[2] = vec2(0.42, 0.31);  vels[3] = vec2(-0.55, -0.38); vels[4] = vec2(0.68, -0.45);
+        vels[0] = vec2(0.62, -0.48); vels[1] = vec2(-0.72, 0.55);
+        vels[2] = vec2(0.85, 0.62);  vels[3] = vec2(-1.05, -0.72); vels[4] = vec2(1.30, -0.85);
 
         vec2 rp = q;
         mat2 invAcc = mat2(1.0);
@@ -1350,7 +1350,8 @@ export function createCampusDiorama(textures) {
           rp = ROT37 * rp;
           invAcc = invAcc * ROT37_T;
         }
-        float horizonSmooth = smoothstep(0.015, 0.14, vy) * smoothstep(130.0, 12.0, camDist);
+        // Gentle AA guard only (grazing-angle + very far distance), never kills mid-lake motion
+        float horizonSmooth = smoothstep(0.008, 0.09, vy) * mix(1.0, 0.35, smoothstep(30.0, 160.0, camDist));
         return vec4(macroG * horizonSmooth, capG * horizonSmooth);
       }
 
@@ -1389,7 +1390,7 @@ export function createCampusDiorama(textures) {
       void main() {
         vec2 p = vWorldPos.xz;
         float camDist = length(cameraPosition - vWorldPos);
-        float detailFade = smoothstep(42.0, 4.5, camDist);
+        float detailFade = smoothstep(120.0, 8.0, camDist);
 
         // Continuous East Lake coastal SDF (cove + outer shorelines + hexagonal Pavilion at 9.25, -3.2)
         float dWest = sdSegment2D(p, vec2(8.05, -15.2), vec2(8.05, 9.05));
