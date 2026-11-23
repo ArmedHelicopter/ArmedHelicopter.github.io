@@ -118,6 +118,8 @@ export function createCameraController(
     { t: 1.0, u: 1.0 },
   ];
 
+  const smoothLookAt = new THREE.Vector3(0.0, 4.5, 15.5);
+
   function mapTimeToU(rawT) {
     const t = THREE.MathUtils.clamp(rawT, 0, 1);
     for (let i = 0; i < knotTable.length - 1; i++) {
@@ -126,7 +128,7 @@ export function createCameraController(
       if (t <= b.t || i === knotTable.length - 2) {
         const span = Math.max(1e-5, b.t - a.t);
         const s = THREE.MathUtils.clamp((t - a.t) / span, 0, 1);
-        const w = s - (0.62 / (Math.PI * 2)) * Math.sin(Math.PI * 2 * s);
+        const w = s * s * (3.0 - 2.0 * s); // Smooth C1 zero-jerk easing across intervals
         return THREE.MathUtils.lerp(a.u, b.u, w);
       }
     }
@@ -161,7 +163,8 @@ export function createCameraController(
     }
 
     camera.position.copy(_autoPos);
-    camera.lookAt(_autoLook);
+    smoothLookAt.lerp(_autoLook, 0.18);
+    camera.lookAt(smoothLookAt);
 
     // Open archway sakura veil smoothly before passing through central bay
     const doorProgress = THREE.MathUtils.clamp(clampedT / 0.14, 0, 1);
@@ -582,12 +585,14 @@ export function createCameraController(
     if (tweenActive) {
       tweenElapsed += dt;
       const raw = Math.min(1, tweenElapsed / TWEEN_DURATION);
-      const e = easeOutCubic(raw);
+      const e = raw * raw * raw * (raw * (raw * 6.0 - 15.0) + 10.0); // smootherstep
       camera.position.lerpVectors(tweenStartPos, tweenEndPos, e);
+      camera.position.y += Math.sin(e * Math.PI) * 1.8; // gentle drone arc lift
       target.lerpVectors(tweenStartTarget, tweenEndTarget, e);
       desiredTarget.copy(target);
       syncSphericalFromPos(camera.position, target);
-      camera.lookAt(target);
+      smoothLookAt.lerp(target, Math.min(1, dt * 10.0));
+      camera.lookAt(smoothLookAt);
       if (raw >= 1) tweenActive = false;
       return;
     }
