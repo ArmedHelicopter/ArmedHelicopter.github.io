@@ -1639,38 +1639,137 @@ export function createCampusDiorama(textures) {
     group.add(farShoreMesh);
   }
 
-  // Faint distant Wuhan city skyline rising beyond the far shore (隐隐约约的江城天际线)
+  // Faint distant Wuhan city skyline: layered low/mid blocks + wide towers + TV tower, hazed to blue (not white)
+  const cityHazeColor = { value: new THREE.Color('#9fb9cd') };
+
+  // City haze: fades by distance only (ignores height) so tall towers turn blue-grey too — no white pillars
+  function attachCityHaze(mat) {
+    mat.onBeforeCompile = (shader) => {
+      shader.uniforms.uCityHaze = cityHazeColor;
+      shader.vertexShader = shader.vertexShader
+        .replace('#include <common>', '#include <common>\nvarying vec3 vCityWorld;')
+        .replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvCityWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+      shader.fragmentShader = shader.fragmentShader
+        .replace('#include <common>', '#include <common>\nvarying vec3 vCityWorld; uniform vec3 uCityHaze;')
+        .replace('#include <opaque_fragment>', '#include <opaque_fragment>\nfloat cD = length(cameraPosition - vCityWorld);\nfloat cHaze = smoothstep(70.0, 165.0, cD);\ngl_FragColor.rgb = mix(gl_FragColor.rgb, uCityHaze, clamp(cHaze * 0.9, 0.0, 0.94));');
+    };
+  }
+
+  function makeCityWindowTexture(seed) {
+    const W = 96;
+    const H = 192;
+    const c = document.createElement('canvas');
+    c.width = W;
+    c.height = H;
+    const g = c.getContext('2d');
+    const rnd = mulberry32(seed);
+    g.fillStyle = '#5c6e82';
+    g.fillRect(0, 0, W, H);
+    for (let x = 0; x < W; x += 12) {
+      g.fillStyle = '#48586a';
+      g.fillRect(x, 0, 3, H);
+    }
+    for (let y = 6; y < H; y += 10) {
+      for (let x = 4; x < W; x += 12) {
+        const roll = rnd();
+        g.fillStyle = roll < 0.26 ? '#f0d49b' : (roll < 0.74 ? '#9fb6c8' : '#71869e');
+        g.fillRect(x, y, 6, 7);
+      }
+    }
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    t.magFilter = THREE.LinearFilter;
+    t.minFilter = THREE.LinearMipmapLinearFilter;
+    t.generateMipmaps = true;
+    return t;
+  }
+
+  function makeCityGlowTexture(seed) {
+    const W = 96;
+    const H = 192;
+    const c = document.createElement('canvas');
+    c.width = W;
+    c.height = H;
+    const g = c.getContext('2d');
+    const rnd = mulberry32(seed);
+    g.fillStyle = '#000000';
+    g.fillRect(0, 0, W, H);
+    for (let y = 6; y < H; y += 10) {
+      for (let x = 4; x < W; x += 12) {
+        if (rnd() < 0.22) {
+          g.fillStyle = '#ffdca0';
+          g.fillRect(x, y, 6, 7);
+        }
+      }
+    }
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    t.magFilter = THREE.LinearFilter;
+    t.minFilter = THREE.LinearMipmapLinearFilter;
+    t.generateMipmaps = true;
+    return t;
+  }
+
   const farCityMat = new THREE.MeshStandardMaterial({
-    color: new THREE.Color('#8fa4b8'),
-    roughness: 1.0,
+    map: makeCityWindowTexture(701),
+    emissiveMap: makeCityGlowTexture(702),
+    color: new THREE.Color('#8da0b2'),
+    emissive: new THREE.Color('#ffedc8'),
+    emissiveIntensity: 0.55,
+    roughness: 0.92,
     metalness: 0.0,
   });
-  attachHorizonHaze(farCityMat);
+  attachCityHaze(farCityMat);
   {
     const cityGeos = [];
     const cityRand = mulberry32(271103);
-    const addBuilding = (cx, cz, w, d, h) => {
+    const cityX = (ang, r) => Math.cos(ang) * r;
+    const cityZ = (ang, r) => 5.2 - Math.sin(ang) * r;
+    const addBuilding = (cx, cz, w, d, h, yaw = 0) => {
       const g = new THREE.BoxGeometry(w, h, d);
-      xform(g, [cx, h * 0.5, cz]);
+      g.rotateY(yaw);
+      g.translate(cx, h * 0.5 - 0.35, cz);
       cityGeos.push(g);
     };
-    // Sparse, gapped skyline: distinct towers rising above the far-shore bank
-    for (let i = 0; i < 10; i++) {
-      const ang = -1.95 + i * 0.19 + cityRand() * 0.07;
-      const r = 140 + cityRand() * 16;
-      addBuilding(Math.cos(ang) * r, 6 + Math.sin(ang) * r * 0.92, 8 + cityRand() * 7, 8 + cityRand() * 7, 12 + cityRand() * 22);
+
+    // Dense low/mid base band along the far shore — grounds the skyline, kills the "pillar" look
+    for (let i = 0; i < 46; i++) {
+      const ang = -1.25 + (1.6 - -1.25) * (i / 46) + (cityRand() - 0.5) * 0.05;
+      const r = 136 + cityRand() * 13;
+      if (cityRand() < 0.2) continue;
+      addBuilding(cityX(ang, r), cityZ(ang, r), 9 + cityRand() * 10, 9 + cityRand() * 10, 13 + cityRand() * 20, (cityRand() - 0.5) * 0.3);
     }
-    for (let i = 0; i < 9; i++) {
-      const ang = 0.95 + i * 0.13 + cityRand() * 0.05;
-      const r = 142 + cityRand() * 18;
-      addBuilding(Math.cos(ang) * r, 6 + Math.sin(ang) * r, 7 + cityRand() * 6, 7 + cityRand() * 6, 11 + cityRand() * 18);
+    // Mid-rise, wider footprints
+    for (let i = 0; i < 14; i++) {
+      const ang = -1.25 + (1.6 - -1.25) * cityRand();
+      const r = 148 + cityRand() * 14;
+      addBuilding(cityX(ang, r), cityZ(ang, r), 14 + cityRand() * 9, 14 + cityRand() * 9, 30 + cityRand() * 22, (cityRand() - 0.5) * 0.3);
     }
-    // A few landmark towers to break the silhouette
-    for (let i = 0; i < 5; i++) {
-      const ang = -1.5 + i * 0.62 + cityRand() * 0.12;
-      const r = 156 + cityRand() * 12;
-      addBuilding(Math.cos(ang) * r, 6 + Math.sin(ang) * r, 10, 10, 44 + cityRand() * 30);
-    }
+    // Tall landmarks — wide enough to read as towers, not slender pillars
+    const landmarks = [
+      [-1.2, 160, 20, 62],
+      [-0.9, 158, 24, 78],
+      [0.1, 163, 18, 55],
+      [0.7, 156, 20, 60],
+      [1.35, 151, 18, 50],
+    ];
+    landmarks.forEach(([ang, r, w, h]) => addBuilding(cityX(ang, r), cityZ(ang, r), w, w, h));
+
+    // Wuhan-style TV tower landmark: tapered shaft + observation pod + spire
+    const tvAng = -0.55;
+    const tvR = 162;
+    const tvX = cityX(tvAng, tvR);
+    const tvZ = cityZ(tvAng, tvR);
+    const shaft = new THREE.CylinderGeometry(1.7, 3.6, 66, 10);
+    shaft.translate(tvX, 32, tvZ);
+    cityGeos.push(shaft);
+    const pod = new THREE.SphereGeometry(5.4, 12, 10);
+    pod.translate(tvX, 53, tvZ);
+    cityGeos.push(pod);
+    const spire = new THREE.CylinderGeometry(0.5, 0.9, 17, 6);
+    spire.translate(tvX, 64, tvZ);
+    cityGeos.push(spire);
+
     const cityMesh = new THREE.Mesh(mergeSafe(cityGeos), farCityMat);
     cityMesh.receiveShadow = false;
     cityMesh.renderOrder = 3;
@@ -2480,7 +2579,8 @@ export function createCampusDiorama(textures) {
       sakuraOuterMat.color.set('#ffeaf2');
       sakuraInnerMat.color.set('#ffc2da');
       distantShoreMat.color.set('#7e8fa0');
-      farCityMat.color.set('#8fa4b8');
+      farCityMat.color.set('#9ab0c4');
+      cityHazeColor.value.set('#b8a9c8');
       horizonColorUniform.value.set('#ffd2c5');
       waterUniforms.uDeepColor.value.set('#233b66');
       waterUniforms.uShallowColor.value.set('#5686a2');
@@ -2501,7 +2601,8 @@ export function createCampusDiorama(textures) {
       sakuraOuterMat.color.set('#fff9fc');
       sakuraInnerMat.color.set('#ffdbe9');
       distantShoreMat.color.set('#6f9284');
-      farCityMat.color.set('#8fa4b8');
+      farCityMat.color.set('#8da0b2');
+      cityHazeColor.value.set('#9fb9cd');
       horizonColorUniform.value.set('#f7ebf2');
       waterUniforms.uDeepColor.value.set('#135988');
       waterUniforms.uShallowColor.value.set('#4eb7cf');
