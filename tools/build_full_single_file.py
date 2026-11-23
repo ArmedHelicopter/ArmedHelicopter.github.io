@@ -1,18 +1,41 @@
 # -*- coding: utf-8 -*-
 """
-Combines the full Wuhan University 3D campus into a 100% single-file HTML:
+Combines the full Wuhan University 3D campus into a TRUE 100% single-file HTML:
 - Inlines styles.css into <style>
-- Preserves all 187,496 triangles, full 108 steps, authentic archway octagonal columns, natural terrain, detailed water shader with planar reflection, full UI, CV modal, drawer, telemetry pill
-- Inlines dist/bundle.js (all 10 modules + BufferGeometryUtils) into <script type="module">
-- Incorporates the loading progress bar and silky-smooth gimbal camera controller
+- Inlines dist/bundle.js (app modules + three.js engine + BufferGeometryUtils) into <script type="module">
+  → zero external JS/CSS/image/model/audio references; works from file:// with no server
+- Preserves the full scene (terrain, archway, dormitory, library, lake shader, boats, city skyline),
+  full UI, CV modal, drawer, telemetry pill
+- Adds the loading progress bar + silky-smooth gimbal camera controller
+
+Rebuild after editing src/:  python tools/build_full_single_file.py
 """
 
 import subprocess
+import os
+import glob
 
-# 1. First ensure dist/bundle.js is up to date
+# Resolve esbuild without hitting the network: local install > npx cache > plain npx
+def find_esbuild():
+    candidates = [
+        os.path.join('node_modules', '.bin', 'esbuild.cmd'),
+        os.path.join('node_modules', 'esbuild', 'bin', 'esbuild'),
+    ]
+    candidates += glob.glob(
+        os.path.expandvars(
+            r'%LOCALAPPDATA%\npm-cache\_npx\*\node_modules\@esbuild\win32-x64\esbuild.exe'
+        )
+    )
+    for c in candidates:
+        if c and os.path.exists(c):
+            return c
+    return 'npx esbuild'
+
+# 1. First ensure dist/bundle.js is up to date (three.js itself is bundled in — zero external files)
 subprocess.run([
-    'npx', 'esbuild', 'src/main.js',
-    '--bundle', '--format=esm', '--external:three',
+    find_esbuild(), 'src/main.js',
+    '--bundle', '--format=esm',
+    '--alias:three=./vendor/three.module.min.js',
     '--alias:three/addons/utils/BufferGeometryUtils.js=./vendor/jsm/utils/BufferGeometryUtils.js',
     '--outfile=dist/bundle.js'
 ], check=True, shell=True)
@@ -120,14 +143,6 @@ html_template = f"""<!doctype html>
       type="image/svg+xml"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%236fb6e8'/%3E%3Cstop offset='1' stop-color='%23fde3ee'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='7' fill='url(%23g)'/%3E%3Ccircle cx='26' cy='7' r='3' fill='%23e67aa3'/%3E%3Crect x='5' y='14' width='22' height='2' fill='%231f8fa8'/%3E%3Crect x='10' y='10' width='12' height='2' fill='%231f8fa8'/%3E%3Crect x='10' y='12' width='12' height='4' fill='%23fff'/%3E%3Crect x='6' y='16' width='20' height='3' fill='%23fff'/%3E%3Crect x='6' y='11' width='2.4' height='16' fill='%23fff'/%3E%3Crect x='23.6' y='11' width='2.4' height='16' fill='%23fff'/%3E%3Crect x='12' y='8' width='2.4' height='19' fill='%23fff'/%3E%3Crect x='17.6' y='8' width='2.4' height='19' fill='%23fff'/%3E%3Crect x='4' y='27' width='24' height='1.6' rx='.8' fill='%23142942' opacity='.35'/%3E%3C/svg%3E"
     />
-    <script type="importmap">
-      {{
-        "imports": {{
-          "three": "./vendor/three.module.min.js",
-          "three/addons/": "./vendor/jsm/"
-        }}
-      }}
-    </script>
     <style>
 {css}
 {loading_css}
