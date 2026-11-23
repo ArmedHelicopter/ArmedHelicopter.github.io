@@ -2,3 +2,13 @@ node_modules/
 .DS_Store
 *.log
 screenshots/
+
+# build artifacts
+dist/
+_frames_full/
+
+# local audit / scratch
+audit_shots/
+_takeover/
+single_file_test.png
+test_*.png
