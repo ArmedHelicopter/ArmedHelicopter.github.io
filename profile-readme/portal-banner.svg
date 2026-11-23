@@ -1,0 +1,396 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" width="1200" height="360" role="img" aria-label="Ruining Yang — 武汉大学晴空樱花 3D 校园沙盘主页">
+  <defs>
+    <!-- Sunlit Cerulean -> Sky Blue -> Sakura Blush Sky -->
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4e9fe0" />
+      <stop offset="44%" stop-color="#89c5f4" />
+      <stop offset="78%" stop-color="#d8eefc" />
+      <stop offset="100%" stop-color="#fbe4ee" />
+    </linearGradient>
+
+    <!-- Warm Spring Sun Halo behind the Archway -->
+    <radialGradient id="sunHalo" cx="50%" cy="46%" r="38%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+      <stop offset="52%" stop-color="#fff4f8" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Granite Plaza Floor -->
+    <linearGradient id="plaza" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#eef3f8" />
+      <stop offset="45%" stop-color="#e1eaf3" />
+      <stop offset="100%" stop-color="#cfdae7" />
+    </linearGradient>
+
+    <!-- White Granite Pillar Shading -->
+    <linearGradient id="graniteLit" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="68%" stop-color="#f5f8fb" />
+      <stop offset="100%" stop-color="#d7e1ec" />
+    </linearGradient>
+
+    <linearGradient id="graniteBeam" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="78%" stop-color="#f2f6fa" />
+      <stop offset="100%" stop-color="#d5e0ec" />
+    </linearGradient>
+
+    <!-- Peacock-Blue Glazed Tiles (孔雀蓝琉璃瓦) -->
+    <linearGradient id="peacockTile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#35b7c9" />
+      <stop offset="45%" stop-color="#1f8fa8" />
+      <stop offset="100%" stop-color="#13687d" />
+    </linearGradient>
+
+    <!-- Peacock -> Sakura Hairline Accent -->
+    <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1976a8" />
+      <stop offset="52%" stop-color="#3b97c9" />
+      <stop offset="100%" stop-color="#e67aa3" />
+    </linearGradient>
+
+    <!-- Sakura Cloud Gradient -->
+    <radialGradient id="sakuraPuff" cx="42%" cy="38%" r="60%">
+      <stop offset="0%" stop-color="#fff7fa" />
+      <stop offset="55%" stop-color="#f7bdd4" />
+      <stop offset="100%" stop-color="#e67aa3" />
+    </radialGradient>
+
+    <!-- Soft Drop Shadow for Cards & Archway -->
+    <filter id="cardShadow" x="-12%" y="-12%" width="124%" height="132%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#142942" flood-opacity="0.12" />
+    </filter>
+  </defs>
+
+  <!-- 1. Sky & Sun Halo -->
+  <rect width="1200" height="360" fill="url(#sky)" />
+  <ellipse cx="600" cy="172" rx="440" ry="190" fill="url(#sunHalo)" />
+
+  <!-- 2. Soft Layered White Clouds -->
+  <g fill="#ffffff">
+    <!-- Left upper cloud bank -->
+    <g opacity="0.72">
+      <ellipse cx="170" cy="58" rx="68" ry="20" />
+      <ellipse cx="218" cy="52" rx="52" ry="24" />
+      <ellipse cx="262" cy="60" rx="44" ry="16" />
+    </g>
+    <!-- Centre-left high clouds -->
+    <g opacity="0.58">
+      <ellipse cx="456" cy="48" rx="58" ry="16" />
+      <ellipse cx="498" cy="42" rx="44" ry="19" />
+      <ellipse cx="536" cy="49" rx="38" ry="14" />
+    </g>
+    <!-- Centre-right clouds behind archway finials -->
+    <g opacity="0.66">
+      <ellipse cx="712" cy="54" rx="64" ry="18" />
+      <ellipse cx="758" cy="46" rx="48" ry="22" />
+      <ellipse cx="802" cy="55" rx="46" ry="16" />
+    </g>
+    <!-- Right cloud bank -->
+    <g opacity="0.74">
+      <ellipse cx="1010" cy="62" rx="72" ry="20" />
+      <ellipse cx="1062" cy="54" rx="54" ry="24" />
+      <ellipse cx="1108" cy="63" rx="42" ry="15" />
+    </g>
+    <!-- Low horizon mist -->
+    <rect x="0" y="256" width="1200" height="50" fill="#ffffff" opacity="0.38" />
+  </g>
+
+  <!-- 3. Distant Luojia Green Hills & Tree Line -->
+  <path
+    d="M0 296 Q140 262 290 282 T540 268 T790 276 T1040 264 L1200 284 L1200 312 L0 312 Z"
+    fill="#9ec5bc"
+    opacity="0.55"
+  />
+  <path
+    d="M0 304 Q190 278 370 292 T620 280 T870 290 T1200 286 L1200 312 L0 312 Z"
+    fill="#79ab9f"
+    opacity="0.5"
+  />
+
+  <!-- 4. Sunlit Granite Plaza Floor & Perspective Grid -->
+  <rect x="0" y="304" width="1200" height="56" fill="url(#plaza)" />
+  <line x1="0" y1="304" x2="1200" y2="304" stroke="#ffffff" stroke-width="1.5" opacity="0.9" />
+  <g stroke="#b9cada" stroke-width="1" opacity="0.55">
+    <line x1="0" y1="320" x2="1200" y2="320" />
+    <line x1="0" y1="338" x2="1200" y2="338" />
+    <line x1="600" y1="304" x2="600" y2="360" />
+    <line x1="540" y1="304" x2="495" y2="360" />
+    <line x1="660" y1="304" x2="705" y2="360" />
+    <line x1="480" y1="304" x2="395" y2="360" />
+    <line x1="720" y1="304" x2="805" y2="360" />
+    <line x1="410" y1="304" x2="275" y2="360" />
+    <line x1="790" y1="304" x2="925" y2="360" />
+  </g>
+
+  <!-- Soft Ground Shadows under Archway & Sakura Trees -->
+  <g fill="#9ab0c7" opacity="0.34">
+    <ellipse cx="428" cy="312" rx="48" ry="6" />
+    <ellipse cx="772" cy="312" rx="48" ry="6" />
+    <ellipse cx="478" cy="315" rx="22" ry="5" />
+    <ellipse cx="538" cy="316" rx="26" ry="5.5" />
+    <ellipse cx="662" cy="316" rx="26" ry="5.5" />
+    <ellipse cx="722" cy="315" rx="22" ry="5" />
+  </g>
+
+  <!-- 5. Flanking Pink Sakura Trees (Left & Right of Archway) -->
+  <!-- Left Sakura Tree -->
+  <g>
+    <path d="M424 310 C424 282 420 264 410 246 M424 278 C434 260 444 250 454 242" stroke="#6f5048" stroke-width="6" stroke-linecap="round" fill="none" />
+    <ellipse cx="412" cy="232" rx="48" ry="30" fill="url(#sakuraPuff)" />
+    <ellipse cx="446" cy="240" rx="38" ry="25" fill="#f7bfd5" />
+    <ellipse cx="394" cy="246" rx="34" ry="22" fill="#f3a6c3" />
+    <ellipse cx="426" cy="218" rx="34" ry="21" fill="#ffe9f2" opacity="0.88" />
+    <!-- Central background sakura peek through archway -->
+    <ellipse cx="578" cy="266" rx="32" ry="22" fill="#f7c4d8" opacity="0.85" />
+    <ellipse cx="622" cy="268" rx="30" ry="20" fill="#f4b1cb" opacity="0.85" />
+    <ellipse cx="600" cy="260" rx="26" ry="18" fill="#ffe8f1" opacity="0.85" />
+  </g>
+
+  <!-- Right Sakura Tree -->
+  <g>
+    <path d="M776 310 C776 282 780 264 790 246 M776 278 C766 260 756 250 746 242" stroke="#6f5048" stroke-width="6" stroke-linecap="round" fill="none" />
+    <ellipse cx="788" cy="232" rx="48" ry="30" fill="url(#sakuraPuff)" />
+    <ellipse cx="754" cy="240" rx="38" ry="25" fill="#f7bfd5" />
+    <ellipse cx="806" cy="246" rx="34" ry="22" fill="#f3a6c3" />
+    <ellipse cx="774" cy="218" rx="34" ry="21" fill="#ffe9f2" opacity="0.88" />
+  </g>
+
+  <!-- =======================================================================
+       6. WHU Four-Pillar Three-Bay Archway (四柱三间冲天式牌坊)
+       Reference: whu_gate_front.jpg — 4 white columns piercing above the eaves,
+       higher central bay with peacock-blue glazed tiles & 學大漢武立國,
+       two lower side bays, and carved S-scroll drum stones at column bases.
+       ======================================================================= -->
+  <g filter="url(#cardShadow)">
+    <!-- Side Bay Lintels & Friezes (Left x=484..531, Right x=669..716) -->
+    <!-- Left Bay Upper Frieze -->
+    <rect x="484" y="122" width="47" height="14" fill="url(#graniteBeam)" stroke="#c7d5e3" stroke-width="1" />
+    <!-- Right Bay Upper Frieze -->
+    <rect x="669" y="122" width="47" height="14" fill="url(#graniteBeam)" stroke="#c7d5e3" stroke-width="1" />
+
+    <!-- Left Bay Main Lintel -->
+    <rect x="484" y="144" width="47" height="34" fill="url(#graniteBeam)" stroke="#c3d1e0" stroke-width="1" />
+    <rect x="484" y="174" width="47" height="4" fill="#cfdce9" />
+    <!-- Right Bay Main Lintel -->
+    <rect x="669" y="144" width="47" height="34" fill="url(#graniteBeam)" stroke="#c3d1e0" stroke-width="1" />
+    <rect x="669" y="174" width="47" height="4" fill="#cfdce9" />
+
+    <!-- Central Bay Upper Frieze (above eaves) -->
+    <rect x="546" y="84" width="108" height="18" fill="url(#graniteBeam)" stroke="#c7d5e3" stroke-width="1" />
+    <line x1="552" y1="93" x2="648" y2="93" stroke="#d5e0ec" stroke-width="1" />
+
+    <!-- Central Bay Main Inscription Lintel (主额枋) -->
+    <rect x="545" y="112" width="110" height="46" fill="url(#graniteBeam)" stroke="#c1d0df" stroke-width="1" />
+    <!-- Subtle Inner Plaque Frame -->
+    <rect x="550" y="117" width="100" height="36" fill="#fbfdff" stroke="#d5e0ec" stroke-width="1" />
+    <!-- Lower Architrave Moulding -->
+    <rect x="545" y="154" width="110" height="5" fill="#cfdce9" />
+
+    <!-- Six Engraved Characters (Right-to-Left: 學 大 漢 武 立 國) -->
+    <g fill="#16283d" font-family="'Noto Serif SC', 'Songti SC', 'SimSun', Georgia, serif" font-size="14.5" font-weight="700" text-anchor="middle">
+      <text x="560" y="140">學</text>
+      <text x="576" y="140">大</text>
+      <text x="592" y="140">漢</text>
+      <text x="608" y="140">武</text>
+      <text x="624" y="140">立</text>
+      <text x="640" y="140">國</text>
+    </g>
+
+    <!-- Four Piercing Columns (四柱冲天) -->
+    <!-- Column 1 (Outer Left, x=470..486) -->
+    <rect x="470" y="102" width="16" height="210" fill="url(#graniteLit)" stroke="#c2d0df" stroke-width="1" />
+    <line x1="483" y1="102" x2="483" y2="312" stroke="#c8d6e4" stroke-width="1" />
+
+    <!-- Column 2 (Inner Left, x=529..547) -->
+    <rect x="529" y="64" width="18" height="248" fill="url(#graniteLit)" stroke="#c2d0df" stroke-width="1" />
+    <line x1="544" y1="64" x2="544" y2="312" stroke="#c8d6e4" stroke-width="1" />
+
+    <!-- Column 3 (Inner Right, x=653..671) -->
+    <rect x="653" y="64" width="18" height="248" fill="url(#graniteLit)" stroke="#c2d0df" stroke-width="1" />
+    <line x1="668" y1="64" x2="668" y2="312" stroke="#c8d6e4" stroke-width="1" />
+
+    <!-- Column 4 (Outer Right, x=714..730) -->
+    <rect x="714" y="102" width="16" height="210" fill="url(#graniteLit)" stroke="#c2d0df" stroke-width="1" />
+    <line x1="727" y1="102" x2="727" y2="312" stroke="#c8d6e4" stroke-width="1" />
+
+    <!-- Carved Cloud-Collar Column Finials (冲天柱头云纹冠) -->
+    <!-- Outer Left Finial -->
+    <g>
+      <rect x="471" y="83" width="14" height="19" rx="4" fill="url(#graniteLit)" stroke="#bccbd9" stroke-width="1" />
+      <line x1="471" y1="89" x2="485" y2="89" stroke="#b9c8d7" stroke-width="1" />
+      <line x1="471" y1="95" x2="485" y2="95" stroke="#b9c8d7" stroke-width="1" />
+    </g>
+    <!-- Inner Left Finial -->
+    <g>
+      <rect x="530" y="42" width="16" height="22" rx="5" fill="url(#graniteLit)" stroke="#bccbd9" stroke-width="1" />
+      <line x1="530" y1="49" x2="546" y2="49" stroke="#b9c8d7" stroke-width="1" />
+      <line x1="530" y1="55" x2="546" y2="55" stroke="#b9c8d7" stroke-width="1" />
+      <line x1="530" y1="60" x2="546" y2="60" stroke="#b9c8d7" stroke-width="1" />
+    </g>
+    <!-- Inner Right Finial -->
+    <g>
+      <rect x="654" y="42" width="16" height="22" rx="5" fill="url(#graniteLit)" stroke="#bccbd9" stroke-width="1" />
+      <line x1="654" y1="49" x2="670" y2="49" stroke="#b9c8d7" stroke-width="1" />
+      <line x1="654" y1="55" x2="670" y2="55" stroke="#b9c8d7" stroke-width="1" />
+      <line x1="654" y1="60" x2="670" y2="60" stroke="#b9c8d7" stroke-width="1" />
+    </g>
+    <!-- Outer Right Finial -->
+    <g>
+      <rect x="715" y="83" width="14" height="19" rx="4" fill="url(#graniteLit)" stroke="#bccbd9" stroke-width="1" />
+      <line x1="715" y1="89" x2="729" y2="89" stroke="#b9c8d7" stroke-width="1" />
+      <line x1="715" y1="95" x2="729" y2="95" stroke="#b9c8d7" stroke-width="1" />
+    </g>
+
+    <!-- Peacock-Blue Glazed Eaves (孔雀蓝琉璃瓦檐) + White Corbel Brackets -->
+    <!-- Central Bay Eave (spans between inner pillars x=543..657, y=100..113) -->
+    <g>
+      <polygon points="541,111 547,100 653,100 659,111" fill="url(#peacockTile)" stroke="#125d70" stroke-width="0.9" />
+      <line x1="546" y1="103" x2="654" y2="103" stroke="#7ce0ee" stroke-width="1.3" />
+      <!-- Scalloped Glazed Drip Tiles & White Brackets -->
+      <g fill="#2aa6b8">
+        <circle cx="550" cy="111.5" r="2.2" />
+        <circle cx="560" cy="111.5" r="2.2" />
+        <circle cx="570" cy="111.5" r="2.2" />
+        <circle cx="580" cy="111.5" r="2.2" />
+        <circle cx="590" cy="111.5" r="2.2" />
+        <circle cx="600" cy="111.5" r="2.2" />
+        <circle cx="610" cy="111.5" r="2.2" />
+        <circle cx="620" cy="111.5" r="2.2" />
+        <circle cx="630" cy="111.5" r="2.2" />
+        <circle cx="640" cy="111.5" r="2.2" />
+        <circle cx="650" cy="111.5" r="2.2" />
+      </g>
+      <g fill="#e6eef6" stroke="#b5c5d6" stroke-width="0.6">
+        <rect x="553" y="113" width="5" height="3" />
+        <rect x="568" y="113" width="5" height="3" />
+        <rect x="583" y="113" width="5" height="3" />
+        <rect x="598" y="113" width="5" height="3" />
+        <rect x="613" y="113" width="5" height="3" />
+        <rect x="628" y="113" width="5" height="3" />
+        <rect x="642" y="113" width="5" height="3" />
+      </g>
+    </g>
+
+    <!-- Left Side Bay Eave (x=482..531, y=134..145) -->
+    <g>
+      <polygon points="481,144 486,134 529,134 533,144" fill="url(#peacockTile)" stroke="#125d70" stroke-width="0.9" />
+      <line x1="485" y1="136.5" x2="529" y2="136.5" stroke="#7ce0ee" stroke-width="1.2" />
+      <g fill="#2aa6b8">
+        <circle cx="488" cy="144.5" r="2" />
+        <circle cx="497" cy="144.5" r="2" />
+        <circle cx="507" cy="144.5" r="2" />
+        <circle cx="517" cy="144.5" r="2" />
+        <circle cx="526" cy="144.5" r="2" />
+      </g>
+    </g>
+
+    <!-- Right Side Bay Eave (x=669..718, y=134..145) -->
+    <g>
+      <polygon points="667,144 671,134 714,134 719,144" fill="url(#peacockTile)" stroke="#125d70" stroke-width="0.9" />
+      <line x1="671" y1="136.5" x2="715" y2="136.5" stroke="#7ce0ee" stroke-width="1.2" />
+      <g fill="#2aa6b8">
+        <circle cx="674" cy="144.5" r="2" />
+        <circle cx="683" cy="144.5" r="2" />
+        <circle cx="693" cy="144.5" r="2" />
+        <circle cx="703" cy="144.5" r="2" />
+        <circle cx="712" cy="144.5" r="2" />
+      </g>
+    </g>
+
+    <!-- S-Scroll Drum Stones at All Four Column Bases (抱鼓石/夹杆石) -->
+    <g fill="#edf3f9" stroke="#bccbd9" stroke-width="1">
+      <!-- Column 1 Base Drums -->
+      <path d="M470 268 Q461 270 460 284 Q454 294 454 312 L470 312 Z" />
+      <path d="M486 268 Q495 270 496 284 Q502 294 502 312 L486 312 Z" />
+      <circle cx="463" cy="297" r="5.5" fill="#f7fafd" stroke="#c3d2e0" stroke-width="0.9" />
+      <circle cx="493" cy="297" r="5.5" fill="#f7fafd" stroke="#c3d2e0" stroke-width="0.9" />
+
+      <!-- Column 2 Base Drums -->
+      <path d="M529 262 Q519 265 517 281 Q510 293 510 312 L529 312 Z" />
+      <path d="M547 262 Q557 265 559 281 Q566 293 566 312 L547 312 Z" />
+      <circle cx="521" cy="296" r="6.5" fill="#f7fafd" stroke="#c3d2e0" stroke-width="0.9" />
+      <circle cx="555" cy="296" r="6.5" fill="#f7fafd" stroke="#c3d2e0" stroke-width="0.9" />
+
+      <!-- Column 3 Base Drums -->
+      <path d="M653 262 Q643 265 641 281 Q634 293 634 312 L653 312 Z" />
+      <path d="M671 262 Q681 265 683 281 Q690 293 690 312 L671 312 Z" />
+      <circle cx="645" cy="296" r="6.5" fill="#f7fafd" stroke="#c3d2e0" stroke-width="0.9" />
+      <circle cx="679" cy="296" r="6.5" fill="#f7fafd" stroke="#c3d2e0" stroke-width="0.9" />
+
+      <!-- Column 4 Base Drums -->
+      <path d="M714 268 Q705 270 704 284 Q698 294 698 312 L714 312 Z" />
+      <path d="M730 268 Q739 270 740 284 Q746 294 746 312 L730 312 Z" />
+      <circle cx="707" cy="297" r="5.5" fill="#f7fafd" stroke="#c3d2e0" stroke-width="0.9" />
+      <circle cx="737" cy="297" r="5.5" fill="#f7fafd" stroke="#c3d2e0" stroke-width="0.9" />
+    </g>
+  </g>
+
+  <!-- 7. Drifting Sakura Petals in the Spring Breeze -->
+  <g fill="#f18eb4" opacity="0.88">
+    <ellipse cx="442" cy="118" rx="4.5" ry="2.4" transform="rotate(-24 442 118)" />
+    <ellipse cx="464" cy="162" rx="3.8" ry="2" transform="rotate(18 464 162)" fill="#ffd3e4" />
+    <ellipse cx="512" cy="96" rx="4.2" ry="2.2" transform="rotate(-32 512 96)" />
+    <ellipse cx="576" cy="186" rx="4.5" ry="2.2" transform="rotate(22 576 186)" fill="#e67aa3" />
+    <ellipse cx="614" cy="212" rx="3.6" ry="1.9" transform="rotate(-18 614 212)" fill="#ffd3e4" />
+    <ellipse cx="636" cy="174" rx="4" ry="2.1" transform="rotate(35 636 174)" />
+    <ellipse cx="692" cy="94" rx="4.2" ry="2.2" transform="rotate(-28 692 94)" fill="#ffd3e4" />
+    <ellipse cx="748" cy="138" rx="4.6" ry="2.3" transform="rotate(15 748 138)" fill="#e67aa3" />
+    <ellipse cx="764" cy="188" rx="3.8" ry="2" transform="rotate(-20 764 188)" />
+    <ellipse cx="588" cy="326" rx="4.2" ry="1.8" fill="#f49cbb" />
+    <ellipse cx="632" cy="334" rx="3.8" ry="1.6" fill="#e67aa3" />
+    <ellipse cx="518" cy="328" rx="3.6" ry="1.5" fill="#f49cbb" />
+  </g>
+
+  <!-- =======================================================================
+       8. Left Editorial Identity Card (Frosted Pearl Glass, Navy Typography)
+       ======================================================================= -->
+  <g transform="translate(36, 68)" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="382" height="218" rx="16" fill="#ffffff" fill-opacity="0.84" stroke="#ffffff" stroke-width="1.5" />
+    <!-- Top Peacock -> Sakura Hairline -->
+    <rect x="20" y="0" width="342" height="3" rx="1.5" fill="url(#accentGrad)" />
+
+    <!-- Coordinate Kicker -->
+    <circle cx="28" cy="32" r="5" fill="#e67aa3" />
+    <circle cx="28" cy="32" r="9" fill="#e67aa3" fill-opacity="0.2" />
+    <text x="44" y="36" fill="#1976a8" font-family="'JetBrains Mono', Consolas, monospace" font-size="11.5" font-weight="600" letter-spacing="1.4">WHU · 30.536°N 114.364°E</text>
+
+    <!-- Primary Name -->
+    <text x="24" y="82" fill="#142942" font-family="'Noto Serif SC', 'Songti SC', Georgia, serif" font-size="36" font-weight="700" letter-spacing="1.2">Ruining Yang</text>
+
+    <!-- Subtitle -->
+    <text x="24" y="112" fill="#35506e" font-family="Inter, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13.5" font-weight="500">武汉大学 · 人工智能本科 · Deep Learning / AI4S / BCI</text>
+
+    <!-- Research Pill Badges -->
+    <g transform="translate(24, 130)" font-family="'JetBrains Mono', Consolas, monospace" font-size="10.5" font-weight="600">
+      <rect x="0" y="0" width="98" height="24" rx="12" fill="#e67aa3" fill-opacity="0.14" stroke="#e67aa3" stroke-opacity="0.45" />
+      <text x="49" y="16" text-anchor="middle" fill="#c94f7d">Deep Learning</text>
+
+      <rect x="106" y="0" width="54" height="24" rx="12" fill="#1976a8" fill-opacity="0.11" stroke="#1976a8" stroke-opacity="0.35" />
+      <text x="133" y="16" text-anchor="middle" fill="#1976a8">AI4S</text>
+
+      <rect x="168" y="0" width="48" height="24" rx="12" fill="#1976a8" fill-opacity="0.11" stroke="#1976a8" stroke-opacity="0.35" />
+      <text x="192" y="16" text-anchor="middle" fill="#1976a8">BCI</text>
+    </g>
+
+    <!-- Handle Line -->
+    <line x1="24" y1="170" x2="358" y2="170" stroke="#1976a8" stroke-opacity="0.16" stroke-width="1" />
+    <text x="24" y="194" fill="#1976a8" font-family="'JetBrains Mono', Consolas, monospace" font-size="12" font-weight="600">@ArmedHelicopter · @projectluojia</text>
+  </g>
+
+  <!-- =======================================================================
+       9. Right Interactive CTA Badge (Frosted Pearl Glass)
+       ======================================================================= -->
+  <g transform="translate(838, 126)" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="326" height="106" rx="16" fill="#ffffff" fill-opacity="0.86" stroke="#ffffff" stroke-width="1.5" />
+    <rect x="20" y="0" width="286" height="3" rx="1.5" fill="url(#accentGrad)" />
+
+    <circle cx="30" cy="36" r="5.5" fill="#e67aa3" />
+    <circle cx="30" cy="36" r="10" fill="#e67aa3" fill-opacity="0.22" />
+    <text x="48" y="42" fill="#142942" font-family="'Noto Serif SC', 'Songti SC', Georgia, serif" font-size="19" font-weight="700" letter-spacing="1.5">推门入珈 · 3D 校园沙盘</text>
+
+    <!-- Pill Link -->
+    <rect x="22" y="58" width="282" height="32" rx="16" fill="url(#accentGrad)" />
+    <text x="163" y="79" text-anchor="middle" fill="#ffffff" font-family="'JetBrains Mono', Consolas, monospace" font-size="12.5" font-weight="600" letter-spacing="0.6">armedhelicopter.github.io ↗</text>
+  </g>
+</svg>

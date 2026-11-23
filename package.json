@@ -1,0 +1,12 @@
+{
+  "name": "armedhelicopter-github-home",
+  "private": true,
+  "version": "1.0.0",
+  "description": "HD-2D WHU Miniature Campus Interactive GitHub Pages Homepage for Ruining Yang (@ArmedHelicopter)",
+  "scripts": {
+    "dev": "python -m http.server 8765"
+  },
+  "dependencies": {
+    "three": "^0.170.0"
+  }
+}
