@@ -11,12 +11,37 @@ function easeOutCubic(t) {
   return 1 - Math.pow(1 - t, 3);
 }
 
-const AUTOPLAY_STOPS = [
-  { id: 'archway', index: 0, label: '01/04 · 国立武汉大学牌坊', tStart: 0.0, tMid: 0.14 },
-  { id: 'sakura', index: 1, label: '02/04 · 老斋舍 & 樱花大道', tStart: 0.25, tMid: 0.38 },
-  { id: 'library', index: 2, label: '03/04 · 樱顶老图书馆', tStart: 0.49, tMid: 0.61 },
-  { id: 'lingbo', index: 3, label: '04/04 · 东湖凌波门', tStart: 0.72, tMid: 0.83 },
-  { id: 'overview', index: -1, label: '俯瞰全景 · 珞珈校园', tStart: 0.91, tMid: 1.0 },
+function smooth01(e0, e1, x) {
+  const t = THREE.MathUtils.clamp((x - e0) / (e1 - e0), 0, 1);
+  return t * t * (3 - 2 * t);
+}
+
+function wrapPi(a) {
+  let r = (a + Math.PI) % (Math.PI * 2);
+  if (r < 0) r += Math.PI * 2;
+  return r - Math.PI;
+}
+
+const KF = [
+  { pos: [0.0, 2.7, 36.5], att: [0.0, 5.0, 15.5], w: 0.85, v: 1.15, stop: { id: 'archway', index: 0, label: '01/04 · 国立武汉大学牌坊' } },
+  { pos: [0.0, 2.2, 23.0], att: [0.0, 4.4, 15.5], w: 0.72, v: 1.05 },
+  { pos: [0.0, 1.78, 17.5], att: [0.0, 2.9, 8.0], w: 0.32, v: 1.05 },
+  { pos: [0.0, 1.75, 13.0], att: [0.0, 3.2, 2.0], w: 0.25, v: 1.05 },
+  { pos: [0.0, 2.35, 9.6], att: [0.0, 4.1, 0.4], w: 0.48, v: 0.85, stop: { id: 'sakura', index: 1, label: '02/04 · 老斋舍 & 樱花大道' } },
+  { pos: [0.0, 3.6, 5.6], att: [0.0, 5.1, -0.8], w: 0.58, v: 0.72 },
+  { pos: [0.0, 7.0, 2.4], att: [0.0, 7.2, -1.2], w: 0.52, v: 0.68 },
+  { pos: [0.0, 9.8, -1.0], att: [0.0, 9.0, -9.8], w: 0.58, v: 0.52, stop: { id: 'library', index: 2, label: '03/04 · 樱顶老图书馆' } },
+  { pos: [5.4, 11.8, -3.2], att: [9.5, 8.8, -9.2], w: 0.72, v: 0.50 },
+  { pos: [11.4, 8.4, -7.4], att: [23.0, 6.2, -8.4], w: 0.80, v: 0.56 },
+  { pos: [16.8, 4.6, -12.4], att: [23.2, 3.5, -6.0], w: 0.74, v: 0.54 },
+  { pos: [21.8, 3.4, -13.2], att: [20.5, 2.8, -5.2], w: 0.56, v: 0.46, stop: { id: 'lingbo', index: 3, label: '04/04 · 东湖凌波门' } },
+  { pos: [26.0, 3.2, -9.2], att: [16.5, 2.6, -3.8], w: 0.54, v: 0.50 },
+  { pos: [28.4, 4.2, -2.6], att: [11.5, 2.9, -1.2], w: 0.62, v: 0.68 },
+  { pos: [29.8, 7.6, 6.2], att: [6.5, 3.7, 4.6], w: 0.70, v: 0.84 },
+  { pos: [29.4, 11.6, 15.2], att: [2.8, 4.0, 6.0], w: 0.78, v: 0.88 },
+  { pos: [27.4, 14.2, 21.4], att: [1.4, 3.9, 4.0], w: 0.86, v: 0.84, stop: { id: 'overview', index: -1, label: '俯瞰全景 · 珞珈校园' } },
+  { pos: [24.6, 15.3, 24.6], att: [0.6, 3.7, 2.0], w: 0.92, v: 0.80 },
+  { pos: OVERVIEW_POS.toArray(), att: OVERVIEW_TARGET.toArray(), w: 0.96, v: 0.76 },
 ];
 
 /**
@@ -38,7 +63,7 @@ export function createCameraController(
 
   let autoplayElapsed = 0;
   let autoplayPaused = false;
-  const AUTOPLAY_DURATION = 26.0;
+  const AUTOPLAY_DURATION = 34.0;
 
   const pointer = { x: 0, y: 0 };
   const smoothPointer = { x: 0, y: 0 };
@@ -58,88 +83,92 @@ export function createCameraController(
     OVERVIEW_TARGET.clone(),
   ]);
 
-  // Straight-in central-axis FPV: 牌坊 → 中轴 carpet → 百步梯 → 老斋舍 → 老图拉升 → 凌波门 → 俯瞰
-  const autoplayPosPoints = [
-    new THREE.Vector3(0.0, 2.55, 36.2), // 0: South Plaza approach
-    new THREE.Vector3(0.0, 2.35, 31.2), // 1: Stop 01 - 国立武汉大学牌坊 (all 4 冲天柱 finials + 抱鼓石 + sky headroom)
-    new THREE.Vector3(0.0, 1.95, 14.4), // 2: Through central bay (x∈[-2.04,2.04], y<4.52)
-    new THREE.Vector3(0.0, 1.95, 10.6), // 3: Straight along the ceremonial carpet
-    new THREE.Vector3(0.0, 2.15, 7.6), // 4: Foot of the 108-step staircase
-    new THREE.Vector3(0.0, 3.0, 6.0), // 5: Ascending the stairs
-    new THREE.Vector3(0.0, 4.4, 3.4), // 6: Stop 02 - Crest onto Tier 1, 老斋舍 dead ahead
-    new THREE.Vector3(0.0, 7.6, -0.6), // 7: Rising over the dormitory roofline (central 歇山顶 crest ≈ 7.19)
-    new THREE.Vector3(0.0, 8.6, -4.8), // 8: Over Tier 2 south edge, library ahead
-    new THREE.Vector3(0.2, 9.5, -6.2), // 9: Stop 03 - 樱顶老图书馆 hero
-    new THREE.Vector3(4.0, 8.2, -4.0), // 10: 拉升 - begin eastward pull-up over the cliff
-    new THREE.Vector3(9.5, 6.4, -6.0), // 11: Over the lakeside promenade
-    new THREE.Vector3(13.5, 4.4, -7.6), // 12: Lingbo Pier approach
-    new THREE.Vector3(15.6, 3.4, -9.8), // 13: Stop 04 - 凌波亭 + pier + open lake
-    new THREE.Vector3(19.5, 4.6, -6.4), // 14: Sweep past the pier
-    new THREE.Vector3(21.5, 6.6, 1.2), // 15: Ascent above East Lake
-    new THREE.Vector3(22.6, 11.2, 12.5), // 16: Wide banking sweep
-    OVERVIEW_POS.clone(), // 17: Final Overview
-  ];
+  // Deterministic cinematic FPV drone flight: 牌坊 -> 樱花大道 & 老斋舍 -> 樱顶老图书馆 -> 东湖凌波门 -> 全景俯瞰
+  const CURVE_DIVS = 2000;
+  const autoplayPosCurve = new THREE.CatmullRomCurve3(
+    KF.map((k) => new THREE.Vector3(...k.pos)),
+    false,
+    'centripetal',
+    0.5
+  );
+  autoplayPosCurve.arcLengthDivisions = CURVE_DIVS;
+  const autoplayAttCurve = new THREE.CatmullRomCurve3(
+    KF.map((k) => new THREE.Vector3(...k.att)),
+    false,
+    'centripetal',
+    0.5
+  );
+  autoplayAttCurve.arcLengthDivisions = CURVE_DIVS;
 
-  const autoplayLookPoints = [
-    new THREE.Vector3(0.0, 4.5, 15.5),
-    new THREE.Vector3(0.0, 4.65, 15.5),
-    new THREE.Vector3(0.0, 3.2, 7.0),
-    new THREE.Vector3(0.0, 3.0, 4.0),
-    new THREE.Vector3(0.0, 3.4, 2.2),
-    new THREE.Vector3(0.0, 4.2, 0.5),
-    new THREE.Vector3(0.0, 5.2, -1.5),
-    new THREE.Vector3(0.0, 6.4, -5.5),
-    new THREE.Vector3(0.0, 7.4, -9.8),
-    new THREE.Vector3(0.0, 8.2, -9.8),
-    new THREE.Vector3(1.0, 7.2, -8.4),
-    new THREE.Vector3(12.0, 2.8, -7.4),
-    new THREE.Vector3(13.5, 1.8, -8.4),
-    new THREE.Vector3(14.6, 1.5, -10.8),
-    new THREE.Vector3(16.0, 1.4, -12.0),
-    new THREE.Vector3(12.0, 3.2, -2.0),
-    new THREE.Vector3(2.0, 3.4, 0.2),
-    OVERVIEW_TARGET.clone(),
-  ];
+  const curveLengths = autoplayPosCurve.getLengths(CURVE_DIVS);
+  const totalCurveLength = curveLengths[curveLengths.length - 1] || 1;
 
-  const autoplayPosCurve = new THREE.CatmullRomCurve3(autoplayPosPoints, false, 'centripetal', 0.5);
-  autoplayPosCurve.arcLengthDivisions = 400;
-  const autoplayLookCurve = new THREE.CatmullRomCurve3(autoplayLookPoints, false, 'centripetal', 0.5);
-  autoplayLookCurve.arcLengthDivisions = 400;
-
-  // Map each control point index to its normalized arc-length u in [0, 1]
-  function findCurveUForControlPoint(idx) {
-    const targetT = idx / (autoplayPosPoints.length - 1);
-    const lengths = autoplayPosCurve.getLengths(400);
-    const totalLen = lengths[lengths.length - 1] || 1;
-    const sampleIdx = Math.round(targetT * 400);
-    return lengths[sampleIdx] / totalLen;
+  function kfScalar(key, tParam) {
+    const maxI = KF.length - 1;
+    const idx = THREE.MathUtils.clamp(tParam, 0, 1) * maxI;
+    const i = Math.min(maxI - 1, Math.floor(idx));
+    const f = idx - i;
+    const sm = f * f * (3 - 2 * f);
+    return THREE.MathUtils.lerp(KF[i][key], KF[i + 1][key], sm);
   }
 
-  const knotTable = [
-    { t: 0.0, u: 0.0 },
-    { t: 0.14, u: findCurveUForControlPoint(1) }, // Archway
-    { t: 0.38, u: findCurveUForControlPoint(6) }, // 108 Steps & Old Dormitory
-    { t: 0.61, u: findCurveUForControlPoint(9) }, // Old Library hero
-    { t: 0.83, u: findCurveUForControlPoint(13) }, // Lingbo Pavilion & Pier
-    { t: 1.0, u: 1.0 },
-  ];
-
-  const smoothLookAt = new THREE.Vector3(0.0, 4.5, 15.5);
-
-  function mapTimeToU(rawT) {
-    const t = THREE.MathUtils.clamp(rawT, 0, 1);
-    for (let i = 0; i < knotTable.length - 1; i++) {
-      const a = knotTable[i];
-      const b = knotTable[i + 1];
-      if (t <= b.t || i === knotTable.length - 2) {
-        const span = Math.max(1e-5, b.t - a.t);
-        const s = THREE.MathUtils.clamp((t - a.t) / span, 0, 1);
-        const w = s * s * (3.0 - 2.0 * s); // Smooth C1 zero-jerk easing across intervals
-        return THREE.MathUtils.lerp(a.u, b.u, w);
-      }
+  const progressTable = new Float64Array(CURVE_DIVS + 1);
+  {
+    const ds = totalCurveLength / CURVE_DIVS;
+    let accumT = 0;
+    progressTable[0] = 0;
+    for (let k = 1; k <= CURVE_DIVS; k++) {
+      const uMid = (k - 0.5) / CURVE_DIVS;
+      const sMid = uMid * totalCurveLength;
+      const tMid = autoplayPosCurve.getUtoTmapping(uMid);
+      const v =
+        kfScalar('v', tMid) *
+        (0.35 + 0.65 * smooth01(0, 6, sMid)) *
+        (0.15 + 0.85 * smooth01(0, 10, totalCurveLength - sMid));
+      accumT += ds / Math.max(v, 0.05);
+      progressTable[k] = accumT;
     }
-    return 1;
+    const totalTime = progressTable[CURVE_DIVS] || 1;
+    for (let k = 0; k <= CURVE_DIVS; k++) {
+      progressTable[k] /= totalTime;
+    }
+    progressTable[CURVE_DIVS] = 1;
   }
+
+  function uFromProgress(rawT) {
+    const p = THREE.MathUtils.clamp(rawT, 0, 1);
+    if (p <= 0) return 0;
+    if (p >= 1) return 1;
+    let lo = 0;
+    let hi = CURVE_DIVS;
+    while (lo + 1 < hi) {
+      const mid = (lo + hi) >> 1;
+      if (progressTable[mid] <= p) lo = mid;
+      else hi = mid;
+    }
+    const span = progressTable[hi] - progressTable[lo];
+    const frac = span > 1e-9 ? (p - progressTable[lo]) / span : 0;
+    return (lo + frac) / CURVE_DIVS;
+  }
+
+  function progressFromU(u) {
+    const c = THREE.MathUtils.clamp(u, 0, 1) * CURVE_DIVS;
+    const lo = Math.min(CURVE_DIVS - 1, Math.floor(c));
+    const frac = c - lo;
+    return THREE.MathUtils.lerp(progressTable[lo], progressTable[lo + 1], frac);
+  }
+
+  const AUTOPLAY_STOPS = KF.map((k, idx) => {
+    if (!k.stop) return null;
+    const sampleIdx = Math.round((idx / (KF.length - 1)) * CURVE_DIVS);
+    const uStop = curveLengths[sampleIdx] / totalCurveLength;
+    return {
+      ...k.stop,
+      tStart: idx === 0 ? 0 : progressFromU(uStop),
+    };
+  }).filter(Boolean);
+
+  const smoothLookAt = new THREE.Vector3(...KF[0].att);
 
   function getStopForProgress(rawT) {
     let current = AUTOPLAY_STOPS[0];
@@ -151,29 +180,79 @@ export function createCameraController(
 
   const _autoPos = new THREE.Vector3();
   const _autoLook = new THREE.Vector3();
+  const _attPt = new THREE.Vector3();
+  const _attDir = new THREE.Vector3();
+  const _fwd = new THREE.Vector3();
+  const _dir = new THREE.Vector3();
+  const _tanTmp = new THREE.Vector3();
+  const _tanMinus = new THREE.Vector3();
+  const _tanPlus = new THREE.Vector3();
+  const WINDOW_OFFSETS = [-4, -2, 0, 2, 4];
+  const WINDOW_WEIGHTS = [1, 2, 3, 2, 1];
+  let lastFwdAttAngleDeg = 0;
   let lastAutoStopId = null;
+
+  function sampleRollAt(uSample) {
+    const uM = THREE.MathUtils.clamp(uSample - 1.5 / totalCurveLength, 0, 1);
+    const uP = THREE.MathUtils.clamp(uSample + 1.5 / totalCurveLength, 0, 1);
+    autoplayPosCurve.getTangentAt(uM, _tanMinus);
+    autoplayPosCurve.getTangentAt(uP, _tanPlus);
+    const hM = Math.atan2(_tanMinus.x, _tanMinus.z);
+    const hP = Math.atan2(_tanPlus.x, _tanPlus.z);
+    const duMeters = Math.max(0.25, (uP - uM) * totalCurveLength);
+    const yawRate = wrapPi(hP - hM) / duMeters;
+    const tpS = autoplayPosCurve.getUtoTmapping(uSample);
+    return THREE.MathUtils.clamp(yawRate * 0.65 * kfScalar('v', tpS), -0.028, 0.028);
+  }
 
   function applyAutoplayAt(rawT) {
     const clampedT = THREE.MathUtils.clamp(rawT, 0, 1);
-    const u = mapTimeToU(clampedT);
-    const tParam = autoplayPosCurve.getUtoTmapping(u);
+    const u = uFromProgress(clampedT);
+    const tp = autoplayPosCurve.getUtoTmapping(u);
 
-    autoplayPosCurve.getPoint(tParam, _autoPos);
-    autoplayLookCurve.getPoint(tParam, _autoLook);
+    autoplayPosCurve.getPoint(tp, _autoPos);
+    autoplayAttCurve.getPoint(tp, _attPt);
 
-    const dormFovBoost = 5.0 * Math.exp(-Math.pow((clampedT - 0.38) / 0.085, 2));
-    const targetFov = THREE.MathUtils.lerp(48 + dormFovBoost, 44, smoothstepJS(0.86, 1.0, clampedT));
+    _fwd.set(0, 0, 0);
+    for (let i = 0; i < WINDOW_OFFSETS.length; i++) {
+      const uS = THREE.MathUtils.clamp(u + WINDOW_OFFSETS[i] / totalCurveLength, 0, 1);
+      autoplayPosCurve.getTangentAt(uS, _tanTmp);
+      _fwd.addScaledVector(_tanTmp, WINDOW_WEIGHTS[i]);
+    }
+    _fwd.normalize();
+    _fwd.y -= 0.1;
+    _fwd.normalize();
+
+    _attDir.copy(_attPt).sub(_autoPos).normalize();
+    lastFwdAttAngleDeg = THREE.MathUtils.radToDeg(
+      Math.acos(THREE.MathUtils.clamp(_fwd.dot(_attDir), -1, 1))
+    );
+
+    const w = kfScalar('w', tp);
+    _dir.copy(_fwd).multiplyScalar(1 - w).addScaledVector(_attDir, w).normalize();
+    _autoLook.copy(_autoPos).addScaledVector(_dir, 10);
+
+    const targetFov = THREE.MathUtils.lerp(50, 44, smoothstepJS(0.88, 1.0, clampedT));
     if (Math.abs(camera.fov - targetFov) > 0.05) {
       camera.fov = targetFov;
       camera.updateProjectionMatrix();
     }
 
-    camera.position.copy(_autoPos);
-    smoothLookAt.lerp(_autoLook, 0.18);
-    camera.lookAt(smoothLookAt);
+    let avgRoll = 0;
+    for (let i = 0; i < WINDOW_OFFSETS.length; i++) {
+      const uS = THREE.MathUtils.clamp(u + WINDOW_OFFSETS[i] / totalCurveLength, 0, 1);
+      avgRoll += sampleRollAt(uS) * WINDOW_WEIGHTS[i];
+    }
+    const lakeLevel = 1.0 - 0.9 * smoothstepJS(0.35, 0.45, clampedT) * smoothstepJS(0.72, 0.60, clampedT);
+    avgRoll = (avgRoll / 9) * lakeLevel;
 
-    // Open archway sakura veil smoothly before passing through central bay
-    const doorProgress = THREE.MathUtils.clamp(clampedT / 0.14, 0, 1);
+    camera.position.copy(_autoPos);
+    camera.up.set(0, 1, 0);
+    camera.lookAt(_autoLook);
+    camera.rotateZ(avgRoll);
+    smoothLookAt.copy(_autoLook);
+
+    const doorProgress = _autoPos.z > 10 ? smoothstepJS(36, 20, _autoPos.z) : 1;
     onPortalProgress?.(doorProgress);
 
     const stop = getStopForProgress(clampedT);
@@ -317,6 +396,10 @@ export function createCameraController(
     onAutoplayInterrupt?.();
   }
 
+  function getAutoplayStops() {
+    return AUTOPLAY_STOPS.map(({ id, index, label, tStart }) => ({ id, index, label, tStart }));
+  }
+
   function getAutoplayState() {
     const rawT = THREE.MathUtils.clamp(autoplayElapsed / AUTOPLAY_DURATION, 0, 1);
     const effectiveT = stage === 'autoplay' ? rawT : 1;
@@ -330,6 +413,7 @@ export function createCameraController(
       stopLabel: stop.label,
       stage,
       fov: +camera.fov.toFixed(2),
+      fwdAttAngleDeg: +lastFwdAttAngleDeg.toFixed(2),
       cameraPos: camera.position.toArray().map((n) => +n.toFixed(3)),
       cameraTarget:
         stage === 'autoplay'
@@ -631,6 +715,7 @@ export function createCameraController(
     seekAutoplay,
     skipAutoplay,
     interruptAutoplayToExplore,
+    getAutoplayStops,
     getAutoplayState,
     setCameraDirect,
     enterPortal,

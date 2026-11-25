@@ -50,7 +50,7 @@ function init() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 0.96;
+  renderer.toneMappingExposure = 0.92;
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(44, window.innerWidth / window.innerHeight, 0.25, 280);
@@ -474,8 +474,74 @@ function init() {
     pauseAutoplay(paused = true) {
       return cameraRig.pauseAutoplay(paused);
     },
+    getAutoplayStops() {
+      return cameraRig.getAutoplayStops();
+    },
     getAutoplayState() {
       return cameraRig.getAutoplayState();
+    },
+    probeAutoplayClearance(samples = 160) {
+      const prevState = cameraRig.getAutoplayState();
+      const prevHideUi = document.body.dataset.hideUi || 'false';
+      const raycaster = new THREE.Raycaster();
+      raycaster.near = 0.05;
+
+      const dirs = [
+        { name: 'forward', local: new THREE.Vector3(0, 0, -1), far: 3.0 },
+        { name: 'left', local: new THREE.Vector3(-1, 0, 0), far: 1.0 },
+        { name: 'right', local: new THREE.Vector3(1, 0, 0), far: 1.0 },
+        { name: 'up', local: new THREE.Vector3(0, 1, 0), far: 1.0 },
+        { name: 'down', local: new THREE.Vector3(0, -1, 0), far: 1.0 },
+      ];
+      const worldDir = new THREE.Vector3();
+      const blocking = [];
+      const foliage = [];
+      let maxFwdAttAngleDeg = 0;
+
+      scene.updateMatrixWorld(true);
+      for (let i = 0; i < samples; i++) {
+        const t = samples > 1 ? i / (samples - 1) : 0;
+        const st = cameraRig.seekAutoplay(t);
+        if (st.fwdAttAngleDeg > maxFwdAttAngleDeg) maxFwdAttAngleDeg = st.fwdAttAngleDeg;
+        camera.updateMatrixWorld(true);
+
+        for (const d of dirs) {
+          worldDir.copy(d.local).applyQuaternion(camera.quaternion).normalize();
+          raycaster.far = d.far;
+          raycaster.set(camera.position, worldDir);
+          const hits = raycaster.intersectObjects(scene.children, true);
+          for (const h of hits) {
+            if (h.object.isPoints || h.object.isSprite || h.object.isLine) continue;
+            const entry = {
+              t: +t.toFixed(4),
+              dir: d.name,
+              dist: +h.distance.toFixed(3),
+              name: h.object.name || h.object.type || 'mesh',
+            };
+            if (h.object.name === 'foliage') {
+              foliage.push(entry);
+            } else {
+              blocking.push(entry);
+            }
+            break;
+          }
+        }
+      }
+
+      if (prevState.active) {
+        cameraRig.seekAutoplay(prevState.progress);
+        cameraRig.pauseAutoplay(prevState.paused);
+      } else if (prevState.stage === 'explore') {
+        cameraRig.setCameraDirect(prevState.cameraPos, prevState.cameraTarget, {
+          fov: prevState.fov,
+          stage: 'explore',
+          hideUi: prevHideUi === 'true',
+        });
+      }
+      document.body.dataset.hideUi = prevHideUi;
+      renderWithReflection();
+      ui.updateTelemetry();
+      return { blocking, foliage, maxFwdAttAngleDeg: +maxFwdAttAngleDeg.toFixed(2) };
     },
     stepTour,
     getTourState() {
