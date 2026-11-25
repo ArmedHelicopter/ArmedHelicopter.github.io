@@ -71,7 +71,7 @@ export function createCampusDiorama(textures) {
   }
 
   const WATER_Y = 0.22;
-  const horizonColorUniform = { value: new THREE.Color('#f7ebf2') };
+  const horizonColorUniform = { value: new THREE.Color('#cfe3f2') };
   const sharedTimeUniform = { value: 0 };
   const sunsetWarmthUniform = { value: 0.0 };
 
@@ -116,7 +116,7 @@ export function createCampusDiorama(textures) {
            float nMicro = gNoise(vGrassWorld.xz * 1.65 + vec2(2.1, 9.7));
            float patchMix = clamp(nMacro * 0.55 + nMid * 0.30 + nMicro * 0.15, 0.0, 1.0);
            vec3 organicTint = mix(uGrassDeep, uGrassBright, patchMix);
-           diffuseColor.rgb = mix(diffuseColor.rgb, organicTint, 0.55);`
+           diffuseColor.rgb = mix(diffuseColor.rgb, organicTint, 0.78);`
         );
       if (withHorizonHaze) {
         frag = frag.replace(
@@ -232,16 +232,16 @@ export function createCampusDiorama(textures) {
 
   const plazaMat = new THREE.MeshStandardMaterial({
     map: pavingMap,
-    color: new THREE.Color('#faf7f2'),
-    roughness: 0.78,
-    metalness: 0.03,
+    color: new THREE.Color('#e6e2da'),
+    roughness: 0.84,
+    metalness: 0.02,
   });
 
   const avenueMat = new THREE.MeshStandardMaterial({
     map: avenueMap,
-    color: new THREE.Color('#f5f1ea'),
-    roughness: 0.8,
-    metalness: 0.03,
+    color: new THREE.Color('#e2ddd4'),
+    roughness: 0.86,
+    metalness: 0.02,
   });
 
   const grassMat = new THREE.MeshStandardMaterial({
@@ -250,7 +250,7 @@ export function createCampusDiorama(textures) {
     roughness: 0.9,
     metalness: 0.02,
   });
-  attachOrganicGrass(grassMat, '#86ba71', '#5a8c54');
+  attachOrganicGrass(grassMat, '#8fae6a', '#5d7f4a');
 
   const hillMat = new THREE.MeshStandardMaterial({
     map: hillGrassMap,
@@ -258,50 +258,50 @@ export function createCampusDiorama(textures) {
     roughness: 0.94,
     metalness: 0.01,
   });
-  attachOrganicGrass(hillMat, '#75a864', '#4d7a49', true);
+  attachOrganicGrass(hillMat, '#7a985f', '#385538', true);
 
   const lakeBedMat = new THREE.MeshStandardMaterial({
-    color: new THREE.Color('#4a7d84'),
-    roughness: 0.92,
+    color: new THREE.Color('#28362e'),
+    roughness: 0.95,
     metalness: 0.02,
   });
   attachUnderwaterAbsorption(lakeBedMat, WATER_Y);
 
   const shoalMat = new THREE.MeshStandardMaterial({
     map: graniteMap,
-    color: new THREE.Color('#9dbdb9'),
-    roughness: 0.88,
+    color: new THREE.Color('#2c3a32'),
+    roughness: 0.94,
     metalness: 0.02,
   });
   attachUnderwaterAbsorption(shoalMat, WATER_Y);
 
   const graniteMat = new THREE.MeshStandardMaterial({
     map: graniteMap,
-    color: new THREE.Color('#f7f4ee'),
-    roughness: 0.65,
-    metalness: 0.04,
+    color: new THREE.Color('#dedad0'),
+    roughness: 0.78,
+    metalness: 0.03,
   });
   attachUnderwaterAbsorption(graniteMat, WATER_Y);
 
   const warmStoneMat = new THREE.MeshStandardMaterial({
     map: warmStoneMap,
-    color: new THREE.Color('#f1e8d8'),
-    roughness: 0.68,
-    metalness: 0.04,
+    color: new THREE.Color('#e4dac7'),
+    roughness: 0.86,
+    metalness: 0.01,
   });
 
   const ashlarMat = new THREE.MeshStandardMaterial({
     map: ashlarMap,
-    color: new THREE.Color('#f2ebde'),
-    roughness: 0.72,
-    metalness: 0.03,
+    color: new THREE.Color('#e6decf'),
+    roughness: 0.78,
+    metalness: 0.02,
   });
 
   const pierMat = new THREE.MeshStandardMaterial({
     map: pierConcreteMap,
-    color: new THREE.Color('#efede8'),
-    roughness: 0.72,
-    metalness: 0.04,
+    color: new THREE.Color('#dcd9d1'),
+    roughness: 0.82,
+    metalness: 0.03,
   });
   attachUnderwaterAbsorption(pierMat, WATER_Y);
 
@@ -321,38 +321,39 @@ export function createCampusDiorama(textures) {
     map: tileMaps.map,
     bumpMap: tileMaps.bumpMap,
     bumpScale: 0.04,
-    color: new THREE.Color('#2ba6b4'),
-    emissive: new THREE.Color('#0c5c6b'),
-    emissiveIntensity: 0.06,
-    roughness: 0.22,
+    color: new THREE.Color('#d8eeee'),
+    emissive: new THREE.Color('#06323a'),
+    emissiveIntensity: 0.04,
+    roughness: 0.36,
     metalness: 0.08,
-    clearcoat: 0.92,
-    clearcoatRoughness: 0.14,
+    clearcoat: 0.38,
+    clearcoatRoughness: 0.32,
   });
 
   const glazedRidgeMat = new THREE.MeshPhysicalMaterial({
-    color: new THREE.Color('#2eb3c4'),
-    emissive: new THREE.Color('#0e5866'),
-    emissiveIntensity: 0.05,
-    roughness: 0.24,
-    metalness: 0.1,
-    clearcoat: 0.85,
+    color: new THREE.Color('#1d5e66'),
+    emissive: new THREE.Color('#072c33'),
+    emissiveIntensity: 0.04,
+    roughness: 0.44,
+    metalness: 0.08,
+    clearcoat: 0.22,
+    clearcoatRoughness: 0.42,
   });
 
   const dormWallMat = new THREE.MeshStandardMaterial({
     map: dormFacade.map,
     emissive: new THREE.Color('#ffbe78'),
     emissiveMap: dormFacade.emissiveMap,
-    emissiveIntensity: 0.12,
-    roughness: 0.7,
+    emissiveIntensity: 0.0,
+    roughness: 0.72,
   });
 
   const libWallMat = new THREE.MeshStandardMaterial({
     map: libFacade.map,
     emissive: new THREE.Color('#ffc988'),
     emissiveMap: libFacade.emissiveMap,
-    emissiveIntensity: 0.14,
-    roughness: 0.66,
+    emissiveIntensity: 0.0,
+    roughness: 0.68,
   });
 
   const barkMat = new THREE.MeshStandardMaterial({
@@ -457,11 +458,11 @@ export function createCampusDiorama(textures) {
 
   // Natural East Lake coastline x = shoreX(z): straight cove west wall at x=8.0, curving SSE/NNW outside bastions
   function shoreX(z) {
-    if (z < -15.2) {
+    if (z <= -15.2) {
       const t = Math.min(1, (-15.2 - z) / 152.0);
       return 26.4 - Math.sin(t * Math.PI * 0.7) * 9.0 + t * 14.0;
     }
-    if (z > 9.05) {
+    if (z >= 9.05) {
       const t = Math.min(1, (z - 9.05) / 158.0);
       return 31.4 + t * 52.0 + Math.sin(t * Math.PI) * 8.0;
     }
@@ -504,8 +505,8 @@ export function createCampusDiorama(textures) {
     if (z <= -15.2 || z >= 9.05) {
       const sx = shoreX(z);
       if (x > sx - 0.15) {
-        const dip = smooth01(sx - 0.15, sx + 0.35, x);
-        h = THREE.MathUtils.lerp(h, -0.35, dip);
+        const dip = smooth01(sx - 0.15, sx + 1.6, x);
+        h = THREE.MathUtils.lerp(h, -0.45, dip);
       }
     }
     return h;
@@ -563,9 +564,9 @@ export function createCampusDiorama(textures) {
   }
 
   const mainlandGeos = [
-    buildTerrainBlock(northZList, 36, -172.0, (z) => shoreX(z) + 0.35),
+    buildTerrainBlock(northZList, 36, -172.0, (z) => shoreX(z) + 1.6),
     buildTerrainBlock(westZList, 32, -172.0, () => 8.0),
-    buildTerrainBlock(southZList, 36, -172.0, (z) => shoreX(z) + 0.35),
+    buildTerrainBlock(southZList, 36, -172.0, (z) => shoreX(z) + 1.6),
   ];
   const mainlandMesh = new THREE.Mesh(mergeSafe(mainlandGeos), hillMat);
   mainlandMesh.receiveShadow = true;
@@ -574,8 +575,8 @@ export function createCampusDiorama(textures) {
   // Flat inner campus grass apron strictly West of East Lake (x <= 8.0 in cove, x <= 14.2 south)
   const campusLawnShape = new THREE.Shape();
   campusLawnShape.moveTo(-18.5, -39.0);
-  campusLawnShape.lineTo(14.2, -39.0);
-  campusLawnShape.lineTo(14.2, -9.05);
+  campusLawnShape.lineTo(12.1, -39.0);
+  campusLawnShape.lineTo(12.1, -9.05);
   campusLawnShape.lineTo(8.0, -9.05);
   campusLawnShape.lineTo(8.0, 15.2);
   campusLawnShape.lineTo(-18.5, 15.2);
@@ -592,7 +593,7 @@ export function createCampusDiorama(textures) {
 
   // Split Archway Plaza into two non-overlapping slabs strictly clear of East Lake (x >= 8.0, z <= 9.0):
   // 1) South Foreground Plaza (z ∈ [9.2, 38.5], strictly south of the south seawall)
-  const plazaSouth = new THREE.BoxGeometry(27.6, 0.24, 29.3);
+  const plazaSouth = new THREE.BoxGeometry(24.6, 0.24, 29.3);
   xform(plazaSouth, [0, 0.01, 23.85]);
   const plazaSouthMesh = new THREE.Mesh(plazaSouth, plazaMat);
   plazaSouthMesh.receiveShadow = true;
@@ -612,29 +613,67 @@ export function createCampusDiorama(textures) {
   axisMesh.receiveShadow = true;
   group.add(axisMesh);
 
+  // South Plaza dressed granite edge curbs + forecourt planters (frames plaza cleanly against flanking meadow)
   for (const sx of [-1, 1]) {
-    const planterOuter = new THREE.BoxGeometry(5.6, 0.34, 6.2);
-    xform(planterOuter, [sx * 9.8, 0.17, 20.5]);
-    graniteGeos.push(planterOuter);
+    const southEdgeCurb = new THREE.BoxGeometry(0.36, 0.32, 29.5);
+    xform(southEdgeCurb, [sx * 12.3, 0.14, 23.85]);
+    graniteGeos.push(southEdgeCurb);
+  }
+  const frontPlazaCurb = new THREE.BoxGeometry(24.96, 0.32, 0.36);
+  xform(frontPlazaCurb, [0, 0.14, 38.5]);
+  graniteGeos.push(frontPlazaCurb);
 
-    const planterLawn = new THREE.BoxGeometry(5.1, 0.38, 5.7);
-    xform(planterLawn, [sx * 9.8, 0.19, 20.5]);
-    grassGeos.push(planterLawn);
+  const lampShaftGeos = [];
+  const lampHeadGeos = [];
+  for (const sx of [-1, 1]) {
+    for (const [pzCenter, pw, pd] of [
+      [20.5, 5.4, 6.2],
+      [30.2, 4.8, 5.6],
+    ]) {
+      const planterOuter = new THREE.BoxGeometry(pw, 0.34, pd);
+      xform(planterOuter, [sx * 9.4, 0.17, pzCenter]);
+      graniteGeos.push(planterOuter);
+
+      const planterLawn = new THREE.BoxGeometry(pw - 0.5, 0.38, pd - 0.5);
+      xform(planterLawn, [sx * 9.4, 0.19, pzCenter]);
+      grassGeos.push(planterLawn);
+    }
 
     const curb = new THREE.BoxGeometry(0.32, 0.42, 16.0);
     xform(curb, [sx * 6.0, 0.21, 7.2]);
     graniteGeos.push(curb);
 
     for (const lz of [12.0, 8.0, 4.2]) {
-      const lampPost = new THREE.CylinderGeometry(0.11, 0.13, 1.65, 6);
-      xform(lampPost, [sx * 5.3, 0.82, lz]);
-      graniteGeos.push(lampPost);
+      const plinth = new THREE.BoxGeometry(0.38, 0.48, 0.38);
+      xform(plinth, [sx * 6.0, 0.38, lz]);
+      graniteGeos.push(plinth);
 
-      const lampCap = new THREE.CylinderGeometry(0.16, 0.12, 0.28, 6);
-      xform(lampCap, [sx * 5.3, 1.72, lz]);
-      graniteGeos.push(lampCap);
+      const shaft = new THREE.CylinderGeometry(0.055, 0.07, 1.65, 8);
+      xform(shaft, [sx * 6.0, 1.38, lz]);
+      lampShaftGeos.push(shaft);
+
+      const head = new THREE.BoxGeometry(0.24, 0.3, 0.24);
+      xform(head, [sx * 6.0, 2.32, lz]);
+      lampHeadGeos.push(head);
+
+      const cap = new THREE.ConeGeometry(0.2, 0.12, 4);
+      xform(cap, [sx * 6.0, 2.52, lz], [0, Math.PI * 0.25, 0]);
+      lampShaftGeos.push(cap);
     }
   }
+  const lampShaftsMesh = new THREE.Mesh(mergeSafe(lampShaftGeos), darkTimberMat);
+  lampShaftsMesh.castShadow = true;
+  lampShaftsMesh.receiveShadow = true;
+  group.add(lampShaftsMesh);
+
+  const lampGlowMat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color('#fff5dd'),
+    emissive: new THREE.Color('#ffd38c'),
+    emissiveIntensity: 0.45,
+    roughness: 0.26,
+  });
+  const lampHeadsMesh = new THREE.Mesh(mergeSafe(lampHeadGeos), lampGlowMat);
+  group.add(lampHeadsMesh);
 
   // Tier 1 Terrace (Old Dormitory level): articulated ashlar stone retaining walls + pilasters + lawn cap
   const tier1Body = new THREE.BoxGeometry(23.6, 2.02, 15.2);
@@ -653,7 +692,7 @@ export function createCampusDiorama(textures) {
   }
 
   const tier1Lawn = new THREE.BoxGeometry(23.2, 0.18, 14.8);
-  xform(tier1Lawn, [-3.6, 2.08, -3.2]);
+  xform(tier1Lawn, [-3.6, 1.97, -3.2]);
   grassGeos.push(tier1Lawn);
 
   // Split Tier 1 South balustrade cleanly around the 108-step stair landing now on the central axis (x ∈ [-1.5, 1.5])
@@ -937,12 +976,12 @@ export function createCampusDiorama(textures) {
   });
 
   // Grand 108-Step Staircase (百步梯) ascending straight up the central axis from the ceremonial carpet
-  const stepCount = 18;
+  const stepCount = 34;
   for (let i = 0; i < stepCount; i++) {
     const t = i / (stepCount - 1);
-    const sy = 0.14 + t * 2.01;
+    const sy = 0.12 + t * 2.02;
     const sz = 8.15 - t * 3.85;
-    const step = new THREE.BoxGeometry(2.55, 0.16, 0.28);
+    const step = new THREE.BoxGeometry(2.55, 0.11, 0.19);
     xform(step, [0, sy, sz]);
     graniteGeos.push(step);
   }
@@ -1134,11 +1173,11 @@ export function createCampusDiorama(textures) {
   /* 5. Flanking Cherry Crest Courtyard Wings (理学楼 / 文学院侧翼)          */
   /* ---------------------------------------------------------------------- */
   for (const sx of [-1, 1]) {
-    const wingX = sx * 7.6;
+    const wingX = sx * 6.0;
     const wingY = 4.55;
     const wingZ = -8.6;
 
-    const sideHall = new THREE.Mesh(new THREE.BoxGeometry(4.2, 2.25, 3.2), dormWallMat);
+    const sideHall = new THREE.Mesh(new THREE.BoxGeometry(3.6, 2.25, 3.2), dormWallMat);
     sideHall.position.set(wingX, wingY + 1.12, wingZ);
     sideHall.castShadow = true;
     sideHall.receiveShadow = true;
@@ -1146,7 +1185,7 @@ export function createCampusDiorama(textures) {
 
     const sideRoof = roofGroup(
       {
-        halfW: 2.55,
+        halfW: 2.25,
         halfD: 2.0,
         H: 1.05,
         mode: 'hip',
@@ -1177,8 +1216,8 @@ export function createCampusDiorama(textures) {
     THREE.UniformsLib.fog,
     {
       uTime: sharedTimeUniform,
-      uDeepColor: { value: new THREE.Color('#135988') },
-      uShallowColor: { value: new THREE.Color('#4eb7cf') },
+      uDeepColor: { value: new THREE.Color('#0c353f') },
+      uShallowColor: { value: new THREE.Color('#1d545d') },
       uSkyColor: { value: new THREE.Color('#cfe9ff') },
       uHorizonColor: horizonColorUniform,
       uSunColor: { value: new THREE.Color('#fff6e4') },
@@ -1422,7 +1461,12 @@ export function createCampusDiorama(textures) {
 
         float shoreRipple = cos(distShore * 9.5 - uTime * 2.4) * smoothstep(1.6, 0.04, distShore) * 0.018 * detailFade;
         float pilingRipple = cos(dPilings * 12.0 - uTime * 2.2) * smoothstep(0.95, 0.02, dPilings) * 0.014 * detailFade;
-        vec2 grad = wg.xy + wg.zw + vec2(shoreRipple + pilingRipple, shoreRipple - pilingRipple) * 0.7;
+        vec2 windUv = vec2(p.x * 0.82 + p.y * 0.57, -p.x * 0.57 + p.y * 0.82);
+        vec2 calmFloor = vec2(0.82, 0.57) * (
+          cos(windUv.x * 3.6 - uTime * 2.1 + sin(windUv.y * 1.3)) * 0.015 +
+          cos(windUv.x * 7.4 - uTime * 2.9 + cos(windUv.y * 2.4)) * 0.008
+        ) * detailFade;
+        vec2 grad = wg.xy + wg.zw + calmFloor + vec2(shoreRipple + pilingRipple, shoreRipple - pilingRipple) * 0.7;
 
         vec3 N = normalize(vec3(-grad.x, 1.0, -grad.y));
 
@@ -1430,20 +1474,19 @@ export function createCampusDiorama(textures) {
         float cosTheta = max(0.0, dot(N, V));
         float fresnel = 0.035 + 0.965 * pow(1.0 - cosTheta, 4.2);
 
-        // Depth-driven shoal translucency (reveals submerged steps & pilings cleanly)
-        float pierShoal = smoothstep(24.0, 18.5, p.x) * smoothstep(-15.5, -13.0, p.y) * smoothstep(9.5, 5.0, p.y);
-        float shoreDepth = mix(0.08, 1.85, smoothstep(0.0, 7.5, distShore));
-        float waterDepth = mix(shoreDepth, min(shoreDepth, 0.52), pierShoal * 0.82);
+        // Smooth depth-driven lake turbidity (opaque nearshore transition masks submerged footings)
+        float shoreDepth = mix(0.22, 2.4, smoothstep(0.0, 2.6, distShore));
+        float waterDepth = shoreDepth;
 
-        vec3 absorption = exp(-waterDepth * vec3(2.45, 0.88, 0.48));
-        float shallowMask = 1.0 - smoothstep(0.0, 7.2, distShore);
-        vec3 baseWater = mix(uDeepColor, uShallowColor, clamp(absorption.g * 0.65 + shallowMask * 0.36, 0.0, 1.0));
+        vec3 absorption = exp(-waterDepth * vec3(4.5, 2.5, 1.6));
+        float shallowMask = 1.0 - smoothstep(0.0, 2.4, distShore);
+        vec3 baseWater = mix(uDeepColor, uShallowColor, clamp(absorption.g * 0.42 + shallowMask * 0.2, 0.0, 1.0));
 
         // Soft directional shadow reception + contact AO beneath pier, pavilion & all shoreline
         float shadowFactor = sampleKeyShadow(vShadowCoord);
         float pierAO = mix(0.80, 1.0, smoothstep(-0.35, 1.85, dPier));
         float pavAO = mix(0.80, 1.0, smoothstep(0.0, 1.1, dPav));
-        float shoreContact = mix(0.72, 1.0, smoothstep(0.0, 2.6, distShore)); // waterline darkening
+        float shoreContact = mix(0.56, 1.0, smoothstep(0.0, 2.4, distShore)); // deep waterline contact darkening
         float litDiffuse = mix(0.48, 1.0, shadowFactor) * pierAO * pavAO * shoreContact;
         baseWater *= litDiffuse;
 
@@ -1455,7 +1498,7 @@ export function createCampusDiorama(textures) {
         if (uHasReflection > 0.5 && vReflectCoord.w > 0.001) {
           vec2 rawUv = (vReflectCoord.xy / vReflectCoord.w) * 0.5 + 0.5;
           float distDamp = 1.0 / (1.0 + camDist * 0.045);
-          vec2 perturb = (wg.xy * vec2(0.55, 0.90) * distDamp + wg.zw * vec2(1.35, 2.20)) * vec2(0.075, 0.125);
+          vec2 perturb = (wg.xy * vec2(0.42, 0.72) * distDamp + wg.zw * vec2(0.55, 0.85)) * vec2(0.032, 0.055);
           vec2 reflUv = clamp(rawUv + perturb, vec2(0.002), vec2(0.998));
           vec3 sampledRefl = texture2D(tReflection, reflUv).rgb;
           float inBounds =
@@ -1468,15 +1511,20 @@ export function createCampusDiorama(textures) {
         reflCol *= mix(0.68, 1.0, mix(shadowFactor, 1.0, 0.35) * mix(pierAO, 1.0, 0.3));
 
         // Reflection mix weighted by Fresnel (boosted rose-gold sky presence in sunset)
-        float reflWeight = clamp(mix(0.14, 0.30, uSunsetWarmth) + fresnel * 0.78, 0.0, 0.90);
+        float reflWeight = clamp(mix(0.24, 0.34, uSunsetWarmth) + fresnel * 0.78, 0.0, 0.90);
         vec3 col = mix(baseWater, reflCol, reflWeight);
+        float wetContact =
+          mix(0.52, 1.0, smoothstep(-0.04, 0.52, dPier)) *
+          mix(0.56, 1.0, smoothstep(0.0, 0.34, dPilings)) *
+          mix(0.72, 1.0, smoothstep(0.0, 0.48, distShore));
+        col *= wetContact;
 
         // Sun specular hierarchy + warm sunset rose-gold & amber crest scatter masked by shadowFactor * pierAO
-        vec3 H = normalize(uSunDir + V);
+        vec3 H = normalize(vec3(uSunDir.x, uSunDir.y * 0.85, uSunDir.z) + V);
         float specMask = shadowFactor * smoothstep(-0.04, 0.38, dPier) * smoothstep(0.0, 0.32, dPav);
         float ndh = max(0.0, dot(N, H));
-        float specSharp = pow(ndh, 420.0) * 2.2 * specMask;
-        float specSparkle = pow(ndh, 120.0) * 0.45 * specMask;
+        float specSharp = pow(ndh, 180.0) * 0.45 * specMask;
+        float specSparkle = pow(ndh, 42.0) * 0.14 * specMask;
 
         vec3 sunHorizDir = normalize(vec3(uSunDir.x, 0.52, uSunDir.z));
         float sunCrest = pow(max(0.0, dot(N, sunHorizDir)), 3.0);
@@ -1492,38 +1540,45 @@ export function createCampusDiorama(textures) {
         float pilingMeniscus = smoothstep(0.22, 0.0, dPilings) * meniscusWave * 0.65;
         col += mix(uShallowColor, vec3(0.98, 0.99, 1.0), 0.75) * (meniscus * 0.16 + pilingMeniscus * 0.14) * mix(0.55, 1.0, shadowFactor);
 
-        // Distance horizon haze matching skyDome uHorizon
-        float horizonHaze = smoothstep(78.0, 160.0, camDist);
-        col = mix(col, uHorizonColor, horizonHaze * 0.92);
+        // Distance horizon haze matching skyDome uHorizon without double-fog whitening
+        float horizonHaze = smoothstep(68.0, 148.0, camDist);
+        col = mix(col, uHorizonColor, horizonHaze);
 
-        // Depth-aware translucency preserving specular sparkle over shallow shoal
-        float openOpaque = smoothstep(5.0, 10.5, distShore);
-        float depthAlpha = mix(1.0 - exp(-waterDepth * 1.12), 1.0, openOpaque);
+        // Depth-aware translucency hiding sharp submerged ledge along walls + smooth outer edge fade
+        float openOpaque = smoothstep(0.15, 1.1, distShore);
+        float depthAlpha = mix(1.0 - exp(-waterDepth * 2.5), 1.0, openOpaque);
         float specLuma = clamp(dot(uSunColor * (specSharp + specSparkle), vec3(0.3, 0.6, 0.1)), 0.0, 1.0);
-        float alpha = clamp(max(mix(depthAlpha, 1.0, fresnel * 0.62), specLuma * 0.85), 0.24, 1.0);
+        float alpha = clamp(max(mix(depthAlpha, 1.0, fresnel * 0.68), specLuma * 0.85), 0.88, 1.0);
+        alpha *= 1.0 - smoothstep(148.0, 161.5, camDist);
 
         gl_FragColor = vec4(col, alpha);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
-        #include <fog_fragment>
       }
     `,
   });
 
-  // Single unified East Lake polygon strictly East of shoreX(z), tucked ~0.2m under dry shore banks
+  // Single unified East Lake polygon tucked cleanly beneath North/South/West banks with circular eastern arc
+  const R_LAKE = 163.0;
+  const zNorthMax = -154.0;
+  const zSouthMax = 144.0;
   const eastLakeShape = new THREE.Shape();
   eastLakeShape.moveTo(7.98, -9.03);
   eastLakeShape.lineTo(7.98, 15.18);
   eastLakeShape.lineTo(26.4, 15.18);
-  for (let i = 1; i <= 24; i++) {
-    const z = THREE.MathUtils.lerp(-15.2, -172.0, i / 24);
-    eastLakeShape.lineTo(shoreX(z) - 0.12, -z);
+  for (let i = 1; i <= 48; i++) {
+    const z = THREE.MathUtils.lerp(-15.2, zNorthMax, i / 48);
+    eastLakeShape.lineTo(shoreX(z) - 0.65, -z);
   }
-  eastLakeShape.lineTo(172.0, 172.0);
-  eastLakeShape.lineTo(172.0, -172.0);
-  for (let i = 0; i <= 24; i++) {
-    const z = THREE.MathUtils.lerp(172.0, 9.05, i / 24);
-    eastLakeShape.lineTo(shoreX(z) - 0.12, -z);
+  const angN = Math.atan2(-zNorthMax, shoreX(zNorthMax) - 0.65);
+  const angS = Math.atan2(-zSouthMax, shoreX(zSouthMax) - 0.65);
+  for (let i = 1; i <= 36; i++) {
+    const a = THREE.MathUtils.lerp(angN, angS, i / 36);
+    eastLakeShape.lineTo(Math.cos(a) * R_LAKE, Math.sin(a) * R_LAKE);
+  }
+  for (let i = 0; i <= 48; i++) {
+    const z = THREE.MathUtils.lerp(zSouthMax, 9.05, i / 48);
+    eastLakeShape.lineTo(shoreX(z) - 0.65, -z);
   }
   eastLakeShape.lineTo(31.4, -9.03);
   eastLakeShape.closePath();
@@ -1536,11 +1591,11 @@ export function createCampusDiorama(textures) {
   eastLakeMesh.renderOrder = 2;
   group.add(eastLakeMesh);
 
-  // Unified East Lake bed beneath the entire water surface
-  const eastLakeBedGeo = new THREE.ShapeGeometry(eastLakeShape, 16);
+  // Nearshore East Lake bed beneath cove, pavilion & pier (never extends to far horizon)
+  const eastLakeBedGeo = new THREE.PlaneGeometry(36, 64);
   const eastLakeBed = new THREE.Mesh(eastLakeBedGeo, lakeBedMat);
   eastLakeBed.rotation.x = -Math.PI / 2;
-  eastLakeBed.position.y = -0.56;
+  eastLakeBed.position.set(25.5, -0.56, -3.0);
   eastLakeBed.receiveShadow = true;
   group.add(eastLakeBed);
 
@@ -1592,172 +1647,16 @@ export function createCampusDiorama(textures) {
     }
   }
 
-  // Faint distant Wuhan city skyline: layered low/mid blocks + wide towers + TV tower, hazed to blue (not white)
-  const cityHazeColor = { value: new THREE.Color('#9fb9cd') };
-
-  // City haze: fades by distance only (ignores height) so tall towers turn blue-grey too — no white pillars
-  function attachCityHaze(mat) {
-    mat.onBeforeCompile = (shader) => {
-      shader.uniforms.uCityHaze = cityHazeColor;
-      shader.vertexShader = shader.vertexShader
-        .replace('#include <common>', '#include <common>\nvarying vec3 vCityWorld;')
-        .replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvCityWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;');
-      shader.fragmentShader = shader.fragmentShader
-        .replace('#include <common>', '#include <common>\nvarying vec3 vCityWorld; uniform vec3 uCityHaze;')
-        .replace('#include <opaque_fragment>', '#include <opaque_fragment>\nfloat cD = length(cameraPosition - vCityWorld);\nfloat cHaze = smoothstep(70.0, 165.0, cD);\ngl_FragColor.rgb = mix(gl_FragColor.rgb, uCityHaze, clamp(cHaze * 0.9, 0.0, 0.94));');
-    };
-  }
-
-  function makeCityWindowTexture(seed) {
-    const W = 96;
-    const H = 192;
-    const c = document.createElement('canvas');
-    c.width = W;
-    c.height = H;
-    const g = c.getContext('2d');
-    const rnd = mulberry32(seed);
-    g.fillStyle = '#5c6e82';
-    g.fillRect(0, 0, W, H);
-    for (let x = 0; x < W; x += 12) {
-      g.fillStyle = '#48586a';
-      g.fillRect(x, 0, 3, H);
-    }
-    for (let y = 6; y < H; y += 10) {
-      for (let x = 4; x < W; x += 12) {
-        const roll = rnd();
-        g.fillStyle = roll < 0.26 ? '#f0d49b' : (roll < 0.74 ? '#9fb6c8' : '#71869e');
-        g.fillRect(x, y, 6, 7);
-      }
-    }
-    const t = new THREE.CanvasTexture(c);
-    t.colorSpace = THREE.SRGBColorSpace;
-    t.magFilter = THREE.LinearFilter;
-    t.minFilter = THREE.LinearMipmapLinearFilter;
-    t.generateMipmaps = true;
-    return t;
-  }
-
-  function makeCityGlowTexture(seed) {
-    const W = 96;
-    const H = 192;
-    const c = document.createElement('canvas');
-    c.width = W;
-    c.height = H;
-    const g = c.getContext('2d');
-    const rnd = mulberry32(seed);
-    g.fillStyle = '#000000';
-    g.fillRect(0, 0, W, H);
-    for (let y = 6; y < H; y += 10) {
-      for (let x = 4; x < W; x += 12) {
-        if (rnd() < 0.22) {
-          g.fillStyle = '#ffdca0';
-          g.fillRect(x, y, 6, 7);
-        }
-      }
-    }
-    const t = new THREE.CanvasTexture(c);
-    t.colorSpace = THREE.SRGBColorSpace;
-    t.magFilter = THREE.LinearFilter;
-    t.minFilter = THREE.LinearMipmapLinearFilter;
-    t.generateMipmaps = true;
-    return t;
-  }
-
-  const farCityMat = new THREE.MeshStandardMaterial({
-    map: makeCityWindowTexture(701),
-    emissiveMap: makeCityGlowTexture(702),
-    color: new THREE.Color('#8da0b2'),
-    emissive: new THREE.Color('#ffedc8'),
-    emissiveIntensity: 0.55,
-    roughness: 0.92,
-    metalness: 0.0,
+  // Horizon atmosphere uniforms referenced by setMood (skyDome + water blend seamlessly at horizon)
+  const cityHazeColor = { value: new THREE.Color('#c4dced') };
+  const farCityMat = new THREE.MeshBasicMaterial({
+    color: new THREE.Color('#5b7a7c'),
+    fog: false,
   });
-  attachCityHaze(farCityMat);
-  const cityFootMat = new THREE.MeshStandardMaterial({
-    color: new THREE.Color('#5a6e6a'),
-    roughness: 1.0,
-    metalness: 0.0,
+  const cityFootMat = new THREE.MeshBasicMaterial({
+    color: new THREE.Color('#4e6c64'),
+    fog: false,
   });
-  attachCityHaze(cityFootMat);
-  {
-    const cityGeos = [];
-    const cityRand = mulberry32(271103);
-    const cityX = (ang, r) => Math.cos(ang) * r;
-    const cityZ = (ang, r) => 5.2 - Math.sin(ang) * r;
-    const addBuilding = (cx, cz, w, d, h, yaw = 0) => {
-      const g = new THREE.BoxGeometry(w, h, d);
-      g.rotateY(yaw);
-      g.translate(cx, h * 0.5 - 0.35, cz);
-      cityGeos.push(g);
-    };
-
-    // Dense low/mid base band along the far shore — grounds the skyline, kills the "pillar" look
-    for (let i = 0; i < 46; i++) {
-      const ang = -1.25 + (1.6 - -1.25) * (i / 46) + (cityRand() - 0.5) * 0.05;
-      const r = 136 + cityRand() * 13;
-      if (cityRand() < 0.2) continue;
-      addBuilding(cityX(ang, r), cityZ(ang, r), 9 + cityRand() * 10, 9 + cityRand() * 10, 13 + cityRand() * 20, (cityRand() - 0.5) * 0.3);
-    }
-    // Mid-rise, wider footprints
-    for (let i = 0; i < 14; i++) {
-      const ang = -1.25 + (1.6 - -1.25) * cityRand();
-      const r = 148 + cityRand() * 14;
-      addBuilding(cityX(ang, r), cityZ(ang, r), 14 + cityRand() * 9, 14 + cityRand() * 9, 30 + cityRand() * 22, (cityRand() - 0.5) * 0.3);
-    }
-    // Tall landmarks — wide enough to read as towers, not slender pillars
-    const landmarks = [
-      [-1.2, 160, 20, 62],
-      [-0.9, 158, 24, 78],
-      [0.1, 163, 18, 55],
-      [0.7, 156, 20, 60],
-      [1.35, 151, 18, 50],
-    ];
-    landmarks.forEach(([ang, r, w, h]) => addBuilding(cityX(ang, r), cityZ(ang, r), w, w, h));
-
-    // Wuhan-style TV tower landmark: tapered shaft + observation pod + spire
-    const tvAng = -0.55;
-    const tvR = 162;
-    const tvX = cityX(tvAng, tvR);
-    const tvZ = cityZ(tvAng, tvR);
-    const shaft = new THREE.CylinderGeometry(1.7, 3.6, 66, 10);
-    shaft.translate(tvX, 32, tvZ);
-    cityGeos.push(shaft);
-    const pod = new THREE.SphereGeometry(5.4, 12, 10);
-    pod.translate(tvX, 53, tvZ);
-    cityGeos.push(pod);
-    const spire = new THREE.CylinderGeometry(0.5, 0.9, 17, 6);
-    spire.translate(tvX, 64, tvZ);
-    cityGeos.push(spire);
-
-    const cityMesh = new THREE.Mesh(mergeSafe(cityGeos), farCityMat);
-    cityMesh.receiveShadow = false;
-    cityMesh.renderOrder = 3;
-    group.add(cityMesh);
-
-    // Dark low landmass under the city feet (replaces the pale washed-out far-shore band)
-    const shoreGeos = [];
-    for (let i = 0; i < 40; i++) {
-      const ang = -1.35 + (1.75 - -1.35) * (i / 40);
-      const r0 = 118;
-      const r1 = 132;
-      const seg = new THREE.BoxGeometry(
-        Math.hypot(Math.cos(ang) * r1 - Math.cos(ang) * r0, Math.sin(ang) * r1 - Math.sin(ang) * r0) + 4.2,
-        2.6,
-        15
-      );
-      const midR = (r0 + r1) * 0.5;
-      const yaw = ang + Math.PI * 0.5;
-      const b = new THREE.Mesh(seg, cityFootMat);
-      b.position.set(cityX(ang, midR), -0.6, cityZ(ang, midR));
-      b.rotation.y = -yaw;
-      b.updateMatrix();
-      shoreGeos.push(b);
-    }
-    const shoreBand = new THREE.Group();
-    shoreGeos.forEach((b) => shoreBand.add(b));
-    shoreBand.renderOrder = 2;
-    group.add(shoreBand);
-  }
 
   // Continuous dressed granite seawalls wrapping West shore (x=8.0), South shore (z=9.05) & North shore (z=-15.2)
   const westWall = new THREE.BoxGeometry(0.45, 0.95, 24.4);
@@ -1794,14 +1693,14 @@ export function createCampusDiorama(textures) {
     xform(southStep, [9.86 + i * 0.32, 0.36 - i * 0.12, 3.65]);
     graniteGeos.push(southStep);
   }
-  // Submerged North & South seawall footing steps
+  // Stepped North & South seawall water-edge granite plinth steps
   for (let i = 0; i < 2; i++) {
-    const nFoot = new THREE.BoxGeometry(14.2, 0.28, 0.36);
-    xform(nFoot, [18.7, -0.02 - i * 0.14, -14.88 + i * 0.32]);
+    const nFoot = new THREE.BoxGeometry(11.4 - i * 0.6, 0.28, 0.44);
+    xform(nFoot, [20.9, 0.22 - i * 0.18, -14.92 + i * 0.34]);
     graniteGeos.push(nFoot);
 
-    const sFoot = new THREE.BoxGeometry(19.0, 0.28, 0.36);
-    xform(sFoot, [21.3, -0.02 - i * 0.14, 8.76 - i * 0.32]);
+    const sFoot = new THREE.BoxGeometry(16.2 - i * 0.6, 0.28, 0.44);
+    xform(sFoot, [23.4, 0.22 - i * 0.18, 8.78 - i * 0.34]);
     graniteGeos.push(sFoot);
   }
 
@@ -1951,7 +1850,7 @@ export function createCampusDiorama(textures) {
     metalness: 0.0,
   });
   const boatRoofMat = new THREE.MeshStandardMaterial({
-    color: new THREE.Color('#2f6f8f'),
+    color: new THREE.Color('#3b6472'),
     roughness: 0.5,
     metalness: 0.05,
   });
@@ -2018,11 +1917,12 @@ export function createCampusDiorama(textures) {
   }
 
   const tourBoats = [
-    { cx: 34, cz: -34, radius: 3.4, omega: 0.16, phase: 0.0, seed: 4101 },
-    { cx: 52, cz: 18, radius: 4.0, omega: 0.13, phase: 1.7, seed: 4102 },
-    { cx: 58, cz: -82, radius: 4.4, omega: 0.10, phase: 3.1, seed: 4103 },
+    { cx: 42, cz: -14.5, radius: 2.8, omega: 0.14, phase: 0.4, seed: 4101 },
+    { cx: 58, cz: 16.0, radius: 3.8, omega: 0.12, phase: 1.7, seed: 4102 },
+    { cx: 64, cz: -46.0, radius: 4.0, omega: 0.10, phase: 3.1, seed: 4103 },
   ].map((cfg) => {
     const boat = buildTourBoat(cfg.seed);
+    boat.scale.setScalar(0.78);
     boat.renderOrder = 2;
     group.add(boat);
     return { config: cfg, boat };
@@ -2110,7 +2010,9 @@ export function createCampusDiorama(textures) {
   }
 
   const sakuraTreeCoords = [
-    // Outer Archway Plaza framing trees (Stage 1 portal framing)
+    // Outer Archway Plaza framing trees (Stage 1 portal framing + forecourt planters)
+    { pos: [-9.2, 0.15, 30.0], scale: 1.15 },
+    { pos: [9.2, 0.15, 30.0], scale: 1.15 },
     { pos: [-8.2, 0.15, 22.8], scale: 1.18 },
     { pos: [8.2, 0.15, 22.8], scale: 1.18 },
     { pos: [-10.4, 0.15, 19.2], scale: 1.12 },
@@ -2132,30 +2034,19 @@ export function createCampusDiorama(textures) {
     { pos: [-8.8, 0.15, 5.4], scale: 1.1 },
     { pos: [3.8, 0.15, 5.6], scale: 1.08 },
     { pos: [-10.2, 0.25, 5.0], scale: 1.06 },
-    { pos: [6.8, 0.15, 4.2], scale: 1.16 }, // Screens right archway sightline from Lingbo Pier
+    { pos: [5.8, 0.12, 6.9], scale: 1.02 }, // Screens right archway sightline from Lingbo Pier
 
-    // Flanking Old Dormitory & 108-Step Staircase (clear all 3 gatehouse silhouettes, mirrored on the axis)
-    { pos: [-11.4, 2.15, 1.8], scale: 1.1 },
-    { pos: [-11.2, 2.15, 2.0], scale: 1.02 },
-    { pos: [7.0, 2.15, 2.1], scale: 1.02 },
-    { pos: [7.3, 2.15, 1.8], scale: 1.1 },
-    { pos: [-12.2, 2.15, -0.5], scale: 1.08 },
-    { pos: [7.1, 2.15, -0.4], scale: 1.1 },
+    // Flanking Old Dormitory & 108-Step Staircase (strictly clear of Dormitory wings & balustrades)
+    { pos: [-10.6, 2.15, 2.3], scale: 1.08 },
+    { pos: [-12.4, 2.15, 0.6], scale: 1.04 },
+    { pos: [-11.4, 2.15, -2.4], scale: 1.06 },
 
-    // Around Old Library on Lion Hill Crest (樱顶老图樱云, mirrored on the axis)
-    { pos: [-5.9, 4.55, -7.0], scale: 1.15 },
-    { pos: [5.9, 4.55, -7.0], scale: 1.15 },
-    { pos: [-7.2, 4.55, -6.4], scale: 1.1 },
-    { pos: [7.2, 4.55, -6.5], scale: 1.1 },
-    { pos: [-5.0, 4.55, -11.2], scale: 1.12 },
-    { pos: [5.0, 4.55, -11.2], scale: 1.12 },
-
-    // Lakeside & retaining-wall overhang sakura along promenade
-    { pos: [6.9, 0.35, 1.6], scale: 1.1 },
-    { pos: [6.8, 0.35, -1.2], scale: 1.08 },
-    { pos: [6.5, 2.15, -2.5], scale: 1.04 },
-    { pos: [7.4, 4.55, -11.5], scale: 1.04 },
-    { pos: [7.8, 4.55, -8.4], scale: 1.06 },
+    // Around Old Library on Lion Hill Crest (clear of Library eaves & Cherry Crest wings)
+    { pos: [-9.8, 4.55, -6.0], scale: 1.08 },
+    { pos: [-10.6, 4.55, -8.6], scale: 1.06 },
+    { pos: [-10.2, 4.55, -11.4], scale: 1.06 },
+    { pos: [-6.2, 4.55, -13.8], scale: 1.04 },
+    { pos: [6.2, 4.55, -13.8], scale: 1.04 },
   ];
 
   const trunkGeos = [];
@@ -2204,7 +2095,7 @@ export function createCampusDiorama(textures) {
   // Green Luojia Camphor trees on campus hills, dry shore banks & continuous West/North-West Luojia ridges
   const greenTreeCoords = [
     [-14.5, 0.1, 12.5, 1.3],
-    [14.2, 0.1, 14.5, 1.22], // strictly south of z=9.05 seawall!
+    [18.8, 0.1, 22.5, 1.22], // strictly south-east clear of overview foreground sightline
     [-14.8, 2.2, -3.5, 1.35],
     [-13.5, 4.5, -10.5, 1.4],
     [-8.5, 4.6, -14.8, 1.38],
@@ -2212,9 +2103,9 @@ export function createCampusDiorama(textures) {
     [4.2, 4.6, -15.4, 1.38],
     [-15.5, 1.8, 5.5, 1.25],
     [-17.2, 0.2, 16.5, 1.2],
-    [18.2, 0.1, 13.8, 1.25],
-    [14.2, 0.1, -17.6, 1.28], // north bank greenery behind north seawall
-    [20.2, 0.1, -17.2, 1.18],
+    [22.8, 0.1, 20.5, 1.22],
+    [14.2, 0.1, -19.8, 1.24], // north bank greenery recessed behind north seawall
+    [20.2, 0.1, -20.2, 1.16],
     // Continuous forested Luojia Mountain flank & northern/southern hills (grounded via luojiaHeight)
     [-21.5, 0, 24.0, 1.38],
     [-26.0, 0, 18.0, 1.44],
@@ -2242,7 +2133,7 @@ export function createCampusDiorama(textures) {
     [-34.0, 0, 34.0, 1.48],
     [22.0, 0, 22.0, 1.34],
     [28.0, 0, 16.5, 1.30],
-    [18.0, 0, 28.0, 1.36],
+    [26.0, 0, 34.0, 1.34],
     // Distant Luojia ridge camphor stands (grounded via luojiaHeight) — horizon forest veil
     [-46.0, 0, -40.0, 1.5],
     [-54.0, 0, -34.0, 1.52],
@@ -2266,6 +2157,8 @@ export function createCampusDiorama(textures) {
 
   const camphorSprayMatrices = [];
   greenTreeCoords.forEach(([gx, gy, gz, gs], idx) => {
+    // Skip any coordinate near East Lake seawalls or shoreline (prevents foliage clipping into water/curbs)
+    if (gx > shoreX(gz) - 3.4 || (gz > -19.2 && gz < 13.2 && gx > 5.5)) return;
     const baseH = Math.max(gy, luojiaHeight(gx, gz) - 0.08);
     const { trunkGeo, twigTips } = buildBranchingTreeGeo(500 + idx, 0.92);
     const rotY = idx * 1.1;
@@ -2299,22 +2192,21 @@ export function createCampusDiorama(textures) {
 
   // Cascading ivy & shrubbery safely tucked inward on Tier 2 lawn + North/South shore banks (zero mid-wall/pier clipping)
   const shrubCoords = [
-    [8.32, 4.62, -14.8, 1.05],
-    [8.32, 4.62, -12.6, 1.02],
-    [8.32, 4.62, -10.2, 1.08],
-    [8.32, 4.62, -7.8, 1.02],
-    [8.32, 4.62, -5.4, 1.05],
+    [7.55, 4.62, -14.8, 1.05],
+    [7.55, 4.62, -12.6, 1.02],
+    [7.55, 4.62, -10.2, 1.08],
+    [7.55, 4.62, -7.8, 1.02],
+    [7.55, 4.62, -5.4, 1.05],
     [7.0, 4.62, -4.85, 0.98],
     [4.6, 4.62, -4.85, 0.95],
-    // North & South seawall shoreline banks & East promenade screen hedge
-    [16.5, 0.42, -16.0, 1.15],
-    [22.0, 0.42, -16.0, 1.1],
-    [24.5, 0.42, -15.8, 1.05],
-    [21.5, 0.42, 10.2, 1.15],
-    [26.0, 0.42, 10.2, 1.08],
-    [7.4, 0.95, 9.6, 1.25],
-    [7.4, 0.95, 6.2, 1.25],
-    [7.4, 0.95, 3.0, 1.2],
+    // North & South seawall shoreline banks cleanly recessed away from water edge
+    [16.5, 0.42, -18.8, 1.15],
+    [22.0, 0.42, -18.8, 1.1],
+    [24.5, 0.42, -18.8, 1.05],
+    [21.5, 0.42, 12.6, 1.15],
+    [26.0, 0.42, 12.6, 1.08],
+    [-14.6, 0.22, 10.6, 1.08],
+    [-14.6, 0.22, 6.4, 1.08],
   ];
   shrubCoords.forEach(([sx, sy, sz, ss], idx) => {
     const sr = mulberry32(1400 + idx * 29);
@@ -2324,7 +2216,8 @@ export function createCampusDiorama(textures) {
       const pz = sz + (sr() - 0.5) * 0.72;
       const inPierBox = px >= 7.8 && px <= 20.0 && pz >= -9.2 && pz <= -6.4;
       const inPavRad = Math.hypot(px - pavX, pz - pavZ) < 2.25;
-      if (inPierBox || inPavRad) continue;
+      const nearSeawall = pz > -17.2 && pz < 11.0 && px > 6.6 && py < 3.5;
+      if (inPierBox || inPavRad || nearSeawall) continue;
       dummy.position.set(px, py, pz);
       dummy.rotation.set((sr() - 0.5) * 0.5, sr() * Math.PI * 2, (sr() - 0.5) * 0.5);
       const sc = (0.78 + sr() * 0.45) * ss;
@@ -2340,19 +2233,97 @@ export function createCampusDiorama(textures) {
   group.add(allTrunksMesh);
 
   const sprayCardGeo = crossedSprayGeometry(1.18, 3);
-  function buildFoliageInstanced(matrices, mat, depthMat) {
+  function buildFoliageInstanced(matrices, mat, depthMat, palette = null, { castShadow = true, receiveShadow = true } = {}) {
     const inst = new THREE.InstancedMesh(sprayCardGeo, mat, matrices.length);
-    inst.castShadow = true;
-    inst.receiveShadow = true;
-    inst.customDepthMaterial = depthMat;
+    inst.name = 'foliage';
+    inst.castShadow = castShadow;
+    inst.receiveShadow = receiveShadow;
+    if (depthMat) inst.customDepthMaterial = depthMat;
     matrices.forEach((m, i) => inst.setMatrixAt(i, m));
     inst.instanceMatrix.needsUpdate = true;
+    if (palette && palette.length > 0) {
+      const palCols = palette.map((hex) => new THREE.Color(hex));
+      const colRand = mulberry32(4109);
+      for (let i = 0; i < matrices.length; i++) {
+        inst.setColorAt(i, palCols[Math.floor(colRand() * palCols.length)]);
+      }
+      inst.instanceColor.needsUpdate = true;
+    }
     return inst;
   }
 
-  group.add(buildFoliageInstanced(outerSprayMatrices, sakuraOuterMat, sakuraDepthMat));
-  group.add(buildFoliageInstanced(innerSprayMatrices, sakuraInnerMat, sakuraDepthMat));
+  group.add(
+    buildFoliageInstanced(
+      outerSprayMatrices,
+      sakuraOuterMat,
+      sakuraDepthMat,
+      ['#ffffff', '#fff0f5', '#ffe3ee', '#ffd6e6'],
+      { castShadow: true, receiveShadow: false }
+    )
+  );
+  group.add(
+    buildFoliageInstanced(
+      innerSprayMatrices,
+      sakuraInnerMat,
+      sakuraDepthMat,
+      ['#ffffff', '#f7cadb', '#f2bfd3', '#ffe3ee'],
+      { castShadow: true, receiveShadow: false }
+    )
+  );
   group.add(buildFoliageInstanced(camphorSprayMatrices, camphorLeafMat, camphorDepthMat));
+
+  // Organic woodland forest carpet across ALL surrounding Luojia hills (covers SW, SE, NE, NW slopes within <10% budget)
+  const farForestMatrices = [];
+  const forestRand = mulberry32(20261125);
+  for (let gx = -112; gx <= 56; gx += 4.9) {
+    for (let gz = -96; gz <= 92; gz += 4.9) {
+      if (farForestMatrices.length >= 1400) break;
+      const fx = gx + (forestRand() - 0.5) * 2.8;
+      const fz = gz + (forestRand() - 0.5) * 2.8;
+      if (fx >= -19.5 && fx <= 15.5 && fz >= -19.5 && fz <= 40.5) continue;
+      if (fx >= shoreX(fz) - 3.2) continue;
+      const h = luojiaHeight(fx, fz);
+      if (h <= 0.7) continue;
+      const clearing =
+        Math.sin(fx * 0.08 + 1.3) * Math.cos(fz * 0.07 - 0.7) + 0.3 * Math.sin((fx + fz) * 0.17);
+      if (clearing <= -0.82) continue;
+
+      const isInner = Math.abs(fx) < 58 && Math.abs(fz) < 58;
+      const clusterCount = isInner ? 2 : 1;
+      for (let c = 0; c < clusterCount && farForestMatrices.length < 1400; c++) {
+        const px = fx + (forestRand() - 0.5) * 1.8;
+        const pz = fz + (forestRand() - 0.5) * 1.8;
+        if (pz > -18.0 && pz < 12.0 && px > 6.5) continue;
+        const ph = luojiaHeight(px, pz);
+        if (ph <= 0.65 || px >= shoreX(pz) - 2.8) continue;
+        const py = ph + 0.42 + forestRand() * 0.48;
+        dummy.position.set(px, py, pz);
+        dummy.rotation.set(
+          (forestRand() - 0.5) * 0.22,
+          forestRand() * Math.PI * 2,
+          (forestRand() - 0.5) * 0.22
+        );
+        const sc = (isInner ? 2.7 : 3.4) + forestRand() * 1.4;
+        dummy.scale.set(sc * 1.15, sc * 0.8, sc * 1.15);
+        dummy.updateMatrix();
+        farForestMatrices.push(dummy.matrix.clone());
+      }
+    }
+  }
+  const farForestMat = camphorLeafMat.clone();
+  farForestMat.color.set('#7f9a72');
+  farForestMat.emissive.set('#1d3322');
+  farForestMat.emissiveIntensity = 0.05;
+  group.add(
+    buildFoliageInstanced(
+      farForestMatrices,
+      farForestMat,
+      null,
+      ['#ffffff', '#e3ecd5', '#cfdcc0', '#f0ead0'],
+      { castShadow: false, receiveShadow: false }
+    )
+  );
+  console.info('[WHU] Forest carpet instances:', farForestMatrices.length);
 
   /* ---------------------------------------------------------------------- */
   /* 8. Finalize Static Stone & Lawn Batches                                */
@@ -2557,11 +2528,13 @@ export function createCampusDiorama(textures) {
       sunsetWarmthUniform.value = 1.0;
       dormWallMat.emissiveIntensity = 0.92;
       libWallMat.emissiveIntensity = 1.05;
-      glazedTileMat.color.set('#2694a4');
+      glazedTileMat.color.set('#e2cfcc');
       glazedTileMat.emissiveIntensity = 0.12;
       sakuraOuterMat.color.set('#ffeaf2');
       sakuraInnerMat.color.set('#ffc2da');
-      cityFootMat.color.set('#5e5a70');
+      cityFootMat.color.set('#5e5670');
+      farCityMat.color.set('#685e7c');
+      cityHazeColor.value.set('#eabfd1');
       horizonColorUniform.value.set('#ffd2c5');
       waterUniforms.uDeepColor.value.set('#233b66');
       waterUniforms.uShallowColor.value.set('#5a8ba6');
@@ -2575,18 +2548,18 @@ export function createCampusDiorama(textures) {
       sunDirUniform.value.set(28, 22, 19).normalize();
       waterUniforms.uSunDir.value.copy(sunDirUniform.value);
       sunsetWarmthUniform.value = 0.0;
-      dormWallMat.emissiveIntensity = 0.12;
-      libWallMat.emissiveIntensity = 0.14;
-      glazedTileMat.color.set('#2ba6b4');
-      glazedTileMat.emissiveIntensity = 0.06;
+      dormWallMat.emissiveIntensity = 0.0;
+      libWallMat.emissiveIntensity = 0.0;
+      glazedTileMat.color.set('#d8eeee');
+      glazedTileMat.emissiveIntensity = 0.04;
       sakuraOuterMat.color.set('#fff9fc');
       sakuraInnerMat.color.set('#ffdbe9');
-      cityFootMat.color.set('#5a6e6a');
-      farCityMat.color.set('#8da0b2');
-      cityHazeColor.value.set('#9fb9cd');
-      horizonColorUniform.value.set('#f7ebf2');
-      waterUniforms.uDeepColor.value.set('#0d4f63');
-      waterUniforms.uShallowColor.value.set('#3d9aa8');
+      cityFootMat.color.set('#4e6c64');
+      farCityMat.color.set('#5b7a7c');
+      cityHazeColor.value.set('#c4dced');
+      horizonColorUniform.value.set('#cfe3f2');
+      waterUniforms.uDeepColor.value.set('#0c353f');
+      waterUniforms.uShallowColor.value.set('#1d545d');
       waterUniforms.uSkyColor.value.set('#cfe9ff');
       waterUniforms.uSunColor.value.set('#fff6e4');
       petalMat.color.set('#ffcadf');

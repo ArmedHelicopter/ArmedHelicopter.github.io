@@ -235,7 +235,7 @@ export function createTextureFactory(renderer) {
       const y = rand() * S;
       const r = 14 + rand() * 34;
       const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-      g.addColorStop(0, rand() > 0.5 ? 'rgba(156,154,148,0.14)' : 'rgba(255,254,250,0.22)');
+      g.addColorStop(0, rand() > 0.5 ? 'rgba(156,154,148,0.05)' : 'rgba(255,254,250,0.09)');
       g.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = g;
       ctx.fillRect(x - r, y - r, r * 2, r * 2);
@@ -274,9 +274,9 @@ export function createTextureFactory(renderer) {
     const aimg = a.createImageData(W, H);
     const bimg = b.createImageData(W, H);
 
-    const colValley = new THREE.Color('#197a8c');
-    const colBody = new THREE.Color('#30b2bf');
-    const colCrest = new THREE.Color('#9cf2ef');
+    const colValley = new THREE.Color('#123f47');
+    const colBody = new THREE.Color('#1f6b74');
+    const colCrest = new THREE.Color('#5aa9a6');
 
     for (let y = 0; y < H; y++) {
       for (let x = 0; x < W; x++) {
@@ -426,9 +426,9 @@ export function createTextureFactory(renderer) {
         a.fillStyle = '#334659';
         a.fillRect(x - 1.5, y - 1.5, ww + 3, wh + 3);
         const g = a.createLinearGradient(x, y, x + ww, y + wh);
-        g.addColorStop(0, '#5a8cb6');
-        g.addColorStop(0.5, '#345e85');
-        g.addColorStop(1, '#1d3955');
+        g.addColorStop(0, '#3e5e7a');
+        g.addColorStop(0.5, '#284259');
+        g.addColorStop(1, '#1a2d3f');
         a.fillStyle = g;
         if (arched && r === rows - 1) {
           a.beginPath();
@@ -441,14 +441,14 @@ export function createTextureFactory(renderer) {
         } else {
           a.fillRect(x, y, ww, wh);
         }
-        a.fillStyle = 'rgba(215,238,255,0.35)';
+        a.fillStyle = 'rgba(205,228,248,0.22)';
         a.fillRect(x + 2, y + 2, ww * 0.18, wh * 0.55);
-        a.fillStyle = '#e8e2d5';
+        a.fillStyle = '#d9d3c5';
         a.fillRect(x + ww / 2 - 1, y, 2, wh);
         a.fillRect(x, y + wh * 0.42, ww, 2);
         a.fillRect(x, y + wh * 0.72, ww, 1.5);
 
-        if (rand() < 0.72) {
+        if (rand() < 0.42) {
           const ge = e.createLinearGradient(x, y, x, y + wh);
           ge.addColorStop(0, '#ffd8a2');
           ge.addColorStop(1, '#ffa460');

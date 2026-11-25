@@ -106,6 +106,15 @@ body {
   cursor: grab;
 }
 
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 45%, rgba(0, 0, 0, 0) 55%, rgba(18, 30, 48, 0.26) 100%);
+}
+
 body[data-stage='portal'] #whu-canvas,
 body[data-stage='flythrough'] #whu-canvas {
   cursor: default;

@@ -13,18 +13,18 @@ export function createLightingSystem(scene, renderer) {
       zenith: '#1866bb',
       upperMid: '#4da6ed',
       lowerMid: '#9cd2fa',
-      horizon: '#f7ebf2',
+      horizon: '#cfe3f2',
       sunHalo: '#fff6e4',
       cloudLit: '#ffffff',
       cloudShadow: '#a7c6e4',
-      fogColor: '#d7ebfc',
-      fogDensity: 0.0026,
+      fogColor: '#c6dced',
+      fogDensity: 0.0058,
       keyColor: '#fff2d8',
-      keyIntensity: 3.15,
+      keyIntensity: 2.9,
       keyPos: [28, 22, 19],
       hemiSky: '#8cc4f5',
       hemiGround: '#5f7285',
-      hemiIntensity: 0.62,
+      hemiIntensity: 0.55,
       rimColor: '#ffd9e6',
       rimIntensity: 0.34,
       frontFillIntensity: 0.16,
@@ -43,7 +43,7 @@ export function createLightingSystem(scene, renderer) {
       cloudLit: '#fff0f3',
       cloudShadow: '#9b8bb8',
       fogColor: '#efc4d8',
-      fogDensity: 0.0029,
+      fogDensity: 0.007,
       keyColor: '#ffbe92',
       keyIntensity: 2.65,
       keyPos: [-24, 17, 16],
@@ -195,9 +195,9 @@ export function createLightingSystem(scene, renderer) {
           vec3 dir = normalize(vWorldPos);
           float h = dir.y;
 
-          float t1 = smoothstep(-0.22, 0.0, h);
-          float t2 = smoothstep(-0.02, 0.24, h);
-          float t3 = smoothstep(0.20, 0.78, h);
+          float t1 = smoothstep(0.008, 0.14, h);
+          float t2 = smoothstep(0.09, 0.35, h);
+          float t3 = smoothstep(0.26, 0.80, h);
 
           vec3 col = mix(uHorizon, uLowerMid, t1);
           col = mix(col, uUpperMid, t2);
@@ -224,7 +224,7 @@ export function createLightingSystem(scene, renderer) {
             float cirrus = smoothstep(0.56, 0.82, fbm5(skyUv * 2.4 + vec2(8.0, 2.5) + drift * 0.5));
             col = mix(col, mix(uCloudLit, uHorizon, 0.15), cirrus * 0.28 * smoothstep(0.0, 0.22, h));
 
-            float horizonFade = smoothstep(-0.02, 0.14, h) * smoothstep(0.95, 0.45, h);
+            float horizonFade = smoothstep(0.015, 0.16, h) * smoothstep(0.95, 0.45, h);
             col = mix(col, cloudCol, density * horizonFade * 0.88);
           }
 
