@@ -57,7 +57,7 @@ loading_css = """
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #3d8fcb 0%, #7ec4f4 48%, #fce2ee 100%);
+  background: linear-gradient(135deg, #1b2846 0%, #3a5d82 52%, #e6b886 100%);
   transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.75s;
 }
 .loading-screen.is-loaded {
@@ -65,16 +65,20 @@ loading_css = """
   visibility: hidden;
   pointer-events: none;
 }
+.loading-screen.is-loaded .loading-box {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
 .loading-box {
   width: 90%;
   max-width: 380px;
   padding: 2.5rem 2rem;
-  background: rgba(255, 255, 255, 0.84);
+  background: rgba(252, 248, 240, 0.88);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.95);
-  box-shadow: 0 20px 50px rgba(20, 41, 66, 0.18), 0 4px 12px rgba(255, 255, 255, 0.8) inset;
+  border: 1px solid rgba(255, 250, 240, 0.95);
+  box-shadow: 0 20px 50px rgba(16, 24, 42, 0.22), 0 4px 12px rgba(255, 255, 255, 0.8) inset;
   text-align: center;
 }
 .loading-badge {
@@ -82,8 +86,8 @@ loading_css = """
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 2px;
-  color: #1f8fa8;
-  background: rgba(31, 143, 168, 0.12);
+  color: #1c6e8c;
+  background: rgba(28, 110, 140, 0.12);
   padding: 4px 12px;
   border-radius: 99px;
   margin-bottom: 0.85rem;
@@ -92,18 +96,18 @@ loading_css = """
   font-size: 1.55rem;
   font-weight: 800;
   letter-spacing: 1.5px;
-  color: #142942;
+  color: #18233a;
   margin-bottom: 0.35rem;
 }
 .loading-sub {
   font-size: 0.85rem;
-  color: #5a728d;
+  color: #52637e;
   margin-bottom: 1.8rem;
 }
 .loading-bar-track {
   width: 100%;
   height: 8px;
-  background: rgba(20, 41, 66, 0.08);
+  background: rgba(20, 29, 48, 0.10);
   border-radius: 99px;
   overflow: hidden;
   position: relative;
@@ -115,7 +119,7 @@ loading_css = """
   left: 0;
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #1f8fa8 0%, #35b7c9 60%, #e67aa3 100%);
+  background: linear-gradient(90deg, #1c6e8c 0%, #4b9fb5 55%, #d98245 100%);
   border-radius: 99px;
   transition: width 0.3s ease;
 }
@@ -137,7 +141,7 @@ html_template = f"""<!doctype html>
       name="description"
       content="Ruining Yang (@ArmedHelicopter) — 武汉大学人工智能本科生的交互式 3D 校园主页：晴空樱花下穿过国立武汉大学牌坊，在阳光珞珈校园中展开科研、工程与叙事履历。"
     />
-    <meta name="theme-color" content="#6fb6e8" />
+    <meta name="theme-color" content="#3e6c99" />
     <link
       rel="icon"
       type="image/svg+xml"
@@ -148,13 +152,13 @@ html_template = f"""<!doctype html>
 {loading_css}
     </style>
   </head>
-  <body data-stage="autoplay" data-mood="spring">
+  <body data-stage="autoplay" data-mood="amber">
     <!-- Loading Progress Bar Overlay -->
     <div id="loading-screen" class="loading-screen" aria-label="沙盘构建进度">
       <div class="loading-box">
-        <div class="loading-badge">WUHAN UNIVERSITY · 1893</div>
+        <div class="loading-badge">WUHAN UNIVERSITY · 2.5D PIXEL</div>
         <h2 class="loading-title">国立武汉大学</h2>
-        <p class="loading-sub">3D 校园立体沙盘 · Ruining Yang</p>
+        <p class="loading-sub">2.5D 像素微缩校园 · 午后琥珀</p>
         <div class="loading-bar-track">
           <div id="loading-bar-fill" class="loading-bar-fill"></div>
         </div>
@@ -175,7 +179,7 @@ html_template = f"""<!doctype html>
           <span>WHU · 30.536°N 114.364°E</span>
         </div>
         <div class="action-cluster">
-          <button type="button" class="pill-btn" data-action="toggle-mood">光影 · 晴空樱雪</button>
+          <button type="button" class="pill-btn" data-action="toggle-mood">光影 · 午后琥珀</button>
           <button type="button" class="pill-btn" data-action="toggle-sound" aria-pressed="true">音效</button>
         </div>
       </header>
@@ -221,7 +225,7 @@ html_template = f"""<!doctype html>
             <div id="telemetry-panel" class="telemetry-panel" role="region" aria-label="渲染与显存统计"></div>
           </div>
           <button type="button" id="replay-intro-btn" class="pill-btn">重播巡游</button>
-          <button type="button" class="pill-btn" data-action="toggle-mood">光影 · 晴空樱雪</button>
+          <button type="button" class="pill-btn" data-action="toggle-mood">光影 · 午后琥珀</button>
           <button type="button" class="pill-btn" data-action="toggle-sound" aria-pressed="true">音效</button>
           <button type="button" id="open-cv-btn" class="pill-btn pill-primary">完整履历</button>
         </div>
@@ -265,9 +269,9 @@ html_template = f"""<!doctype html>
           type="button"
           id="scroll-mode-btn"
           class="dock-step dock-mode"
-          title="滚轮向下按顺序游览各个地标；按住 Ctrl + 滚轮可随时缩放视角"
+          title="当前滚轮自由缩放远近；点击可切换为滚轮顺序游览地标"
         >
-          滚轮 · 顺览
+          滚轮 · 缩放
         </button>
       </nav>
     </div>
@@ -292,23 +296,22 @@ html_template = f"""<!doctype html>
       </div>
     </main>
 
+    <!--
+      Modular Component Architecture (all procedural, 0 external files):
+      - src/archway.js     : National WHU Stone Archway (国立武汉大学牌坊)
+      - src/terrain.js     : Luojia Mainland Terrain, Plazas, Terraces & Lamps
+      - src/dormitory.js   : Old Dormitory (老斋舍), Arches, Pavilions & 108 Steps
+      - src/library.js     : Old Library (樱顶老图书馆) & Courtyard Wings
+      - src/lake.js        : East Lake (东湖), Lingbo Pier (凌波门), Pavilion & Boats
+      - src/foliage.js     : Yoshino Cherry Trees, Camphor Forest, Petals & Bokeh
+      - src/protagonist.js : 2.5D Pixel-Art Chibi Protagonist
+      - src/lighting.js    : Sun, Hemisphere Fill, Fog & Mood System
+      - src/postfx.js      : HD-2D Tilt-Shift DOF, Bloom & ACES Tone Mapping
+      Runtime registry: window.__WHU_COMPONENTS__
+    -->
     <!-- Inlined Full Application Bundle -->
     <script type="module">
 {bundle_js}
-
-      // Smooth progress bar completion trigger
-      const loadFill = document.getElementById('loading-bar-fill');
-      const loadPct = document.getElementById('loading-status-pct');
-      const loadTxt = document.getElementById('loading-status-text');
-      const loadScreen = document.getElementById('loading-screen');
-      if (loadFill && loadScreen) {{
-        loadFill.style.width = '100%';
-        if (loadPct) loadPct.textContent = '100%';
-        if (loadTxt) loadTxt.textContent = '构建完成 · 欢迎推门入珈';
-        setTimeout(() => {{
-          loadScreen.classList.add('is-loaded');
-        }}, 350);
-      }}
     </script>
   </body>
 </html>

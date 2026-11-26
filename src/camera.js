@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 
-const OVERVIEW_POS = new THREE.Vector3(21.2, 15.8, 26.2);
-const OVERVIEW_TARGET = new THREE.Vector3(0.0, 3.5, 0.8);
+const OVERVIEW_POS = new THREE.Vector3(42.0, 31.0, 44.0);
+const OVERVIEW_TARGET = new THREE.Vector3(1.5, 2.8, 2.0);
+const CINEMA_FOV = 24;
 
 function easeInOutCubic(t) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
@@ -11,12 +12,22 @@ function easeOutCubic(t) {
   return 1 - Math.pow(1 - t, 3);
 }
 
-const AUTOPLAY_STOPS = [
-  { id: 'archway', index: 0, label: '01/04 · 国立武汉大学牌坊', tStart: 0.0, tMid: 0.14 },
-  { id: 'sakura', index: 1, label: '02/04 · 老斋舍 & 樱花大道', tStart: 0.25, tMid: 0.38 },
-  { id: 'library', index: 2, label: '03/04 · 樱顶老图书馆', tStart: 0.49, tMid: 0.61 },
-  { id: 'lingbo', index: 3, label: '04/04 · 东湖凌波门', tStart: 0.72, tMid: 0.83 },
-  { id: 'overview', index: -1, label: '俯瞰全景 · 珞珈校园', tStart: 0.91, tMid: 1.0 },
+function smooth01(e0, e1, x) {
+  const t = THREE.MathUtils.clamp((x - e0) / (e1 - e0), 0, 1);
+  return t * t * (3 - 2 * t);
+}
+
+const KF = [
+  { pos: [25.5, 17.5, 39.5], att: [0.5, 4.0, 17.0], stop: { id: 'archway', index: 0, label: '01/04 · 国立武汉大学牌坊' } },
+  { pos: [21.5, 16.0, 34.0], att: [0.5, 3.8, 17.0] },
+  { pos: [19.5, 16.0, 21.0], att: [0.0, 3.6, 2.5], stop: { id: 'sakura', index: 1, label: '02/04 · 老斋舍 & 樱花大道' } },
+  { pos: [18.5, 16.5, 12.0], att: [0.0, 3.6, 2.5] },
+  { pos: [20.5, 22.0, 6.0], att: [0.5, 7.6, -8.5], stop: { id: 'library', index: 2, label: '03/04 · 樱顶老图书馆' } },
+  { pos: [22.5, 22.5, -2.5], att: [0.5, 7.6, -8.5] },
+  { pos: [32.0, 15.5, 3.0], att: [13.8, 1.4, -7.2], stop: { id: 'lingbo', index: 3, label: '04/04 · 东湖凌波门' } },
+  { pos: [31.5, 14.0, 9.5], att: [13.8, 1.4, -7.2] },
+  { pos: [38.0, 24.0, 28.0], att: [1.5, 2.8, 2.0], stop: { id: 'overview', index: -1, label: '微缩全景 · 珞珈沙盘' } },
+  { pos: OVERVIEW_POS.toArray(), att: OVERVIEW_TARGET.toArray() },
 ];
 
 /**
@@ -38,7 +49,7 @@ export function createCameraController(
 
   let autoplayElapsed = 0;
   let autoplayPaused = false;
-  const AUTOPLAY_DURATION = 26.0;
+  const AUTOPLAY_DURATION = 38.0;
 
   const pointer = { x: 0, y: 0 };
   const smoothPointer = { x: 0, y: 0 };
@@ -58,88 +69,123 @@ export function createCameraController(
     OVERVIEW_TARGET.clone(),
   ]);
 
-  // Straight-in central-axis FPV: 牌坊 → 中轴 carpet → 百步梯 → 老斋舍 → 老图拉升 → 凌波门 → 俯瞰
-  const autoplayPosPoints = [
-    new THREE.Vector3(0.0, 2.55, 36.2), // 0: South Plaza approach
-    new THREE.Vector3(0.0, 2.35, 31.2), // 1: Stop 01 - 国立武汉大学牌坊 (all 4 冲天柱 finials + 抱鼓石 + sky headroom)
-    new THREE.Vector3(0.0, 1.95, 14.4), // 2: Through central bay (x∈[-2.04,2.04], y<4.52)
-    new THREE.Vector3(0.0, 1.95, 10.6), // 3: Straight along the ceremonial carpet
-    new THREE.Vector3(0.0, 2.15, 7.6), // 4: Foot of the 108-step staircase
-    new THREE.Vector3(0.0, 3.0, 6.0), // 5: Ascending the stairs
-    new THREE.Vector3(0.0, 4.4, 3.4), // 6: Stop 02 - Crest onto Tier 1, 老斋舍 dead ahead
-    new THREE.Vector3(0.0, 7.6, -0.6), // 7: Rising over the dormitory roofline (central 歇山顶 crest ≈ 7.19)
-    new THREE.Vector3(0.0, 8.6, -4.8), // 8: Over Tier 2 south edge, library ahead
-    new THREE.Vector3(0.2, 9.5, -6.2), // 9: Stop 03 - 樱顶老图书馆 hero
-    new THREE.Vector3(4.0, 8.2, -4.0), // 10: 拉升 - begin eastward pull-up over the cliff
-    new THREE.Vector3(9.5, 6.4, -6.0), // 11: Over the lakeside promenade
-    new THREE.Vector3(13.5, 4.4, -7.6), // 12: Lingbo Pier approach
-    new THREE.Vector3(15.6, 3.4, -9.8), // 13: Stop 04 - 凌波亭 + pier + open lake
-    new THREE.Vector3(19.5, 4.6, -6.4), // 14: Sweep past the pier
-    new THREE.Vector3(21.5, 6.6, 1.2), // 15: Ascent above East Lake
-    new THREE.Vector3(22.6, 11.2, 12.5), // 16: Wide banking sweep
-    OVERVIEW_POS.clone(), // 17: Final Overview
-  ];
+  // Deterministic cinematic FPV drone flight: 牌坊 -> 樱花大道 & 老斋舍 -> 樱顶老图书馆 -> 东湖凌波门 -> 全景俯瞰
+  const CURVE_DIVS = 2000;
+  const autoplayPosCurve = new THREE.CatmullRomCurve3(
+    KF.map((k) => new THREE.Vector3(...k.pos)),
+    false,
+    'centripetal',
+    0.5
+  );
+  autoplayPosCurve.arcLengthDivisions = CURVE_DIVS;
+  const autoplayAttCurve = new THREE.CatmullRomCurve3(
+    KF.map((k) => new THREE.Vector3(...k.att)),
+    false,
+    'centripetal',
+    0.5
+  );
+  autoplayAttCurve.arcLengthDivisions = CURVE_DIVS;
 
-  const autoplayLookPoints = [
-    new THREE.Vector3(0.0, 4.5, 15.5),
-    new THREE.Vector3(0.0, 4.65, 15.5),
-    new THREE.Vector3(0.0, 3.2, 7.0),
-    new THREE.Vector3(0.0, 3.0, 4.0),
-    new THREE.Vector3(0.0, 3.4, 2.2),
-    new THREE.Vector3(0.0, 4.2, 0.5),
-    new THREE.Vector3(0.0, 5.2, -1.5),
-    new THREE.Vector3(0.0, 6.4, -5.5),
-    new THREE.Vector3(0.0, 7.4, -9.8),
-    new THREE.Vector3(0.0, 8.2, -9.8),
-    new THREE.Vector3(1.0, 7.2, -8.4),
-    new THREE.Vector3(12.0, 2.8, -7.4),
-    new THREE.Vector3(13.5, 1.8, -8.4),
-    new THREE.Vector3(14.6, 1.5, -10.8),
-    new THREE.Vector3(16.0, 1.4, -12.0),
-    new THREE.Vector3(12.0, 3.2, -2.0),
-    new THREE.Vector3(2.0, 3.4, 0.2),
-    OVERVIEW_TARGET.clone(),
-  ];
+  const curveLengths = autoplayPosCurve.getLengths(CURVE_DIVS);
+  const totalCurveLength = curveLengths[curveLengths.length - 1] || 1;
 
-  const autoplayPosCurve = new THREE.CatmullRomCurve3(autoplayPosPoints, false, 'centripetal', 0.5);
-  autoplayPosCurve.arcLengthDivisions = 400;
-  const autoplayLookCurve = new THREE.CatmullRomCurve3(autoplayLookPoints, false, 'centripetal', 0.5);
-  autoplayLookCurve.arcLengthDivisions = 400;
-
-  // Map each control point index to its normalized arc-length u in [0, 1]
-  function findCurveUForControlPoint(idx) {
-    const targetT = idx / (autoplayPosPoints.length - 1);
-    const lengths = autoplayPosCurve.getLengths(400);
-    const totalLen = lengths[lengths.length - 1] || 1;
-    const sampleIdx = Math.round(targetT * 400);
-    return lengths[sampleIdx] / totalLen;
-  }
-
-  const knotTable = [
-    { t: 0.0, u: 0.0 },
-    { t: 0.14, u: findCurveUForControlPoint(1) }, // Archway
-    { t: 0.38, u: findCurveUForControlPoint(6) }, // 108 Steps & Old Dormitory
-    { t: 0.61, u: findCurveUForControlPoint(9) }, // Old Library hero
-    { t: 0.83, u: findCurveUForControlPoint(13) }, // Lingbo Pavilion & Pier
-    { t: 1.0, u: 1.0 },
-  ];
-
-  const smoothLookAt = new THREE.Vector3(0.0, 4.5, 15.5);
-
-  function mapTimeToU(rawT) {
-    const t = THREE.MathUtils.clamp(rawT, 0, 1);
-    for (let i = 0; i < knotTable.length - 1; i++) {
-      const a = knotTable[i];
-      const b = knotTable[i + 1];
-      if (t <= b.t || i === knotTable.length - 2) {
-        const span = Math.max(1e-5, b.t - a.t);
-        const s = THREE.MathUtils.clamp((t - a.t) / span, 0, 1);
-        const w = s * s * (3.0 - 2.0 * s); // Smooth C1 zero-jerk easing across intervals
-        return THREE.MathUtils.lerp(a.u, b.u, w);
+  // Pre-bake uniform-arc-length samples + zero-phase 3-pass C2 smoothing (eliminates knot shudder)
+  function smoothVecArray(arr, radius, passes, normalizeOut) {
+    let cur = arr.map((v) => v.clone());
+    const first = arr[0].clone();
+    const last = arr[arr.length - 1].clone();
+    for (let pass = 0; pass < passes; pass++) {
+      const next = new Array(cur.length);
+      for (let i = 0; i < cur.length; i++) {
+        const edgeR = Math.min(radius, i, cur.length - 1 - i);
+        if (edgeR <= 0) {
+          next[i] = cur[i].clone();
+          continue;
+        }
+        const sum = new THREE.Vector3();
+        for (let j = i - edgeR; j <= i + edgeR; j++) sum.add(cur[j]);
+        sum.divideScalar(2 * edgeR + 1);
+        if (normalizeOut) sum.normalize();
+        next[i] = sum;
       }
+      next[0].copy(first);
+      next[cur.length - 1].copy(last);
+      cur = next;
     }
-    return 1;
+    return cur;
   }
+
+  let bakedPos = [];
+  let bakedDir = [];
+  for (let k = 0; k <= CURVE_DIVS; k++) {
+    const u = k / CURVE_DIVS;
+    const tp = autoplayPosCurve.getUtoTmapping(u);
+    const p = autoplayPosCurve.getPoint(tp);
+    const a = autoplayAttCurve.getPoint(tp);
+    bakedPos.push(p);
+    bakedDir.push(a.sub(p).normalize());
+  }
+  bakedPos = smoothVecArray(bakedPos, 18, 3, false);
+  bakedDir = smoothVecArray(bakedDir, 58, 3, true);
+
+  // Angular-velocity-limited speed profile: caps peak pan rate (~12 deg/s) to eliminate stroboscopic judder
+  const progressTable = new Float64Array(CURVE_DIVS + 1);
+  {
+    const ds = totalCurveLength / CURVE_DIVS;
+    let accumT = 0;
+    progressTable[0] = 0;
+    for (let k = 1; k <= CURVE_DIVS; k++) {
+      const uMid = (k - 0.5) / CURVE_DIVS;
+      const sMid = uMid * totalCurveLength;
+      const dAngRad = Math.acos(THREE.MathUtils.clamp(bakedDir[k].dot(bakedDir[k - 1]), -1, 1));
+      const angPerMeter = dAngRad / ds;
+      const edge = (0.42 + 0.58 * smooth01(0, 7, sMid)) * (0.28 + 0.72 * smooth01(0, 12, totalCurveLength - sMid));
+      const turnCap = 0.052 / Math.max(angPerMeter, 0.01);
+      const v = edge * Math.min(1.0, turnCap);
+      accumT += ds / Math.max(v, 0.12);
+      progressTable[k] = accumT;
+    }
+    const totalTime = progressTable[CURVE_DIVS] || 1;
+    for (let k = 0; k <= CURVE_DIVS; k++) {
+      progressTable[k] /= totalTime;
+    }
+    progressTable[CURVE_DIVS] = 1;
+  }
+
+  function uFromProgress(rawT) {
+    const p = THREE.MathUtils.clamp(rawT, 0, 1);
+    if (p <= 0) return 0;
+    if (p >= 1) return 1;
+    let lo = 0;
+    let hi = CURVE_DIVS;
+    while (lo + 1 < hi) {
+      const mid = (lo + hi) >> 1;
+      if (progressTable[mid] <= p) lo = mid;
+      else hi = mid;
+    }
+    const span = progressTable[hi] - progressTable[lo];
+    const frac = span > 1e-9 ? (p - progressTable[lo]) / span : 0;
+    return (lo + frac) / CURVE_DIVS;
+  }
+
+  function progressFromU(u) {
+    const c = THREE.MathUtils.clamp(u, 0, 1) * CURVE_DIVS;
+    const lo = Math.min(CURVE_DIVS - 1, Math.floor(c));
+    const frac = c - lo;
+    return THREE.MathUtils.lerp(progressTable[lo], progressTable[lo + 1], frac);
+  }
+
+  const AUTOPLAY_STOPS = KF.map((k, idx) => {
+    if (!k.stop) return null;
+    const sampleIdx = Math.round((idx / (KF.length - 1)) * CURVE_DIVS);
+    const uStop = curveLengths[sampleIdx] / totalCurveLength;
+    return {
+      ...k.stop,
+      tStart: idx === 0 ? 0 : progressFromU(uStop),
+    };
+  }).filter(Boolean);
+
+  const smoothLookAt = new THREE.Vector3(...KF[0].att);
 
   function getStopForProgress(rawT) {
     let current = AUTOPLAY_STOPS[0];
@@ -151,29 +197,42 @@ export function createCameraController(
 
   const _autoPos = new THREE.Vector3();
   const _autoLook = new THREE.Vector3();
+  const _fwd = new THREE.Vector3();
+  const _dir = new THREE.Vector3();
+  let lastFwdAttAngleDeg = 0;
   let lastAutoStopId = null;
 
   function applyAutoplayAt(rawT) {
     const clampedT = THREE.MathUtils.clamp(rawT, 0, 1);
-    const u = mapTimeToU(clampedT);
-    const tParam = autoplayPosCurve.getUtoTmapping(u);
+    const u = uFromProgress(clampedT);
+    const c = u * CURVE_DIVS;
+    const lo = Math.min(CURVE_DIVS - 1, Math.floor(c));
+    const hi = lo + 1;
+    const frac = c - lo;
 
-    autoplayPosCurve.getPoint(tParam, _autoPos);
-    autoplayLookCurve.getPoint(tParam, _autoLook);
+    _autoPos.copy(bakedPos[lo]).lerp(bakedPos[hi], frac);
+    _dir.copy(bakedDir[lo]).lerp(bakedDir[hi], frac).normalize();
 
-    const dormFovBoost = 5.0 * Math.exp(-Math.pow((clampedT - 0.38) / 0.085, 2));
-    const targetFov = THREE.MathUtils.lerp(48 + dormFovBoost, 44, smoothstepJS(0.86, 1.0, clampedT));
-    if (Math.abs(camera.fov - targetFov) > 0.05) {
-      camera.fov = targetFov;
+    const loPrev = Math.max(0, lo - 1);
+    const hiNext = Math.min(CURVE_DIVS, hi + 1);
+    _fwd.copy(bakedPos[hiNext]).sub(bakedPos[loPrev]).normalize();
+
+    lastFwdAttAngleDeg = THREE.MathUtils.radToDeg(
+      Math.acos(THREE.MathUtils.clamp(_fwd.dot(_dir), -1, 1))
+    );
+    _autoLook.copy(_autoPos).addScaledVector(_dir, 10);
+
+    if (camera.fov !== CINEMA_FOV) {
+      camera.fov = CINEMA_FOV;
       camera.updateProjectionMatrix();
     }
 
     camera.position.copy(_autoPos);
-    smoothLookAt.lerp(_autoLook, 0.18);
-    camera.lookAt(smoothLookAt);
+    camera.up.set(0, 1, 0);
+    camera.lookAt(_autoLook);
+    smoothLookAt.copy(_autoLook);
 
-    // Open archway sakura veil smoothly before passing through central bay
-    const doorProgress = THREE.MathUtils.clamp(clampedT / 0.14, 0, 1);
+    const doorProgress = _autoPos.z > 10 ? smoothstepJS(36, 20, _autoPos.z) : 1;
     onPortalProgress?.(doorProgress);
 
     const stop = getStopForProgress(clampedT);
@@ -220,17 +279,17 @@ export function createCameraController(
   function getPortalBasePos() {
     const aspect = camera.aspect || 1.6;
     if (aspect < 0.85) {
-      if (camera.fov !== 58) {
-        camera.fov = 58;
+      if (camera.fov !== 32) {
+        camera.fov = 32;
         camera.updateProjectionMatrix();
       }
-      return new THREE.Vector3(0, 3.9, 44.5);
+      return new THREE.Vector3(24, 18, 42);
     }
-    if (camera.fov !== 44) {
-      camera.fov = 44;
+    if (camera.fov !== CINEMA_FOV) {
+      camera.fov = CINEMA_FOV;
       camera.updateProjectionMatrix();
     }
-    return new THREE.Vector3(0, 3.25, 31.2);
+    return new THREE.Vector3(22, 16, 36);
   }
 
   function applyPortalCamera(dt) {
@@ -238,12 +297,11 @@ export function createCameraController(
     smoothPointer.y += (pointer.y - smoothPointer.y) * Math.min(1, dt * 4.5);
     const base = getPortalBasePos();
     camera.position.set(
-      base.x + smoothPointer.x * 0.65,
-      base.y + smoothPointer.y * 0.25,
+      base.x + smoothPointer.x * 0.9,
+      base.y + smoothPointer.y * 0.4,
       base.z
     );
-    const lookY = (camera.aspect || 1.6) < 0.85 ? 3.55 : 4.15;
-    camera.lookAt(0, lookY, 15.5);
+    camera.lookAt(0.5, 3.0, 17.0);
   }
 
   function startAutoplay() {
@@ -293,28 +351,32 @@ export function createCameraController(
   function interruptAutoplayToExplore() {
     if (stage !== 'autoplay') return;
     const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
-    const fallbackTarget = camera.position.clone().addScaledVector(forward, 15);
-    fallbackTarget.y = Math.max(0.6, Math.min(fallbackTarget.y, camera.position.y - 1.2));
-    if (fallbackTarget.distanceTo(camera.position) < 13.5) {
-      fallbackTarget.copy(camera.position).addScaledVector(forward, 15);
-      fallbackTarget.y = Math.max(0.4, fallbackTarget.y);
+    const fallbackTarget = camera.position.clone().addScaledVector(forward, 26);
+    fallbackTarget.y = Math.max(0.8, Math.min(fallbackTarget.y, camera.position.y - 2.0));
+    if (fallbackTarget.distanceTo(camera.position) < 22.0) {
+      fallbackTarget.copy(camera.position).addScaledVector(forward, 26);
+      fallbackTarget.y = Math.max(0.6, fallbackTarget.y);
     }
 
     stage = 'explore';
     autoplayPaused = false;
     tweenActive = false;
-    if (camera.fov !== 44) {
-      camera.fov = 44;
+    if (camera.fov !== CINEMA_FOV) {
+      camera.fov = CINEMA_FOV;
       camera.updateProjectionMatrix();
     }
     target.copy(fallbackTarget);
     desiredTarget.copy(fallbackTarget);
     syncSphericalFromPos(camera.position, fallbackTarget);
-    desiredSpherical.phi = THREE.MathUtils.clamp(desiredSpherical.phi, 0.34, 1.22);
-    desiredSpherical.radius = THREE.MathUtils.clamp(desiredSpherical.radius, 13, 46);
+    desiredSpherical.phi = THREE.MathUtils.clamp(desiredSpherical.phi, 0.42, 1.16);
+    desiredSpherical.radius = THREE.MathUtils.clamp(desiredSpherical.radius, 22, 82);
     onPortalProgress?.(1);
     onStageChange?.('explore');
     onAutoplayInterrupt?.();
+  }
+
+  function getAutoplayStops() {
+    return AUTOPLAY_STOPS.map(({ id, index, label, tStart }) => ({ id, index, label, tStart }));
   }
 
   function getAutoplayState() {
@@ -330,6 +392,7 @@ export function createCameraController(
       stopLabel: stop.label,
       stage,
       fov: +camera.fov.toFixed(2),
+      fwdAttAngleDeg: +lastFwdAttAngleDeg.toFixed(2),
       cameraPos: camera.position.toArray().map((n) => +n.toFixed(3)),
       cameraTarget:
         stage === 'autoplay'
@@ -338,7 +401,7 @@ export function createCameraController(
     };
   }
 
-  function setCameraDirect(posArr, targetArr, { fov = 44, stage: nextStage = 'explore', portalOpen = 1 } = {}) {
+  function setCameraDirect(posArr, targetArr, { fov = CINEMA_FOV, stage: nextStage = 'explore', portalOpen = 1 } = {}) {
     autoplayPaused = false;
     flyFrozen = false;
     tweenActive = false;
@@ -390,8 +453,8 @@ export function createCameraController(
   function enterExplore(snap = false) {
     stage = 'explore';
     flyFrozen = false;
-    if (camera.fov !== 44) {
-      camera.fov = 44;
+    if (camera.fov !== CINEMA_FOV) {
+      camera.fov = CINEMA_FOV;
       camera.updateProjectionMatrix();
     }
     onPortalProgress?.(1);
@@ -412,8 +475,8 @@ export function createCameraController(
     stage = 'flythrough';
     flyFrozen = true;
     flyElapsed = progress * FLY_DURATION;
-    if (camera.fov !== 44) {
-      camera.fov = 44;
+    if (camera.fov !== CINEMA_FOV) {
+      camera.fov = CINEMA_FOV;
       camera.updateProjectionMatrix();
     }
     const t = easeInOutCubic(progress);
@@ -435,8 +498,8 @@ export function createCameraController(
       stage = 'explore';
       autoplayPaused = false;
       flyFrozen = false;
-      if (camera.fov !== 44) {
-        camera.fov = 44;
+      if (camera.fov !== CINEMA_FOV) {
+        camera.fov = CINEMA_FOV;
         camera.updateProjectionMatrix();
       }
       onPortalProgress?.(1);
@@ -485,7 +548,7 @@ export function createCameraController(
       const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
       if (lastPinchDist !== null) {
         const delta = lastPinchDist - dist;
-        desiredSpherical.radius = THREE.MathUtils.clamp(desiredSpherical.radius + delta * 0.06, 13, 46);
+        desiredSpherical.radius = THREE.MathUtils.clamp(desiredSpherical.radius + delta * 0.09, 22, 82);
       }
       lastPinchDist = dist;
       tweenActive = false;
@@ -498,7 +561,7 @@ export function createCameraController(
       prevDrag = { x: e.clientX, y: e.clientY };
 
       desiredSpherical.theta -= dx * 0.0065;
-      desiredSpherical.phi = THREE.MathUtils.clamp(desiredSpherical.phi - dy * 0.0055, 0.34, 1.22);
+      desiredSpherical.phi = THREE.MathUtils.clamp(desiredSpherical.phi - dy * 0.0055, 0.42, 1.16);
       tweenActive = false;
     }
   }
@@ -524,7 +587,7 @@ export function createCameraController(
 
   function zoomBy(deltaY) {
     if (stage !== 'explore') return;
-    desiredSpherical.radius = THREE.MathUtils.clamp(desiredSpherical.radius + deltaY * 0.022, 13, 46);
+    desiredSpherical.radius = THREE.MathUtils.clamp(desiredSpherical.radius + deltaY * 0.036, 22, 82);
     tweenActive = false;
   }
 
@@ -542,8 +605,8 @@ export function createCameraController(
         if (rawT >= 1) {
           stage = 'explore';
           autoplayPaused = false;
-          if (camera.fov !== 44) {
-            camera.fov = 44;
+          if (camera.fov !== CINEMA_FOV) {
+            camera.fov = CINEMA_FOV;
             camera.updateProjectionMatrix();
           }
           target.copy(OVERVIEW_TARGET);
@@ -631,6 +694,7 @@ export function createCameraController(
     seekAutoplay,
     skipAutoplay,
     interruptAutoplayToExplore,
+    getAutoplayStops,
     getAutoplayState,
     setCameraDirect,
     enterPortal,

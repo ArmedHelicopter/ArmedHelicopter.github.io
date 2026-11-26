@@ -1,8 +1,10 @@
 import * as THREE from 'three';
 
 const MOOD_LABELS = {
-  spring: '晴空樱雪',
-  sunset: '樱霞暮色',
+  amber: '午后琥珀',
+  spring: '午后琥珀',
+  night: '收敛夜灯',
+  sunset: '收敛夜灯',
 };
 
 /**
@@ -297,26 +299,33 @@ export function createUIController({
     }
   }
 
+  let lastAutoLabel = '';
+  let lastAutoPaused = null;
+  let lastAutoStopIdx = null;
   function updateAutoplay({ progress = 0, paused = false, stopIndex = 0, stopLabel = '' } = {}) {
-    if (autoplayStopLabel && stopLabel) {
+    if (autoplayStopLabel && stopLabel && stopLabel !== lastAutoLabel) {
       autoplayStopLabel.textContent = stopLabel;
+      lastAutoLabel = stopLabel;
     }
     if (autoplayProgressFill) {
-      const pct = Math.max(0, Math.min(100, progress * 100));
-      autoplayProgressFill.style.width = `${pct.toFixed(1)}%`;
+      const ratio = Math.max(0, Math.min(1, progress));
+      autoplayProgressFill.style.transform = `scaleX(${ratio.toFixed(4)})`;
     }
-    if (autoplayToggleBtn) {
+    if (autoplayToggleBtn && paused !== lastAutoPaused) {
       autoplayToggleBtn.textContent = paused ? '继续' : '暂停';
       autoplayToggleBtn.setAttribute('aria-pressed', String(paused));
+      lastAutoPaused = paused;
     }
-    if (document.body.dataset.stage === 'autoplay') {
+    if (stopIndex !== lastAutoStopIdx && document.body.dataset.stage === 'autoplay') {
       syncDockActive(stopIndex);
+      lastAutoStopIdx = stopIndex;
     }
   }
 
   function syncMood(mood) {
     document.body.dataset.mood = mood;
-    const label = MOOD_LABELS[mood] || (mood === 'sunset' ? '樱霞暮色' : '晴空樱雪');
+    const isNight = mood === 'night' || mood === 'sunset' || mood === 'convergence';
+    const label = MOOD_LABELS[mood] || (isNight ? '收敛夜灯' : '午后琥珀');
     moodBtns.forEach((btn) => {
       btn.textContent = `光影 · ${label}`;
     });
@@ -332,9 +341,14 @@ export function createUIController({
   // Project 3D landmark anchors onto screen coordinates for pins
   // Bounds stay in sync with styles.css (--drawer-width: 380px, --drawer-gap: 20px)
   const projVec = new THREE.Vector3();
+  let lastPinsVisible = null;
   function updatePins(camera, viewportW, viewportH, visible) {
-    pinsLayer.style.opacity = visible ? '1' : '0';
-    pinsLayer.style.pointerEvents = 'none';
+    if (!visible && lastPinsVisible === false) return;
+    if (visible !== lastPinsVisible) {
+      pinsLayer.style.opacity = visible ? '1' : '0';
+      pinsLayer.style.pointerEvents = 'none';
+      lastPinsVisible = visible;
+    }
     if (!visible) {
       pinElements.forEach(({ el }) => {
         el.style.pointerEvents = 'none';
@@ -343,8 +357,8 @@ export function createUIController({
     }
 
     const isMobile = viewportW <= 768;
-    const minY = isMobile ? 116 : 76;
-    const maxY = isMobile && drawerOpen ? viewportH * 0.46 : viewportH - (isMobile ? 76 : 84);
+    const minY = isMobile ? 116 : 82;
+    const maxY = isMobile && drawerOpen ? viewportH * 0.46 : viewportH - (isMobile ? 76 : 92);
     const maxX = !isMobile && drawerOpen ? viewportW - 416 : viewportW - 24;
 
     pinElements.forEach(({ el, anchor }) => {

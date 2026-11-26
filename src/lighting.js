@@ -9,61 +9,59 @@ import * as THREE from 'three';
  */
 export function createLightingSystem(scene, renderer) {
   const MOODS = {
-    spring: {
-      zenith: '#1866bb',
-      upperMid: '#4da6ed',
-      lowerMid: '#9cd2fa',
-      horizon: '#f7ebf2',
-      sunHalo: '#fff6e4',
-      cloudLit: '#ffffff',
-      cloudShadow: '#a7c6e4',
-      fogColor: '#d7ebfc',
-      fogDensity: 0.0026,
-      keyColor: '#fff2d8',
-      keyIntensity: 3.15,
-      keyPos: [28, 22, 19],
-      hemiSky: '#8cc4f5',
-      hemiGround: '#5f7285',
-      hemiIntensity: 0.62,
-      rimColor: '#ffd9e6',
-      rimIntensity: 0.34,
-      frontFillIntensity: 0.16,
-      envIntensity: 0.58,
-      beamColor: '#fff4fa',
-      beamOpacity: 0.045,
-      pointColor: '#ffd4e6',
-      pointIntensity: 3.5,
+    amber: {
+      zenith: '#2a5a8e',
+      upperMid: '#6b9ac7',
+      lowerMid: '#e2c39d',
+      horizon: '#f6dcb4',
+      sunHalo: '#ffe4ad',
+      cloudLit: '#fff4df',
+      cloudShadow: '#8ba0b8',
+      fogColor: '#f5d4a8',
+      fogDensity: 0.0045,
+      keyColor: '#ffd088',
+      keyIntensity: 3.45,
+      keyPos: [-12, 28, 30],
+      hemiSky: '#7ab8f0',
+      hemiGround: '#3b4a72',
+      hemiIntensity: 0.72,
+      rimColor: '#cfe0ff',
+      rimIntensity: 0.48,
+      envIntensity: 0.50,
+      beamColor: '#ffd999',
+      beamOpacity: 0.11,
+      pointColor: '#ffad4d',
+      pointIntensity: 0.0,
     },
-    sunset: {
-      zenith: '#283f7c',
-      upperMid: '#6b67ab',
-      lowerMid: '#db93b7',
-      horizon: '#ffd2c5',
-      sunHalo: '#ffe2bf',
-      cloudLit: '#fff0f3',
-      cloudShadow: '#9b8bb8',
-      fogColor: '#efc4d8',
-      fogDensity: 0.0029,
-      keyColor: '#ffbe92',
-      keyIntensity: 2.65,
-      keyPos: [-24, 17, 16],
-      hemiSky: '#9ea2dc',
-      hemiGround: '#6b5a74',
-      hemiIntensity: 0.56,
-      rimColor: '#ff9ec4',
-      rimIntensity: 0.52,
-      frontFillIntensity: 0.14,
-      envIntensity: 0.52,
-      beamColor: '#ffc6de',
-      beamOpacity: 0.065,
-      pointColor: '#ffb870',
-      pointIntensity: 14,
+    night: {
+      zenith: '#071024',
+      upperMid: '#12244a',
+      lowerMid: '#1e3560',
+      horizon: '#274172',
+      sunHalo: '#8cb6f5',
+      cloudLit: '#334d7e',
+      cloudShadow: '#122040',
+      fogColor: '#152546',
+      fogDensity: 0.0068,
+      keyColor: '#98c2ff',
+      keyIntensity: 1.72,
+      keyPos: [28, 26, 6],
+      hemiSky: '#4468a8',
+      hemiGround: '#1b2946',
+      hemiIntensity: 0.86,
+      rimColor: '#b4d6ff',
+      rimIntensity: 1.45,
+      envIntensity: 0.34,
+      beamColor: '#8eb8ff',
+      beamOpacity: 0.04,
+      pointColor: '#ffad4d',
+      pointIntensity: 5.5,
     },
   };
 
   function resolveMoodKey(name) {
-    if (name === 'sunset' || name === 'convergence') return 'sunset';
-    return 'spring';
+    if (name === 'night' || name === 'sunset' || name === 'convergence') return 'night';
+    return 'amber';
   }
 
   /* ---------------------------------------------------------------------- */
@@ -126,15 +124,75 @@ export function createLightingSystem(scene, renderer) {
   /* ---------------------------------------------------------------------- */
   /* 2. Layered Atmospheric Sky Dome + Sunlit Volumetric-Style Clouds       */
   /* ---------------------------------------------------------------------- */
+  function buildCloudNoiseTexture(size = 256) {
+    const data = new Uint8Array(size * size * 4);
+    const hashP = (ix, iy, period, seed) => {
+      const wx = ((ix % period) + period) % period;
+      const wy = ((iy % period) + period) % period;
+      const s = Math.sin(wx * 127.1 + wy * 311.7 + seed * 74.7) * 43758.5453123;
+      return s - Math.floor(s);
+    };
+    const pNoise = (u, v, period, seed) => {
+      const px = u * period;
+      const py = v * period;
+      const ix = Math.floor(px);
+      const iy = Math.floor(py);
+      const fx = px - ix;
+      const fy = py - iy;
+      const ux = fx * fx * (3 - 2 * fx);
+      const uy = fy * fy * (3 - 2 * fy);
+      const a = hashP(ix, iy, period, seed);
+      const b = hashP(ix + 1, iy, period, seed);
+      const c = hashP(ix, iy + 1, period, seed);
+      const d = hashP(ix + 1, iy + 1, period, seed);
+      return (a + (b - a) * ux) * (1 - uy) + (c + (d - c) * ux) * uy;
+    };
+    const pFbm = (u, v, basePeriod, octaves, seed) => {
+      let sum = 0;
+      let wSum = 0;
+      let amp = 0.5;
+      let period = basePeriod;
+      for (let o = 0; o < octaves; o++) {
+        sum += amp * pNoise(u + o * 0.13, v + o * 0.29, period, seed + o * 17);
+        wSum += amp;
+        amp *= 0.5;
+        period *= 2;
+      }
+      return sum / wSum;
+    };
+    for (let y = 0; y < size; y++) {
+      const v = y / size;
+      for (let x = 0; x < size; x++) {
+        const u = x / size;
+        const idx = (y * size + x) * 4;
+        data[idx] = Math.round(THREE.MathUtils.clamp(pFbm(u, v, 8, 4, 1), 0, 1) * 255);
+        data[idx + 1] = Math.round(THREE.MathUtils.clamp(pFbm(u, v, 16, 3, 41), 0, 1) * 255);
+        data[idx + 2] = Math.round(THREE.MathUtils.clamp(pFbm(u, v, 10, 3, 83), 0, 1) * 255);
+        data[idx + 3] = 255;
+      }
+    }
+    const tex = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.RepeatWrapping;
+    tex.magFilter = THREE.LinearFilter;
+    tex.minFilter = THREE.LinearFilter;
+    tex.generateMipmaps = false;
+    tex.needsUpdate = true;
+    return tex;
+  }
+
+  const cloudNoiseTex = buildCloudNoiseTexture(256);
+
   const skyUniforms = {
-    uZenith: { value: new THREE.Color(MOODS.spring.zenith) },
-    uUpperMid: { value: new THREE.Color(MOODS.spring.upperMid) },
-    uLowerMid: { value: new THREE.Color(MOODS.spring.lowerMid) },
-    uHorizon: { value: new THREE.Color(MOODS.spring.horizon) },
-    uSunHalo: { value: new THREE.Color(MOODS.spring.sunHalo) },
-    uCloudLit: { value: new THREE.Color(MOODS.spring.cloudLit) },
-    uCloudShadow: { value: new THREE.Color(MOODS.spring.cloudShadow) },
-    uSunDir: { value: new THREE.Vector3(...MOODS.spring.keyPos).normalize() },
+    uZenith: { value: new THREE.Color(MOODS.amber.zenith) },
+    uUpperMid: { value: new THREE.Color(MOODS.amber.upperMid) },
+    uLowerMid: { value: new THREE.Color(MOODS.amber.lowerMid) },
+    uHorizon: { value: new THREE.Color(MOODS.amber.horizon) },
+    uSunHalo: { value: new THREE.Color(MOODS.amber.sunHalo) },
+    uCloudLit: { value: new THREE.Color(MOODS.amber.cloudLit) },
+    uCloudShadow: { value: new THREE.Color(MOODS.amber.cloudShadow) },
+    uSunDir: { value: new THREE.Vector3(...MOODS.amber.keyPos).normalize() },
+    uCloudNoise: { value: cloudNoiseTex },
     uTime: { value: 0 },
     uLinearOutput: { value: 0.0 },
   };
@@ -162,69 +220,45 @@ export function createLightingSystem(scene, renderer) {
         uniform vec3 uCloudLit;
         uniform vec3 uCloudShadow;
         uniform vec3 uSunDir;
+        uniform sampler2D uCloudNoise;
         uniform float uTime;
         uniform float uLinearOutput;
         varying vec3 vWorldPos;
-
-        float hash(vec2 p) {
-          return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
-        }
-        float noise(vec2 p) {
-          vec2 i = floor(p);
-          vec2 f = fract(p);
-          vec2 u = f * f * (3.0 - 2.0 * f);
-          return mix(
-            mix(hash(i + vec2(0.0, 0.0)), hash(i + vec2(1.0, 0.0)), u.x),
-            mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x),
-            u.y
-          );
-        }
-        float fbm5(vec2 p) {
-          float v = 0.0;
-          float a = 0.5;
-          mat2 rot = mat2(0.8, 0.6, -0.6, 0.8);
-          for (int i = 0; i < 5; i++) {
-            v += a * noise(p);
-            p = rot * p * 2.03 + vec2(3.1, 7.4);
-            a *= 0.5;
-          }
-          return v;
-        }
 
         void main() {
           vec3 dir = normalize(vWorldPos);
           float h = dir.y;
 
-          float t1 = smoothstep(-0.22, 0.0, h);
-          float t2 = smoothstep(-0.02, 0.24, h);
-          float t3 = smoothstep(0.20, 0.78, h);
+          float t1 = smoothstep(0.008, 0.14, h);
+          float t2 = smoothstep(0.09, 0.35, h);
+          float t3 = smoothstep(0.26, 0.80, h);
 
           vec3 col = mix(uHorizon, uLowerMid, t1);
           col = mix(col, uUpperMid, t2);
           col = mix(col, uZenith, t3);
 
-          // Multi-layered photographic cumulus & cirrus clouds with sun-side self-shadowing
+          // Multi-layered photographic cumulus & cirrus clouds via seamless pre-baked FBM LUT
           if (h > -0.04) {
             vec2 skyUv = dir.xz / (max(0.09, h + 0.24)) * 1.15;
             vec2 drift = vec2(uTime * 0.006, uTime * 0.002);
 
-            float base = fbm5(skyUv * 1.35 + drift);
-            float detail = fbm5(skyUv * 3.1 - drift * 0.8);
-            float density = smoothstep(0.49, 0.76, base * 0.72 + detail * 0.28);
+            float base = texture2D(uCloudNoise, (skyUv * 1.35 + drift) * 0.125).r;
+            float detail = texture2D(uCloudNoise, (skyUv * 3.1 - drift * 0.8) * 0.0625).g;
+            float density = smoothstep(0.49, 0.74, base * 0.72 + detail * 0.28);
 
             // Sample density slightly toward sun to give realistic bright top vs cool shadowed underside
             vec2 sunStep = normalize(uSunDir.xz + vec2(0.001)) * 0.075;
-            float baseTowardSun = fbm5((skyUv + sunStep) * 1.35 + drift);
+            float baseTowardSun = texture2D(uCloudNoise, ((skyUv + sunStep) * 1.35 + drift) * 0.125).r;
             float selfLit = clamp(0.55 + (base - baseTowardSun) * 4.2 + h * 0.45, 0.0, 1.0);
 
             float sunForward = pow(max(0.0, dot(dir, uSunDir)), 6.0);
             vec3 cloudCol = mix(uCloudShadow, uCloudLit, selfLit) + uSunHalo * sunForward * 0.22;
 
             // High wispy cirrus layer
-            float cirrus = smoothstep(0.56, 0.82, fbm5(skyUv * 2.4 + vec2(8.0, 2.5) + drift * 0.5));
+            float cirrus = smoothstep(0.55, 0.80, texture2D(uCloudNoise, (skyUv * 2.4 + vec2(8.0, 2.5) + drift * 0.5) * 0.1).b);
             col = mix(col, mix(uCloudLit, uHorizon, 0.15), cirrus * 0.28 * smoothstep(0.0, 0.22, h));
 
-            float horizonFade = smoothstep(-0.02, 0.14, h) * smoothstep(0.95, 0.45, h);
+            float horizonFade = smoothstep(0.015, 0.16, h) * smoothstep(0.95, 0.45, h);
             col = mix(col, cloudCol, density * horizonFade * 0.88);
           }
 
@@ -253,8 +287,8 @@ export function createLightingSystem(scene, renderer) {
     side: THREE.DoubleSide,
     blending: THREE.AdditiveBlending,
     uniforms: {
-      uColor: { value: new THREE.Color(MOODS.spring.beamColor) },
-      uOpacity: { value: MOODS.spring.beamOpacity },
+      uColor: { value: new THREE.Color(MOODS.amber.beamColor) },
+      uOpacity: { value: MOODS.amber.beamOpacity },
     },
     vertexShader: `
       varying vec2 vUv;
@@ -279,6 +313,8 @@ export function createLightingSystem(scene, renderer) {
   const beamConfigs = [
     { pos: [-1.4, 5.4, 15.8], rot: [-0.28, 0.25, -0.36], scale: [3.2, 6.2, 1] },
     { pos: [0.8, 5.6, 15.7], rot: [-0.28, 0.25, -0.34], scale: [3.6, 6.5, 1] },
+    { pos: [-1.2, 5.0, 6.8], rot: [-0.28, 0.25, -0.36], scale: [3.8, 6.8, 1] },
+    { pos: [1.8, 9.2, -5.2], rot: [-0.28, 0.25, -0.34], scale: [4.2, 7.2, 1] },
   ];
   const beamGeo = new THREE.PlaneGeometry(1, 1);
   beamConfigs.forEach((bc) => {
@@ -295,19 +331,19 @@ export function createLightingSystem(scene, renderer) {
   /* ---------------------------------------------------------------------- */
   /* 4. Atmospheric Fog, Sun Key Light, Sky Hemisphere & Rim Contrast       */
   /* ---------------------------------------------------------------------- */
-  scene.fog = new THREE.FogExp2(MOODS.spring.fogColor, MOODS.spring.fogDensity);
+  scene.fog = new THREE.FogExp2(MOODS.amber.fogColor, MOODS.amber.fogDensity);
 
-  const keyLight = new THREE.DirectionalLight(MOODS.spring.keyColor, MOODS.spring.keyIntensity);
-  keyLight.position.set(...MOODS.spring.keyPos);
+  const keyLight = new THREE.DirectionalLight(MOODS.amber.keyColor, MOODS.amber.keyIntensity);
+  keyLight.position.set(...MOODS.amber.keyPos);
   keyLight.target.position.set(2, 0, 1);
   keyLight.castShadow = true;
   keyLight.shadow.mapSize.set(2048, 2048);
   keyLight.shadow.camera.near = 4;
-  keyLight.shadow.camera.far = 105;
-  keyLight.shadow.camera.left = -24;
-  keyLight.shadow.camera.right = 25;
-  keyLight.shadow.camera.top = 24;
-  keyLight.shadow.camera.bottom = -25;
+  keyLight.shadow.camera.far = 115;
+  keyLight.shadow.camera.left = -28;
+  keyLight.shadow.camera.right = 28;
+  keyLight.shadow.camera.top = 26;
+  keyLight.shadow.camera.bottom = -26;
   keyLight.shadow.bias = -0.00022;
   keyLight.shadow.normalBias = 0.014;
   scene.add(keyLight);
@@ -315,39 +351,74 @@ export function createLightingSystem(scene, renderer) {
   keyLight.target.updateMatrixWorld();
 
   const hemiLight = new THREE.HemisphereLight(
-    MOODS.spring.hemiSky,
-    MOODS.spring.hemiGround,
-    MOODS.spring.hemiIntensity
+    MOODS.amber.hemiSky,
+    MOODS.amber.hemiGround,
+    MOODS.amber.hemiIntensity
   );
   scene.add(hemiLight);
 
-  const rimLight = new THREE.DirectionalLight(MOODS.spring.rimColor, MOODS.spring.rimIntensity);
+  const rimLight = new THREE.DirectionalLight(MOODS.amber.rimColor, MOODS.amber.rimIntensity);
   rimLight.position.set(-20, 14, -24);
   scene.add(rimLight);
 
-  const frontFill = new THREE.DirectionalLight('#fff6fa', MOODS.spring.frontFillIntensity);
-  frontFill.position.set(-6, 10, 34);
-  scene.add(frontFill);
-
   const localLightCoords = [
-    [0, 4.2, 16.8],
-    [-4.2, 5.2, 0.2],
-    [0.4, 8.8, -8.5],
-    [13.5, 2.4, -7.8],
+    [-6.0, 2.38, 11.0],
+    [6.0, 2.38, 11.0],
+    [-6.0, 2.38, 8.0],
+    [6.0, 2.38, 8.0],
+    [0.0, 3.2, 16.0],
+    [0.0, 3.5, 2.4],
+    [0.0, 5.45, -5.2],
+    [9.25 + 1.47, 1.85, -3.2],
+    [18.7, 1.45, -7.8],
+    [0.0, 5.15, 17.2],
+    [-4.55, 5.75, -0.8],
+    [0.0, 5.75, -0.8],
+    [4.55, 5.75, -0.8],
+    [-2.8, 9.1, -8.8],
+    [2.8, 9.1, -8.8],
   ];
-  const pointLights = localLightCoords.map(([x, y, z]) => {
-    const pl = new THREE.PointLight(MOODS.spring.pointColor, MOODS.spring.pointIntensity, 18, 1.6);
+  const pointLights = localLightCoords.map(([x, y, z], idx) => {
+    const intensity =
+      idx < 4
+        ? 2.9
+        : idx === 4
+          ? 2.1
+          : idx === 5
+            ? 2.6
+            : idx === 9
+              ? 2.2
+              : idx >= 10 && idx <= 12
+                ? 2.4
+                : idx >= 13
+                  ? 2.35
+                  : idx >= 7
+                    ? 3.7
+                    : 3.0;
+    const dist =
+      idx < 4
+        ? 8.2
+        : idx === 9
+          ? 8.5
+          : idx >= 10 && idx <= 12
+            ? 5.6
+            : idx >= 13
+              ? 7.2
+              : idx >= 7
+                ? 7.6
+                : 11.0;
+    const pl = new THREE.PointLight(MOODS.night.pointColor, intensity, dist, 2.0);
     pl.position.set(x, y, z);
     pl.castShadow = false;
-    scene.add(pl);
+    pl.userData.baseIntensity = intensity;
     return pl;
   });
 
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.shadowMap.autoUpdate = false;
 
-  let currentMood = 'spring';
+  let currentMood = 'amber';
   let rebakeCount = 0;
 
   function bakeStaticShadows() {
@@ -382,14 +453,23 @@ export function createLightingSystem(scene, renderer) {
 
     rimLight.color.set(cfg.rimColor);
     rimLight.intensity = cfg.rimIntensity;
-    frontFill.intensity = cfg.frontFillIntensity;
+    if (key === 'night') {
+      rimLight.position.set(-22, 24, -28);
+    } else {
+      rimLight.position.set(24, 14, -14);
+    }
 
     beamMat.uniforms.uColor.value.set(cfg.beamColor);
     beamMat.uniforms.uOpacity.value = cfg.beamOpacity;
 
     pointLights.forEach((pl) => {
-      pl.color.set(cfg.pointColor);
-      pl.intensity = cfg.pointIntensity;
+      if (key === 'night') {
+        if (!pl.parent) scene.add(pl);
+        pl.color.set(cfg.pointColor);
+        pl.intensity = pl.userData.baseIntensity || cfg.pointIntensity;
+      } else if (pl.parent) {
+        scene.remove(pl);
+      }
     });
 
     buildSkyEnvMap(cfg);
