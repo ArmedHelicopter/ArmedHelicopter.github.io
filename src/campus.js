@@ -1363,8 +1363,7 @@ export function createCampusDiorama(textures) {
         const mat2 ROT37 = mat2(0.80, -0.60, 0.60, 0.80);
         const mat2 ROT37_T = mat2(0.80, 0.60, -0.60, 0.80);
 
-        vec3 w = noiseGrad2D(p * 0.35 + vec2(t * 0.08, -t * 0.06));
-        vec2 q = p + w.yz * 0.45;
+        vec2 q = p;
 
         vec2 macroG = vec2(0.0);
         vec2 capG = vec2(0.0);
@@ -1372,7 +1371,7 @@ export function createCampusDiorama(textures) {
         float freqs[5];
         freqs[0] = 0.72; freqs[1] = 1.38; freqs[2] = 2.65; freqs[3] = 5.40; freqs[4] = 10.80;
         float amps[5];
-        amps[0] = 0.040; amps[1] = 0.034; amps[2] = 0.026; amps[3] = 0.020; amps[4] = 0.015;
+        amps[0] = 0.024; amps[1] = 0.022; amps[2] = 0.026; amps[3] = 0.020; amps[4] = 0.015;
         vec2 vels[5];
         vels[0] = vec2(0.62, -0.48); vels[1] = vec2(-0.72, 0.55);
         vels[2] = vec2(0.85, 0.62);  vels[3] = vec2(-1.05, -0.72); vels[4] = vec2(1.30, -0.85);
@@ -1498,7 +1497,7 @@ export function createCampusDiorama(textures) {
         if (uHasReflection > 0.5 && vReflectCoord.w > 0.001) {
           vec2 rawUv = (vReflectCoord.xy / vReflectCoord.w) * 0.5 + 0.5;
           float distDamp = 1.0 / (1.0 + camDist * 0.045);
-          vec2 perturb = (wg.xy * vec2(0.42, 0.72) * distDamp + wg.zw * vec2(0.55, 0.85)) * vec2(0.032, 0.055);
+          vec2 perturb = (wg.xy * vec2(0.18, 0.32) * distDamp + wg.zw * vec2(0.45, 0.72)) * vec2(0.010, 0.016);
           vec2 reflUv = clamp(rawUv + perturb, vec2(0.002), vec2(0.998));
           vec3 sampledRefl = texture2D(tReflection, reflUv).rgb;
           float inBounds =

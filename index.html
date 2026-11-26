@@ -14705,8 +14705,7 @@ function createCampusDiorama(textures) {
         const mat2 ROT37 = mat2(0.80, -0.60, 0.60, 0.80);
         const mat2 ROT37_T = mat2(0.80, 0.60, -0.60, 0.80);
 
-        vec3 w = noiseGrad2D(p * 0.35 + vec2(t * 0.08, -t * 0.06));
-        vec2 q = p + w.yz * 0.45;
+        vec2 q = p;
 
         vec2 macroG = vec2(0.0);
         vec2 capG = vec2(0.0);
@@ -14714,7 +14713,7 @@ function createCampusDiorama(textures) {
         float freqs[5];
         freqs[0] = 0.72; freqs[1] = 1.38; freqs[2] = 2.65; freqs[3] = 5.40; freqs[4] = 10.80;
         float amps[5];
-        amps[0] = 0.040; amps[1] = 0.034; amps[2] = 0.026; amps[3] = 0.020; amps[4] = 0.015;
+        amps[0] = 0.024; amps[1] = 0.022; amps[2] = 0.026; amps[3] = 0.020; amps[4] = 0.015;
         vec2 vels[5];
         vels[0] = vec2(0.62, -0.48); vels[1] = vec2(-0.72, 0.55);
         vels[2] = vec2(0.85, 0.62);  vels[3] = vec2(-1.05, -0.72); vels[4] = vec2(1.30, -0.85);
@@ -14840,7 +14839,7 @@ function createCampusDiorama(textures) {
         if (uHasReflection > 0.5 && vReflectCoord.w > 0.001) {
           vec2 rawUv = (vReflectCoord.xy / vReflectCoord.w) * 0.5 + 0.5;
           float distDamp = 1.0 / (1.0 + camDist * 0.045);
-          vec2 perturb = (wg.xy * vec2(0.42, 0.72) * distDamp + wg.zw * vec2(0.55, 0.85)) * vec2(0.032, 0.055);
+          vec2 perturb = (wg.xy * vec2(0.18, 0.32) * distDamp + wg.zw * vec2(0.45, 0.72)) * vec2(0.010, 0.016);
           vec2 reflUv = clamp(rawUv + perturb, vec2(0.002), vec2(0.998));
           vec3 sampledRefl = texture2D(tReflection, reflUv).rgb;
           float inBounds =
@@ -16221,6 +16220,7 @@ function createLightingSystem(scene, renderer) {
 // src/camera.js
 var OVERVIEW_POS = new Ci(21.2, 15.8, 26.2);
 var OVERVIEW_TARGET = new Ci(0, 3.5, 0.8);
+var CINEMA_FOV = 42;
 function easeInOutCubic(t2) {
   return t2 < 0.5 ? 4 * t2 * t2 * t2 : 1 - Math.pow(-2 * t2 + 2, 3) / 2;
 }
@@ -16228,31 +16228,22 @@ function smooth01(e0, e1, x) {
   const t2 = Zn.clamp((x - e0) / (e1 - e0), 0, 1);
   return t2 * t2 * (3 - 2 * t2);
 }
-function wrapPi(a) {
-  let r = (a + Math.PI) % (Math.PI * 2);
-  if (r < 0) r += Math.PI * 2;
-  return r - Math.PI;
-}
 var KF = [
-  { pos: [0, 2.7, 36.5], att: [0, 5, 15.5], w: 0.85, v: 1.15, stop: { id: "archway", index: 0, label: "01/04 \xB7 \u56FD\u7ACB\u6B66\u6C49\u5927\u5B66\u724C\u574A" } },
-  { pos: [0, 2.2, 23], att: [0, 4.4, 15.5], w: 0.72, v: 1.05 },
-  { pos: [0, 1.78, 17.5], att: [0, 2.9, 8], w: 0.32, v: 1.05 },
-  { pos: [0, 1.75, 13], att: [0, 3.2, 2], w: 0.25, v: 1.05 },
-  { pos: [0, 2.35, 9.6], att: [0, 4.1, 0.4], w: 0.48, v: 0.85, stop: { id: "sakura", index: 1, label: "02/04 \xB7 \u8001\u658B\u820D & \u6A31\u82B1\u5927\u9053" } },
-  { pos: [0, 3.6, 5.6], att: [0, 5.1, -0.8], w: 0.58, v: 0.72 },
-  { pos: [0, 7, 2.4], att: [0, 7.2, -1.2], w: 0.52, v: 0.68 },
-  { pos: [0, 9.8, -1], att: [0, 9, -9.8], w: 0.58, v: 0.52, stop: { id: "library", index: 2, label: "03/04 \xB7 \u6A31\u9876\u8001\u56FE\u4E66\u9986" } },
-  { pos: [5.4, 11.8, -3.2], att: [9.5, 8.8, -9.2], w: 0.72, v: 0.5 },
-  { pos: [11.4, 8.4, -7.4], att: [23, 6.2, -8.4], w: 0.8, v: 0.56 },
-  { pos: [16.8, 4.6, -12.4], att: [23.2, 3.5, -6], w: 0.74, v: 0.54 },
-  { pos: [21.8, 3.4, -13.2], att: [20.5, 2.8, -5.2], w: 0.56, v: 0.46, stop: { id: "lingbo", index: 3, label: "04/04 \xB7 \u4E1C\u6E56\u51CC\u6CE2\u95E8" } },
-  { pos: [26, 3.2, -9.2], att: [16.5, 2.6, -3.8], w: 0.54, v: 0.5 },
-  { pos: [28.4, 4.2, -2.6], att: [11.5, 2.9, -1.2], w: 0.62, v: 0.68 },
-  { pos: [29.8, 7.6, 6.2], att: [6.5, 3.7, 4.6], w: 0.7, v: 0.84 },
-  { pos: [29.4, 11.6, 15.2], att: [2.8, 4, 6], w: 0.78, v: 0.88 },
-  { pos: [27.4, 14.2, 21.4], att: [1.4, 3.9, 4], w: 0.86, v: 0.84, stop: { id: "overview", index: -1, label: "\u4FEF\u77B0\u5168\u666F \xB7 \u73DE\u73C8\u6821\u56ED" } },
-  { pos: [24.6, 15.3, 24.6], att: [0.6, 3.7, 2], w: 0.92, v: 0.8 },
-  { pos: OVERVIEW_POS.toArray(), att: OVERVIEW_TARGET.toArray(), w: 0.96, v: 0.76 }
+  { pos: [0, 2.7, 36.5], att: [0, 4.8, 15.5], stop: { id: "archway", index: 0, label: "01/04 \xB7 \u56FD\u7ACB\u6B66\u6C49\u5927\u5B66\u724C\u574A" } },
+  { pos: [0, 2.25, 24], att: [0, 4, 12] },
+  { pos: [0, 2.05, 14.5], att: [0, 3.6, 2] },
+  { pos: [0, 3.1, 8.2], att: [0, 5, -1.8], stop: { id: "sakura", index: 1, label: "02/04 \xB7 \u8001\u658B\u820D & \u6A31\u82B1\u5927\u9053" } },
+  { pos: [0, 6.8, 2.6], att: [0, 8, -8.5] },
+  { pos: [0.6, 10.6, -1.6], att: [0.8, 9.2, -9.8], stop: { id: "library", index: 2, label: "03/04 \xB7 \u6A31\u9876\u8001\u56FE\u4E66\u9986" } },
+  { pos: [6.8, 11.2, -4.4], att: [16, 9.4, -8.8] },
+  { pos: [13.6, 7.2, -9.6], att: [23, 5.6, -6.8] },
+  { pos: [20.6, 3.8, -13.4], att: [20, 3, -4.6], stop: { id: "lingbo", index: 3, label: "04/04 \xB7 \u4E1C\u6E56\u51CC\u6CE2\u95E8" } },
+  { pos: [26.2, 3.3, -9.2], att: [15.5, 2.8, -3.2] },
+  { pos: [28.6, 4.4, -2], att: [10.8, 3, -0.6] },
+  { pos: [29.8, 8.2, 7.2], att: [5.5, 3.8, 3.6] },
+  { pos: [28.6, 12.6, 16.8], att: [2, 4, 3.8], stop: { id: "overview", index: -1, label: "\u4FEF\u77B0\u5168\u666F \xB7 \u73DE\u73C8\u6821\u56ED" } },
+  { pos: [25.6, 15, 23.4], att: [0.6, 3.7, 1.8] },
+  { pos: OVERVIEW_POS.toArray(), att: OVERVIEW_TARGET.toArray() }
 ];
 function createCameraController(camera, domElement, { onStageChange, onPortalProgress, onAutoplayProgress, onAutoplayInterrupt }) {
   let stage = "autoplay";
@@ -16294,14 +16285,6 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
   autoplayAttCurve.arcLengthDivisions = CURVE_DIVS;
   const curveLengths = autoplayPosCurve.getLengths(CURVE_DIVS);
   const totalCurveLength = curveLengths[curveLengths.length - 1] || 1;
-  function kfScalar(key, tParam) {
-    const maxI = KF.length - 1;
-    const idx = Zn.clamp(tParam, 0, 1) * maxI;
-    const i = Math.min(maxI - 1, Math.floor(idx));
-    const f = idx - i;
-    const sm2 = f * f * (3 - 2 * f);
-    return Zn.lerp(KF[i][key], KF[i + 1][key], sm2);
-  }
   const progressTable = new Float64Array(CURVE_DIVS + 1);
   {
     const ds = totalCurveLength / CURVE_DIVS;
@@ -16310,9 +16293,11 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
     for (let k2 = 1; k2 <= CURVE_DIVS; k2++) {
       const uMid = (k2 - 0.5) / CURVE_DIVS;
       const sMid = uMid * totalCurveLength;
-      const tMid = autoplayPosCurve.getUtoTmapping(uMid);
-      const v = kfScalar("v", tMid) * (0.35 + 0.65 * smooth01(0, 6, sMid)) * (0.15 + 0.85 * smooth01(0, 10, totalCurveLength - sMid));
-      accumT += ds / Math.max(v, 0.05);
+      const edge = (0.38 + 0.62 * smooth01(0, 7, sMid)) * (0.22 + 0.78 * smooth01(0, 12, totalCurveLength - sMid));
+      const slowLib = 1 - 0.3 * Math.exp(-Math.pow((uMid - 0.31) / 0.08, 2));
+      const slowLake = 1 - 0.34 * Math.exp(-Math.pow((uMid - 0.54) / 0.11, 2));
+      const v = edge * slowLib * slowLake;
+      accumT += ds / Math.max(v, 0.08);
       progressTable[k2] = accumT;
     }
     const totalTime = progressTable[CURVE_DIVS] || 1;
@@ -16361,67 +16346,46 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
   }
   const _autoPos = new Ci();
   const _autoLook = new Ci();
-  const _attPt = new Ci();
-  const _attDir = new Ci();
+  const _samplePos = new Ci();
+  const _sampleAtt = new Ci();
+  const _sampleDir = new Ci();
   const _fwd = new Ci();
   const _dir = new Ci();
-  const _tanTmp = new Ci();
-  const _tanMinus = new Ci();
-  const _tanPlus = new Ci();
-  const WINDOW_OFFSETS = [-4, -2, 0, 2, 4];
-  const WINDOW_WEIGHTS = [1, 2, 3, 2, 1];
+  const GIMBAL_TAPS = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
+  const GIMBAL_SIGMA = 2.5;
+  const GIMBAL_WEIGHTS = GIMBAL_TAPS.map((k2) => Math.exp(-0.5 * (k2 / GIMBAL_SIGMA) ** 2));
+  const GIMBAL_SUM = GIMBAL_WEIGHTS.reduce((a, b) => a + b, 0);
   let lastFwdAttAngleDeg = 0;
   let lastAutoStopId = null;
-  function sampleRollAt(uSample) {
-    const uM = Zn.clamp(uSample - 1.5 / totalCurveLength, 0, 1);
-    const uP = Zn.clamp(uSample + 1.5 / totalCurveLength, 0, 1);
-    autoplayPosCurve.getTangentAt(uM, _tanMinus);
-    autoplayPosCurve.getTangentAt(uP, _tanPlus);
-    const hM = Math.atan2(_tanMinus.x, _tanMinus.z);
-    const hP = Math.atan2(_tanPlus.x, _tanPlus.z);
-    const duMeters = Math.max(0.25, (uP - uM) * totalCurveLength);
-    const yawRate = wrapPi(hP - hM) / duMeters;
-    const tpS = autoplayPosCurve.getUtoTmapping(uSample);
-    return Zn.clamp(yawRate * 0.65 * kfScalar("v", tpS), -0.028, 0.028);
-  }
   function applyAutoplayAt(rawT) {
     const clampedT = Zn.clamp(rawT, 0, 1);
     const u2 = uFromProgress(clampedT);
     const tp2 = autoplayPosCurve.getUtoTmapping(u2);
     autoplayPosCurve.getPoint(tp2, _autoPos);
-    autoplayAttCurve.getPoint(tp2, _attPt);
-    _fwd.set(0, 0, 0);
-    for (let i = 0; i < WINDOW_OFFSETS.length; i++) {
-      const uS = Zn.clamp(u2 + WINDOW_OFFSETS[i] / totalCurveLength, 0, 1);
-      autoplayPosCurve.getTangentAt(uS, _tanTmp);
-      _fwd.addScaledVector(_tanTmp, WINDOW_WEIGHTS[i]);
+    autoplayPosCurve.getTangentAt(u2, _fwd).normalize();
+    const endFade = smooth01(0, 0.06, u2) * smooth01(0, 0.06, 1 - u2);
+    const duStep = 0.0115 * endFade;
+    _dir.set(0, 0, 0);
+    for (let i = 0; i < GIMBAL_TAPS.length; i++) {
+      const uS = Zn.clamp(u2 + GIMBAL_TAPS[i] * duStep, 0, 1);
+      const tpS = autoplayPosCurve.getUtoTmapping(uS);
+      autoplayPosCurve.getPoint(tpS, _samplePos);
+      autoplayAttCurve.getPoint(tpS, _sampleAtt);
+      _sampleDir.copy(_sampleAtt).sub(_samplePos).normalize();
+      _dir.addScaledVector(_sampleDir, GIMBAL_WEIGHTS[i] / GIMBAL_SUM);
     }
-    _fwd.normalize();
-    _fwd.y -= 0.1;
-    _fwd.normalize();
-    _attDir.copy(_attPt).sub(_autoPos).normalize();
+    _dir.normalize();
     lastFwdAttAngleDeg = Zn.radToDeg(
-      Math.acos(Zn.clamp(_fwd.dot(_attDir), -1, 1))
+      Math.acos(Zn.clamp(_fwd.dot(_dir), -1, 1))
     );
-    const w2 = kfScalar("w", tp2);
-    _dir.copy(_fwd).multiplyScalar(1 - w2).addScaledVector(_attDir, w2).normalize();
     _autoLook.copy(_autoPos).addScaledVector(_dir, 10);
-    const targetFov = Zn.lerp(50, 44, smoothstepJS(0.88, 1, clampedT));
-    if (Math.abs(camera.fov - targetFov) > 0.05) {
-      camera.fov = targetFov;
+    if (camera.fov !== CINEMA_FOV) {
+      camera.fov = CINEMA_FOV;
       camera.updateProjectionMatrix();
     }
-    let avgRoll = 0;
-    for (let i = 0; i < WINDOW_OFFSETS.length; i++) {
-      const uS = Zn.clamp(u2 + WINDOW_OFFSETS[i] / totalCurveLength, 0, 1);
-      avgRoll += sampleRollAt(uS) * WINDOW_WEIGHTS[i];
-    }
-    const lakeLevel = 1 - 0.9 * smoothstepJS(0.35, 0.45, clampedT) * smoothstepJS(0.72, 0.6, clampedT);
-    avgRoll = avgRoll / 9 * lakeLevel;
     camera.position.copy(_autoPos);
     camera.up.set(0, 1, 0);
     camera.lookAt(_autoLook);
-    camera.rotateZ(avgRoll);
     smoothLookAt.copy(_autoLook);
     const doorProgress = _autoPos.z > 10 ? smoothstepJS(36, 20, _autoPos.z) : 1;
     onPortalProgress?.(doorProgress);
@@ -16469,8 +16433,8 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
       }
       return new Ci(0, 3.9, 44.5);
     }
-    if (camera.fov !== 44) {
-      camera.fov = 44;
+    if (camera.fov !== CINEMA_FOV) {
+      camera.fov = CINEMA_FOV;
       camera.updateProjectionMatrix();
     }
     return new Ci(0, 3.25, 31.2);
@@ -16539,8 +16503,8 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
     stage = "explore";
     autoplayPaused = false;
     tweenActive = false;
-    if (camera.fov !== 44) {
-      camera.fov = 44;
+    if (camera.fov !== CINEMA_FOV) {
+      camera.fov = CINEMA_FOV;
       camera.updateProjectionMatrix();
     }
     target.copy(fallbackTarget);
@@ -16573,7 +16537,7 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
       cameraTarget: stage === "autoplay" ? _autoLook.toArray().map((n) => +n.toFixed(3)) : target.toArray().map((n) => +n.toFixed(3))
     };
   }
-  function setCameraDirect(posArr, targetArr, { fov = 44, stage: nextStage = "explore", portalOpen = 1 } = {}) {
+  function setCameraDirect(posArr, targetArr, { fov = CINEMA_FOV, stage: nextStage = "explore", portalOpen = 1 } = {}) {
     autoplayPaused = false;
     flyFrozen = false;
     tweenActive = false;
@@ -16617,8 +16581,8 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
   function enterExplore(snap = false) {
     stage = "explore";
     flyFrozen = false;
-    if (camera.fov !== 44) {
-      camera.fov = 44;
+    if (camera.fov !== CINEMA_FOV) {
+      camera.fov = CINEMA_FOV;
       camera.updateProjectionMatrix();
     }
     onPortalProgress?.(1);
@@ -16638,8 +16602,8 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
     stage = "flythrough";
     flyFrozen = true;
     flyElapsed = progress * FLY_DURATION;
-    if (camera.fov !== 44) {
-      camera.fov = 44;
+    if (camera.fov !== CINEMA_FOV) {
+      camera.fov = CINEMA_FOV;
       camera.updateProjectionMatrix();
     }
     const t2 = easeInOutCubic(progress);
@@ -16660,8 +16624,8 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
       stage = "explore";
       autoplayPaused = false;
       flyFrozen = false;
-      if (camera.fov !== 44) {
-        camera.fov = 44;
+      if (camera.fov !== CINEMA_FOV) {
+        camera.fov = CINEMA_FOV;
         camera.updateProjectionMatrix();
       }
       onPortalProgress?.(1);
@@ -16753,8 +16717,8 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
         if (rawT >= 1) {
           stage = "explore";
           autoplayPaused = false;
-          if (camera.fov !== 44) {
-            camera.fov = 44;
+          if (camera.fov !== CINEMA_FOV) {
+            camera.fov = CINEMA_FOV;
             camera.updateProjectionMatrix();
           }
           target.copy(OVERVIEW_TARGET);
@@ -17385,7 +17349,7 @@ function init() {
   renderer.toneMapping = et;
   renderer.toneMappingExposure = 0.92;
   const scene = new rc();
-  const camera = new Js(44, window.innerWidth / window.innerHeight, 0.25, 280);
+  const camera = new Js(42, window.innerWidth / window.innerHeight, 0.25, 280);
   const textures = createTextureFactory(renderer);
   const lighting = createLightingSystem(scene, renderer);
   const archway = createArchway(textures);
@@ -17680,7 +17644,7 @@ function init() {
     }
     const rawDt = Math.max(0, (now - lastTime) / 1e3);
     lastTime = now;
-    const camDt = cameraRig.getStage() === "autoplay" ? Math.min(1, rawDt) : Math.min(0.05, rawDt);
+    const camDt = Math.min(0.1, rawDt);
     const fxDt = Math.min(0.05, rawDt);
     const elapsed = now * 1e-3;
     cameraRig.update(camDt);
@@ -17737,7 +17701,7 @@ function init() {
       ui2.updateTelemetry();
     },
     setCamera(posArr, targetArr, opts = {}) {
-      const { fov = 44, stage = "explore", hideUi = false, closeDrawer = true, portalOpen = 1 } = opts;
+      const { fov = 42, stage = "explore", hideUi = false, closeDrawer = true, portalOpen = 1 } = opts;
       if (closeDrawer) ui2.closeDrawer();
       ui2.closeCvModal();
       document.body.dataset.hideUi = hideUi ? "true" : "false";

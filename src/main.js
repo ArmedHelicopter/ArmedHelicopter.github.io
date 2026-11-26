@@ -53,7 +53,7 @@ function init() {
   renderer.toneMappingExposure = 0.92;
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(44, window.innerWidth / window.innerHeight, 0.25, 280);
+  const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.25, 280);
 
   const textures = createTextureFactory(renderer);
   const lighting = createLightingSystem(scene, renderer);
@@ -388,7 +388,7 @@ function init() {
     }
     const rawDt = Math.max(0, (now - lastTime) / 1000);
     lastTime = now;
-    const camDt = cameraRig.getStage() === 'autoplay' ? Math.min(1.0, rawDt) : Math.min(0.05, rawDt);
+    const camDt = Math.min(0.1, rawDt);
     const fxDt = Math.min(0.05, rawDt);
     const elapsed = now * 0.001;
 
@@ -452,7 +452,7 @@ function init() {
       ui.updateTelemetry();
     },
     setCamera(posArr, targetArr, opts = {}) {
-      const { fov = 44, stage = 'explore', hideUi = false, closeDrawer = true, portalOpen = 1 } = opts;
+      const { fov = 42, stage = 'explore', hideUi = false, closeDrawer = true, portalOpen = 1 } = opts;
       if (closeDrawer) ui.closeDrawer();
       ui.closeCvModal();
       document.body.dataset.hideUi = hideUi ? 'true' : 'false';

@@ -27,8 +27,8 @@ DURATION = 6.0
 TOTAL_FRAMES = int(FPS * DURATION)
 QUALITY = 66
 
-# FPV spline segment 0 → 0.28 (archway → dormitory → library hero) ping-ponged
-SEGMENT_END = 0.28
+# FPV spline segment 0 → 0.34 (archway → dormitory → library hero) ping-ponged
+SEGMENT_END = 0.34
 
 
 def load_cjk_font(size):
