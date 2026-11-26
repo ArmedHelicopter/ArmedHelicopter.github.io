@@ -11,51 +11,51 @@ export function createLightingSystem(scene, renderer) {
   const MOODS = {
     amber: {
       zenith: '#2a5a8e',
-      upperMid: '#6893bd',
-      lowerMid: '#d4b89c',
-      horizon: '#eed0aa',
+      upperMid: '#6b9ac7',
+      lowerMid: '#e2c39d',
+      horizon: '#f6dcb4',
       sunHalo: '#ffe4ad',
       cloudLit: '#fff4df',
       cloudShadow: '#8ba0b8',
-      fogColor: '#e0c5a6',
-      fogDensity: 0.0046,
-      keyColor: '#ffc87d',
-      keyIntensity: 3.15,
-      keyPos: [30, 16, 18],
-      hemiSky: '#82b6e0',
-      hemiGround: '#2f4659',
-      hemiIntensity: 0.68,
-      rimColor: '#ffd4b8',
-      rimIntensity: 0.42,
+      fogColor: '#f5d4a8',
+      fogDensity: 0.0045,
+      keyColor: '#ffd088',
+      keyIntensity: 3.45,
+      keyPos: [-12, 28, 30],
+      hemiSky: '#7ab8f0',
+      hemiGround: '#3b4a72',
+      hemiIntensity: 0.72,
+      rimColor: '#cfe0ff',
+      rimIntensity: 0.48,
       envIntensity: 0.50,
       beamColor: '#ffd999',
-      beamOpacity: 0.10,
+      beamOpacity: 0.11,
       pointColor: '#ffad4d',
       pointIntensity: 0.0,
     },
     night: {
-      zenith: '#050a18',
-      upperMid: '#0c1836',
-      lowerMid: '#162850',
-      horizon: '#1c3158',
-      sunHalo: '#7fa8e8',
-      cloudLit: '#2c426e',
-      cloudShadow: '#0d1730',
-      fogColor: '#0f1c36',
+      zenith: '#071024',
+      upperMid: '#12244a',
+      lowerMid: '#1e3560',
+      horizon: '#274172',
+      sunHalo: '#8cb6f5',
+      cloudLit: '#334d7e',
+      cloudShadow: '#122040',
+      fogColor: '#152546',
       fogDensity: 0.0068,
-      keyColor: '#8eb4eb',
-      keyIntensity: 1.15,
-      keyPos: [-24, 22, 16],
-      hemiSky: '#2e487a',
-      hemiGround: '#0d1629',
-      hemiIntensity: 0.52,
-      rimColor: '#6d8fd0',
-      rimIntensity: 0.38,
-      envIntensity: 0.28,
+      keyColor: '#98c2ff',
+      keyIntensity: 1.72,
+      keyPos: [28, 26, 6],
+      hemiSky: '#4468a8',
+      hemiGround: '#1b2946',
+      hemiIntensity: 0.86,
+      rimColor: '#b4d6ff',
+      rimIntensity: 1.45,
+      envIntensity: 0.34,
       beamColor: '#8eb8ff',
-      beamOpacity: 0.045,
+      beamOpacity: 0.04,
       pointColor: '#ffad4d',
-      pointIntensity: 24.0,
+      pointIntensity: 5.5,
     },
   };
 
@@ -339,11 +339,11 @@ export function createLightingSystem(scene, renderer) {
   keyLight.castShadow = true;
   keyLight.shadow.mapSize.set(2048, 2048);
   keyLight.shadow.camera.near = 4;
-  keyLight.shadow.camera.far = 105;
-  keyLight.shadow.camera.left = -24;
-  keyLight.shadow.camera.right = 25;
-  keyLight.shadow.camera.top = 24;
-  keyLight.shadow.camera.bottom = -25;
+  keyLight.shadow.camera.far = 115;
+  keyLight.shadow.camera.left = -28;
+  keyLight.shadow.camera.right = 28;
+  keyLight.shadow.camera.top = 26;
+  keyLight.shadow.camera.bottom = -26;
   keyLight.shadow.bias = -0.00022;
   keyLight.shadow.normalBias = 0.014;
   scene.add(keyLight);
@@ -362,15 +362,55 @@ export function createLightingSystem(scene, renderer) {
   scene.add(rimLight);
 
   const localLightCoords = [
-    [0, 4.2, 16.8],
-    [-4.2, 5.2, 0.2],
-    [0.4, 8.8, -8.5],
-    [13.5, 2.4, -7.8],
+    [-6.0, 2.38, 11.0],
+    [6.0, 2.38, 11.0],
+    [-6.0, 2.38, 8.0],
+    [6.0, 2.38, 8.0],
+    [0.0, 3.2, 16.0],
+    [0.0, 3.5, 2.4],
+    [0.0, 5.45, -5.2],
+    [9.25 + 1.47, 1.85, -3.2],
+    [18.7, 1.45, -7.8],
+    [0.0, 5.15, 17.2],
+    [-4.55, 5.75, -0.8],
+    [0.0, 5.75, -0.8],
+    [4.55, 5.75, -0.8],
+    [-2.8, 9.1, -8.8],
+    [2.8, 9.1, -8.8],
   ];
-  const pointLights = localLightCoords.map(([x, y, z]) => {
-    const pl = new THREE.PointLight(MOODS.night.pointColor, MOODS.night.pointIntensity, 24, 1.45);
+  const pointLights = localLightCoords.map(([x, y, z], idx) => {
+    const intensity =
+      idx < 4
+        ? 2.9
+        : idx === 4
+          ? 2.1
+          : idx === 5
+            ? 2.6
+            : idx === 9
+              ? 2.2
+              : idx >= 10 && idx <= 12
+                ? 2.4
+                : idx >= 13
+                  ? 2.35
+                  : idx >= 7
+                    ? 3.7
+                    : 3.0;
+    const dist =
+      idx < 4
+        ? 8.2
+        : idx === 9
+          ? 8.5
+          : idx >= 10 && idx <= 12
+            ? 5.6
+            : idx >= 13
+              ? 7.2
+              : idx >= 7
+                ? 7.6
+                : 11.0;
+    const pl = new THREE.PointLight(MOODS.night.pointColor, intensity, dist, 2.0);
     pl.position.set(x, y, z);
     pl.castShadow = false;
+    pl.userData.baseIntensity = intensity;
     return pl;
   });
 
@@ -413,6 +453,11 @@ export function createLightingSystem(scene, renderer) {
 
     rimLight.color.set(cfg.rimColor);
     rimLight.intensity = cfg.rimIntensity;
+    if (key === 'night') {
+      rimLight.position.set(-22, 24, -28);
+    } else {
+      rimLight.position.set(24, 14, -14);
+    }
 
     beamMat.uniforms.uColor.value.set(cfg.beamColor);
     beamMat.uniforms.uOpacity.value = cfg.beamOpacity;
@@ -421,7 +466,7 @@ export function createLightingSystem(scene, renderer) {
       if (key === 'night') {
         if (!pl.parent) scene.add(pl);
         pl.color.set(cfg.pointColor);
-        pl.intensity = cfg.pointIntensity;
+        pl.intensity = pl.userData.baseIntensity || cfg.pointIntensity;
       } else if (pl.parent) {
         scene.remove(pl);
       }

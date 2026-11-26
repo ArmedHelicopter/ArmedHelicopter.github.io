@@ -133,38 +133,46 @@ export function createTextureFactory(renderer) {
     return register(label, c, { repeat, pixel: true, mip: true });
   }
 
-  /** Crisp 32x32 pixel-art meadow with 4 olive-emerald pixel tones & tiny blossom specks. */
-  function grass(label = 'grass', repeat = [24, 24], seed = 31) {
-    const S = 32;
+  /** Crisp 48x48 pixel-art meadow with visible blade tufts, clover clumps & blossom specks. */
+  function grass(label = 'grass', repeat = [22, 22], seed = 31) {
+    const S = 48;
     const c = makeCanvas(S, S);
     const ctx = c.getContext('2d');
     const rand = mulberry32(seed);
-    const tones = ['#5a8248', '#689351', '#78a35c', '#4a6e3e'];
+    const tones = ['#5a8347', '#6a9652', '#7da85f', '#4b703d'];
     px(ctx, 0, 0, S, S, tones[1]);
     for (let y = 0; y < S; y++) {
       for (let x = 0; x < S; x++) {
         const v = rand();
-        if (v < 0.16) px(ctx, x, y, 1, 1, tones[3]);
-        else if (v < 0.42) px(ctx, x, y, 1, 1, tones[0]);
-        else if (v > 0.80) px(ctx, x, y, 1, 1, tones[2]);
+        if (v < 0.18) px(ctx, x, y, 1, 1, tones[3]);
+        else if (v < 0.44) px(ctx, x, y, 1, 1, tones[0]);
+        else if (v > 0.78) px(ctx, x, y, 1, 1, tones[2]);
       }
     }
-    // Tiny warm meadow flower pixels
-    for (let i = 0; i < 12; i++) {
+    // Crisp sunlit grass blade tufts & clover clusters
+    for (let i = 0; i < 36; i++) {
+      const tx = Math.floor(rand() * (S - 3)) + 1;
+      const ty = Math.floor(rand() * (S - 3)) + 2;
+      px(ctx, tx, ty, 2, 1, '#3d5f34');
+      px(ctx, tx, ty - 1, 1, 1, '#8fb86d');
+      px(ctx, tx + 1, ty - 2, 1, 1, '#a6cd7e');
+    }
+    // Tiny clover wildflowers & fallen sakura petals
+    for (let i = 0; i < 16; i++) {
       const fx = Math.floor(rand() * S);
       const fy = Math.floor(rand() * S);
-      px(ctx, fx, fy, 1, 1, rand() > 0.45 ? '#fff2be' : '#ffd8e4');
+      px(ctx, fx, fy, 1, 1, rand() > 0.42 ? '#fff1bd' : '#ffd8e6');
     }
     return register(label, c, { repeat, pixel: true, mip: true });
   }
 
-  /** Crisp 32x32 pixel-art ashlar masonry retaining walls. */
+  /** Crisp 32x32 pixel-art ashlar masonry retaining walls with soft natural mortar. */
   function ashlarStone(label = 'ashlar-stone', base = '#dfd2bc', seed = 79) {
     const S = 32;
     const c = makeCanvas(S, S);
     const ctx = c.getContext('2d');
     const rand = mulberry32(seed);
-    px(ctx, 0, 0, S, S, '#8c7d69');
+    px(ctx, 0, 0, S, S, '#bfb29e');
 
     const rows = 4;
     const rh = S / rows; // 8
@@ -207,13 +215,13 @@ export function createTextureFactory(renderer) {
         if (rand() < 0.25) px(ctx, x, y, 1, 1, tones[Math.floor(rand() * tones.length)]);
       }
     }
-    // Expansion joints every 16px
+    // Subtle expansion joints every 16px
     for (const jx of [0, 16]) {
-      px(ctx, jx, 0, 1, S, '#6d6962');
-      px(ctx, jx + 1, 0, 1, S, 'rgba(255,252,246,0.48)');
+      px(ctx, jx, 0, 1, S, '#a8a093');
+      px(ctx, jx + 1, 0, 1, S, 'rgba(255,252,246,0.38)');
     }
     for (const jy of [0, 16]) {
-      px(ctx, 0, jy, S, 1, 'rgba(105,100,92,0.34)');
+      px(ctx, 0, jy, S, 1, 'rgba(160,152,140,0.28)');
     }
     return register(label, c, { pixel: true, mip: true });
   }
@@ -266,10 +274,49 @@ export function createTextureFactory(renderer) {
     };
   }
 
-  /** Legacy canopy wrapper kept for API compatibility. */
-  function sakuraCanopy(label = 'sakura-canopy', baseHex = '#ffebf3', accentHex = '#ffadc9', seed = 88) {
-    const tex = sakuraSprig(`${label}-fallback`, seed);
-    return { map: tex, bumpMap: tex };
+  /** Crisp 96x96 multi-tone botanical floret cluster sakura canopy texture. */
+  function sakuraCanopy(label = 'sakura-canopy', baseHex = '#ffe8f0', accentHex = '#ffc4d9', seed = 88) {
+    const S = 96;
+    const c = makeCanvas(S, S);
+    const ctx = c.getContext('2d');
+    const rand = mulberry32(seed);
+    px(ctx, 0, 0, S, S, baseHex);
+    const tones = ['#fffafd', '#ffeff6', accentHex, '#f09ebb', '#da7ea0'];
+    for (let i = 0; i < 420; i++) {
+      const cx = Math.floor(rand() * S);
+      const cy = Math.floor(rand() * S);
+      const v = rand();
+      const t = v < 0.24 ? tones[0] : v < 0.50 ? tones[1] : v < 0.78 ? tones[2] : v < 0.92 ? tones[3] : tones[4];
+      const w = 3 + Math.floor(rand() * 4);
+      const h = 2 + Math.floor(rand() * 3);
+      px(ctx, cx, cy, w, h, t);
+      if (v > 0.78 && rand() < 0.5) px(ctx, cx + 1, cy - 1, 2, 1, '#fffafd');
+    }
+    return {
+      map: register(`${label}-albedo`, c, { repeat: [2, 2], pixel: true, mip: true }),
+      bumpMap: null,
+    };
+  }
+
+  /** Crisp 96x96 multi-tone clustered camphor leaf canopy texture for sculpted forest crowns. */
+  function leafCanopy(label = 'leaf-canopy', seed = 91) {
+    const S = 96;
+    const c = makeCanvas(S, S);
+    const ctx = c.getContext('2d');
+    const rand = mulberry32(seed);
+    px(ctx, 0, 0, S, S, '#699754');
+    const tones = ['#bce080', '#8cbe64', '#588a4c', '#3c663e', '#2c4d32'];
+    for (let i = 0; i < 460; i++) {
+      const cx = Math.floor(rand() * S);
+      const cy = Math.floor(rand() * S);
+      const v = rand();
+      const t = v < 0.24 ? tones[0] : v < 0.52 ? tones[1] : v < 0.78 ? tones[2] : v < 0.93 ? tones[3] : tones[4];
+      const w = 3 + Math.floor(rand() * 4);
+      const h = 2 + Math.floor(rand() * 3);
+      px(ctx, cx, cy, w, h, t);
+      if (v > 0.80 && rand() < 0.4) px(ctx, cx + 1, cy, 2, 1, '#bce080');
+    }
+    return register(`${label}-albedo`, c, { repeat: [2, 2], pixel: true, mip: true });
   }
 
   /** Crisp 64x64 pixel-art stone facade with recessed windows & warm amber night glow. */
@@ -299,32 +346,38 @@ export function createTextureFactory(renderer) {
       px(a, 0, r * rh + rh - 2, S, 1, '#faf4ea');
       px(a, 0, r * rh + rh - 1, S, 1, 'rgba(128,110,90,0.32)');
       for (let c = 0; c < cols; c++) {
-        const ww = Math.max(6, Math.floor(cw * 0.44));
-        const wh = Math.max(8, Math.floor(rh * 0.56));
+        const ww = Math.max(7, Math.floor(cw * 0.50));
+        const wh = Math.max(9, Math.floor(rh * 0.56));
         const x = c * cw + Math.floor((cw - ww) / 2);
         const y = r * rh + Math.floor(rh * 0.18);
 
-        // Cream stone surround & dark bronze frame
-        px(a, x - 1, y - 1, ww + 2, wh + 2, '#f7efe2');
-        px(a, x - 1, y + wh + 1, ww + 2, 1, '#b8a894');
-        px(a, x, y, ww, wh, '#2a3b4e');
+        // Recessed cream stone surround & warm lower sill shadow (prevents barcode striping)
+        px(a, x - 1, y - 1, ww + 2, wh + 2, '#f6eee0');
+        px(a, x - 1, y + wh + 1, ww + 2, 1, '#c4b49e');
+        px(a, x, y, ww, wh, '#364b5f');
 
-        const lit = rand() < 0.55;
+        const lit = rand() < 0.58;
         if (arched && r === rows - 1) {
-          px(a, x + 1, y + 2, ww - 2, wh - 3, '#33506b');
-          px(a, x + 2, y + 1, ww - 4, 1, '#33506b');
+          px(a, x + 1, y + 2, ww - 2, wh - 3, '#3b5c78');
+          px(a, x + 2, y + 1, ww - 4, 1, '#3b5c78');
         } else {
-          px(a, x + 1, y + 1, ww - 2, wh - 2, '#2d4760');
+          px(a, x + 1, y + 1, ww - 2, wh - 2, '#355470');
         }
-        // Highlight pane reflection
-        px(a, x + 1, y + 2, 1, Math.max(2, wh - 4), '#7da6cc');
-        // Mullion cross
-        px(a, x + Math.floor(ww / 2), y + 1, 1, wh - 2, '#ded4c4');
-        px(a, x + 1, y + Math.floor(wh * 0.48), ww - 2, 1, '#ded4c4');
+        // Layered glass pane gradient + bright sky specular corner sheen
+        px(a, x + 1, y + 2, Math.max(2, Math.floor(ww * 0.42)), Math.max(2, wh - 5), '#5f89ab');
+        px(a, x + 1, y + 2, 1, Math.max(2, Math.floor(wh * 0.55)), '#b7d7ec');
+        px(a, x + Math.floor(ww / 2), y + 1, 1, wh - 2, '#cfc3b0');
+        px(a, x + 1, y + Math.floor(wh * 0.48), ww - 2, 1, '#cfc3b0');
 
         if (lit) {
-          px(e, x + 1, y + 1, ww - 2, wh - 2, '#ffb55c');
-          px(e, x + 2, y + 2, ww - 4, wh - 4, '#ffd98a');
+          const vLit = rand();
+          const winOuter = vLit < 0.35 ? '#ffb050' : vLit < 0.72 ? '#ffcb74' : '#d68846';
+          const winInner = vLit < 0.35 ? '#ffd684' : vLit < 0.72 ? '#ffe5ad' : '#f0aa5c';
+          px(e, x + 1, y + 1, ww - 2, wh - 2, winOuter);
+          px(e, x + 2, y + 2, ww - 4, wh - 4, winInner);
+          if (vLit > 0.78) {
+            px(e, x + 2, y + 2, Math.max(1, Math.floor((ww - 4) * 0.45)), wh - 4, '#6b4928');
+          }
           px(e, x + Math.floor(ww / 2), y + 1, 1, wh - 2, '#000000');
           px(e, x + 1, y + Math.floor(wh * 0.48), ww - 2, 1, '#000000');
         }
@@ -391,91 +444,94 @@ export function createTextureFactory(renderer) {
     return register(label, c, { srgb: false, wrap: false, pixel: true, mip: true });
   }
 
-  /** Crisp 32x32 pixel-art cherry blossom sprig silhouette (OurSongs block-foliage feel). */
+  /** Refined 128x128 painterly cluster blossom sprite (fine overlapping 5-petal florets, lacy silhouette). */
   function sakuraSprig(label = 'sakura-sprig', seed = 901) {
-    const S = 32;
+    const S = 128;
     const c = makeCanvas(S, S);
     const ctx = c.getContext('2d');
     const rand = mulberry32(seed);
     ctx.clearRect(0, 0, S, S);
 
-    // Subtle interior pixel twigs
-    px(ctx, 15, 16, 2, 8, '#6a4b45');
-    px(ctx, 11, 13, 4, 2, '#6a4b45');
-    px(ctx, 17, 13, 4, 2, '#6a4b45');
-
-    const puffs = [
-      [16, 8, 5.5],
-      [9, 12, 4.8],
-      [23, 12, 4.8],
-      [7, 18, 4.2],
-      [25, 18, 4.2],
-      [15, 14, 5.4],
-      [12, 20, 4.4],
-      [20, 20, 4.4],
-      [16, 23, 3.8],
-    ];
-    for (let y = 1; y < S - 1; y++) {
-      for (let x = 1; x < S - 1; x++) {
-        let minD = 99;
-        for (const [cx, cy, r] of puffs) {
-          const d = Math.hypot(x - cx, y - cy) / r;
-          if (d < minD) minD = d;
+    const clusters = [];
+    for (let i = 0; i < 44; i++) {
+      const ang = (i / 44) * Math.PI * 2 + (rand() - 0.5) * 0.48;
+      const dist = i < 10 ? rand() * 12 : 15 + rand() * 27;
+      const cx = S * 0.5 + Math.cos(ang) * dist;
+      const cy = S * 0.50 + Math.sin(ang) * dist * 0.88;
+      const r = i < 10 ? 13.0 + rand() * 4.5 : 6.2 + rand() * 4.8;
+      const toneIdx = cy < S * 0.36 ? 0 : cy > S * 0.66 ? 2 : 1;
+      clusters.push({ cx, cy, r, toneIdx, ph: rand() * 6.28 });
+    }
+    const tones = ['#fff8fa', '#ffd9e8', '#efa5bf'];
+    for (let y = 2; y < S - 2; y++) {
+      for (let x = 2; x < S - 2; x++) {
+        let hit = null;
+        let bestD = 99;
+        for (const cl of clusters) {
+          const dx = x - cl.cx;
+          const dy = y - cl.cy;
+          const a = Math.atan2(dy, dx);
+          const scalloped = cl.r * (0.90 + 0.16 * Math.cos(a * 5 + cl.ph));
+          const d = Math.hypot(dx, dy) / scalloped;
+          if (d < bestD) {
+            bestD = d;
+            hit = cl;
+          }
         }
-        if (minD > 0.96) continue;
-        // Airy interior cutout holes (~18%) so canopies never look solid boxy
-        if (minD > 0.62 && rand() < 0.22) continue;
-        const hNorm = y / S;
-        const n = rand();
-        let col = '#ffe2eb';
-        if (hNorm < 0.34 || (minD < 0.45 && n > 0.35)) col = '#fff8f5';
-        else if (hNorm > 0.68 || minD > 0.78) col = n > 0.4 ? '#d98cab' : '#c77ea0';
-        else if (n > 0.55) col = '#ffdbe8';
-        else col = '#f4b5cd';
+        if (!hit || bestD > 1.0) continue;
+        let col = tones[hit.toneIdx];
+        if (bestD < 0.42 && y < S * 0.45) col = '#fffcfd';
+        else if (bestD > 0.84 && hit.toneIdx === 2) col = '#df8ca9';
+        else if (rand() < 0.25 && hit.toneIdx === 1) col = '#ffeaf2';
         px(ctx, x, y, 1, 1, col);
       }
     }
-    return register(label, c, { wrap: false, pixel: true, mip: false });
+    return register(label, c, { wrap: false, pixel: true, mip: true });
   }
 
-  /** Crisp 32x32 pixel-art camphor / evergreen leaf sprig. */
+  /** Refined 128x128 painterly deciduous leaf spray (crisp serrated broadleaf clusters & deep foliage crevices). */
   function leafSprig(label = 'leaf-sprig', seed = 922) {
-    const S = 32;
+    const S = 128;
     const c = makeCanvas(S, S);
     const ctx = c.getContext('2d');
     const rand = mulberry32(seed);
     ctx.clearRect(0, 0, S, S);
 
-    px(ctx, 15, 16, 2, 9, '#574a38');
-    const puffs = [
-      [16, 8, 5.2],
-      [10, 12, 4.6],
-      [22, 12, 4.6],
-      [8, 18, 4.2],
-      [24, 18, 4.2],
-      [16, 15, 5.2],
-      [13, 21, 4.2],
-      [19, 21, 4.2],
-    ];
-    for (let y = 1; y < S - 1; y++) {
-      for (let x = 1; x < S - 1; x++) {
-        let minD = 99;
-        for (const [cx, cy, r] of puffs) {
-          const d = Math.hypot(x - cx, y - cy) / r;
-          if (d < minD) minD = d;
+    const clusters = [];
+    for (let i = 0; i < 44; i++) {
+      const ang = (i / 44) * Math.PI * 2 + (rand() - 0.5) * 0.48;
+      const dist = i < 10 ? rand() * 12 : 15 + rand() * 27;
+      const cx = S * 0.5 + Math.cos(ang) * dist;
+      const cy = S * 0.50 + Math.sin(ang) * dist * 0.88;
+      const r = i < 10 ? 12.5 + rand() * 4.5 : 6.2 + rand() * 4.8;
+      const toneIdx = cy < S * 0.36 ? 0 : cy > S * 0.66 ? 2 : 1;
+      clusters.push({ cx, cy, r, toneIdx, ph: rand() * 6.28 });
+    }
+    const tones = ['#a4ca68', '#5c8f48', '#2a5235'];
+    for (let y = 2; y < S - 2; y++) {
+      for (let x = 2; x < S - 2; x++) {
+        let hit = null;
+        let bestD = 99;
+        for (const cl of clusters) {
+          const dx = x - cl.cx;
+          const dy = y - cl.cy;
+          const a = Math.atan2(dy, dx);
+          const scalloped = cl.r * (0.90 + 0.18 * Math.cos(a * 4 + cl.ph));
+          const d = Math.hypot(dx, dy) / scalloped;
+          if (d < bestD) {
+            bestD = d;
+            hit = cl;
+          }
         }
-        if (minD > 0.96) continue;
-        if (minD > 0.60 && rand() < 0.25) continue;
-        const hNorm = y / S;
-        const n = rand();
-        let col = '#6f9e5a';
-        if (hNorm < 0.35 && n > 0.25) col = '#a9cc72';
-        else if (hNorm > 0.68 || minD > 0.78) col = n > 0.45 ? '#355c42' : '#284a39';
-        else if (n < 0.42) col = '#4f7f4c';
+        if (!hit || bestD > 1.0) continue;
+        let col = tones[hit.toneIdx];
+        if (bestD < 0.40 && y < S * 0.44) col = '#bcd97a';
+        else if (bestD > 0.78 && hit.toneIdx === 2) col = '#1d3c27';
+        else if (rand() < 0.28 && hit.toneIdx === 1) col = '#7cad56';
         px(ctx, x, y, 1, 1, col);
       }
     }
-    return register(label, c, { wrap: false, pixel: true, mip: false });
+    return register(label, c, { wrap: false, pixel: true, mip: true });
   }
 
   /** Crisp 16x32 pixel-art warm cherrywood bark. */
@@ -499,163 +555,180 @@ export function createTextureFactory(renderer) {
   }
 
   /**
-   * Hand-pixeled 48x64 OurSongs protagonist chibi sprite (2.2-head-tall silver-blue haired girl,
-   * fitted sky-blue tracksuit w/ white stripes, chunky skate sneakers, silver camera + #ff3b3b red dot).
+   * Hand-pixeled 64x80 3/4-angled OurSongs protagonist chibi sprite (2.2-head-tall silver-blue
+   * long straight hair, expressive sparkling blue eyes, fitted sky-blue zip tracksuit w/ white stripes,
+   * chunky white-sole skate sneakers, silver camera + #ff3b3b red dot).
    */
   function protagonistFrame(frameIdx = 0) {
     const label = `protagonist-frame-${frameIdx}`;
     if (cache.has(label)) return cache.get(label);
 
-    const W = 48;
-    const H = 64;
+    const W = 64;
+    const H = 80;
     const c = makeCanvas(W, H);
     const ctx = c.getContext('2d');
     ctx.clearRect(0, 0, W, H);
 
-    const OUT = '#202840';
-    const H_HI = '#f4f8ff';
-    const H_BASE = '#cfdcf6';
-    const H_MID = '#9fb6e2';
-    const H_SHAD = '#687fb2';
+    const H_HI = '#f7faff';
+    const H_BASE = '#d8e6fc';
+    const H_MID = '#a9c2ec';
+    const H_SHAD = '#6d85ba';
+    const H_DEEP = '#4e6396';
 
-    const SKIN = '#ffe8de';
-    const SKIN_SHAD = '#f1c7b8';
-    const BLUSH = '#ffb8c4';
-    const EYE_DARK = '#1b346e';
-    const EYE_MID = '#428be6';
+    const SKIN = '#ffe2d5';
+    const SKIN_SHAD = '#eab8a6';
+    const BLUSH = '#ffa8ba';
+    const EYE_LASH = '#122248';
+    const EYE_DEEP = '#163578';
+    const EYE_MID = '#357fd8';
+    const EYE_SKY = '#74bdfc';
     const EYE_HI = '#ffffff';
 
-    const SUIT_HI = '#9ed4f5';
-    const SUIT = '#68b2e5';
-    const SUIT_SHAD = '#4284bc';
-    const SUIT_DARK = '#2a5a8a';
-    const STRIPE = '#f7fbff';
+    const SUIT_HI = '#8ed0f5';
+    const SUIT = '#4a9ee0';
+    const SUIT_SHAD = '#306ca8';
+    const SUIT_DARK = '#1e4470';
+    const STRIPE = '#ffffff';
 
-    const SHOE_TOP = '#8cc7ee';
-    const SHOE_SHAD = '#5c9bc9';
-    const SOLE = '#fafcff';
-    const SOLE_SHAD = '#cfd8ea';
+    const PANT = '#2d4b76';
+    const PANT_HI = '#446aa0';
+    const PANT_SHAD = '#1d3252';
 
-    const CAM_BODY = '#cfd7e3';
-    const CAM_DARK = '#384154';
+    const SHOE_TOP = '#88c5ee';
+    const SHOE_SHAD = '#5694c4';
+    const SOLE = '#fcfdff';
+    const SOLE_SHAD = '#cdd8eb';
+
+    const CAM_BODY = '#d7e0ec';
+    const CAM_EDGE = '#9aa6ba';
+    const CAM_DARK = '#313a4d';
     const RED_DOT = '#ff3b3b';
 
     const bob = frameIdx === 1 ? 1 : 0;
-    const hairShift = frameIdx === 1 ? 1 : 0;
-    const step = frameIdx === 1 ? 1 : 0;
+    const sway = frameIdx === 1 ? 1 : 0;
+    const stride = frameIdx === 1 ? 2 : 0;
 
-    // 1. Hair back curtain falling to lower thigh/waist (iconic silhouette block!)
-    px(ctx, 13, 18 + bob, 22, 26, H_SHAD);
-    px(ctx, 12, 22 + bob, 24, 21, H_SHAD);
-    px(ctx, 14, 26 + bob, 20, 18, H_MID);
-    px(ctx, 11 - hairShift, 32 + bob, 5, 11, H_MID);
-    px(ctx, 32 + hairShift, 32 + bob, 5, 11, H_MID);
-    // Hair tips splayed slightly outward
-    px(ctx, 10 - hairShift, 41 + bob, 4, 3, H_SHAD);
-    px(ctx, 34 + hairShift, 41 + bob, 4, 3, H_SHAD);
-    px(ctx, 15, 42 + bob, 18, 3, H_SHAD);
+    // 1. Flowing waist-length silver-blue back hair (tapering softly inward past waist)
+    px(ctx, 20, 22 + bob, 23, 30, H_SHAD);
+    px(ctx, 18 - sway, 26 + bob, 26, 25, H_SHAD);
+    px(ctx, 21, 30 + bob, 20, 21, H_MID);
+    px(ctx, 16 - sway, 37 + bob, 5, 15, H_MID);
+    px(ctx, 16 - sway, 46 + bob, 4, 8, H_SHAD);
+    px(ctx, 41 + sway, 37 + bob, 5, 14, H_MID);
+    px(ctx, 42 + sway, 46 + bob, 4, 7, H_SHAD);
+    px(ctx, 22, 50 + bob, 7, 4, H_DEEP);
+    px(ctx, 32, 49 + bob, 7, 4, H_DEEP);
 
-    // 2. Legs & Track Pants (narrow slender legs)
-    const legY = 44;
-    // Left leg
-    px(ctx, 18, legY, 5, 12 - step, SUIT_SHAD);
-    px(ctx, 19, legY, 3, 12 - step, SUIT);
-    px(ctx, 18, legY, 1, 11 - step, STRIPE); // white side stripe
-    // Right leg
-    px(ctx, 25, legY, 5, 12, SUIT_SHAD);
-    px(ctx, 26, legY, 3, 12, SUIT);
-    px(ctx, 29, legY, 1, 11, STRIPE); // white side stripe
+    // 2. Slender Legs & Dynamic Athletic Stance (narrower 2px stance, clean ankle taper)
+    const legY = 54;
+    // Left (back) leg
+    px(ctx, 24, legY, 6, 16 - stride, PANT_SHAD);
+    px(ctx, 25, legY, 4, 15 - stride, PANT);
+    px(ctx, 24, legY, 1, 14 - stride, STRIPE);
+    // Right (front) leg
+    px(ctx, 32, legY, 6, 16, PANT);
+    px(ctx, 33, legY, 3, 15, PANT_HI);
+    px(ctx, 37, legY, 1, 15, STRIPE);
 
-    // 3. Chunky light-blue skate sneakers with flat white cupsole
-    // Left shoe
-    const lsY = 55 - step;
-    px(ctx, 16, lsY, 7, 3, SHOE_TOP);
-    px(ctx, 17, lsY, 5, 1, STRIPE); // laces
-    px(ctx, 16, lsY + 2, 7, 1, SHOE_SHAD);
-    px(ctx, 16, lsY + 3, 7, 2, SOLE);
-    px(ctx, 16, lsY + 5, 7, 1, SOLE_SHAD);
-    // Right shoe
-    const rsY = 55;
-    px(ctx, 25, rsY, 7, 3, SHOE_TOP);
-    px(ctx, 26, rsY, 5, 1, STRIPE);
-    px(ctx, 25, rsY + 2, 7, 1, SHOE_SHAD);
-    px(ctx, 25, rsY + 3, 7, 2, SOLE);
-    px(ctx, 25, rsY + 5, 7, 1, SOLE_SHAD);
+    // 3. Chunky light-blue skate sneakers with flat white cupsoles
+    const lsY = 69 - stride;
+    px(ctx, 22, lsY, 8, 4, SHOE_SHAD);
+    px(ctx, 23, lsY, 6, 3, SHOE_TOP);
+    px(ctx, 24, lsY + 1, 4, 1, STRIPE);
+    px(ctx, 22, lsY + 4, 9, 3, SOLE);
+    px(ctx, 22, lsY + 6, 9, 1, SOLE_SHAD);
+    const rsY = 69;
+    px(ctx, 32, rsY, 9, 4, SHOE_SHAD);
+    px(ctx, 33, rsY, 7, 3, SHOE_TOP);
+    px(ctx, 35, rsY + 1, 4, 1, STRIPE);
+    px(ctx, 32, rsY + 4, 10, 3, SOLE);
+    px(ctx, 32, rsY + 6, 10, 1, SOLE_SHAD);
 
-    // 4. Fitted Sky-Blue Stand-Collar Zip Track Jacket (slender waist!)
-    const bodyY = 30 + bob;
-    px(ctx, 17, bodyY, 14, 15, SUIT);
-    px(ctx, 17, bodyY + 11, 14, 4, SUIT_SHAD);
-    px(ctx, 23, bodyY, 2, 14, STRIPE); // center zip line
-    px(ctx, 20, bodyY - 2, 8, 3, SUIT_DARK); // stand collar
-    px(ctx, 21, bodyY - 2, 6, 2, SUIT_HI);
+    // 4. Fitted Sky-Blue Stand-Collar Zip Track Jacket (3/4 torso, slim waist, crisp white stripes)
+    const bodyY = 38 + bob;
+    px(ctx, 23, bodyY, 17, 17, SUIT);
+    px(ctx, 23, bodyY + 13, 17, 4, SUIT_SHAD);
+    px(ctx, 24, bodyY + 1, 6, 11, SUIT_HI);
+    px(ctx, 35, bodyY + 2, 5, 13, SUIT_SHAD);
+    // Offset 3/4 center zip slightly right of center for true 3/4 turn
+    px(ctx, 31, bodyY, 2, 16, STRIPE);
+    px(ctx, 30, bodyY + 15, 4, 2, SUIT_DARK); // ribbed waist hem
+    // Stand collar
+    px(ctx, 26, bodyY - 3, 12, 4, SUIT_DARK);
+    px(ctx, 27, bodyY - 3, 10, 3, SUIT_HI);
 
-    // Arms & white shoulder/sleeve stripes + hands holding silver camera
-    px(ctx, 14, bodyY + 1, 3, 10, SUIT);
-    px(ctx, 14, bodyY + 1, 1, 9, STRIPE);
-    px(ctx, 31, bodyY + 1, 3, 10, SUIT);
-    px(ctx, 33, bodyY + 1, 1, 9, STRIPE);
-    // Sleeve highlights
-    px(ctx, 18, bodyY + 1, 4, 8, SUIT_HI);
-    px(ctx, 26, bodyY + 1, 4, 8, SUIT_HI);
-    // Hands
-    px(ctx, 15, bodyY + 9, 4, 3, SKIN);
-    px(ctx, 28, bodyY + 9, 4, 3, SKIN);
+    // Left arm curving inward with white stripe + cuff
+    px(ctx, 19, bodyY + 1, 4, 11, SUIT);
+    px(ctx, 19, bodyY + 1, 1, 10, STRIPE);
+    px(ctx, 19, bodyY + 11, 4, 2, STRIPE);
+    // Right arm reaching slightly across holding camera
+    px(ctx, 39, bodyY + 2, 4, 10, SUIT_SHAD);
+    px(ctx, 42, bodyY + 2, 1, 9, STRIPE);
+    px(ctx, 39, bodyY + 11, 4, 2, STRIPE);
 
-    // 5. Silver Retro Camera with iconic #ff3b3b red recording dot
-    px(ctx, 19, bodyY + 7, 10, 6, CAM_DARK);
-    px(ctx, 20, bodyY + 8, 8, 4, CAM_BODY);
-    px(ctx, 22, bodyY + 8, 4, 4, CAM_DARK); // lens ring
-    px(ctx, 23, bodyY + 9, 2, 2, '#78b0e8'); // lens glass glint
-    px(ctx, 26, bodyY + 8, 2, 2, RED_DOT); // #ff3b3b beacon!
+    // Hands holding silver rangefinder camera
+    px(ctx, 21, bodyY + 10, 5, 4, SKIN);
+    px(ctx, 36, bodyY + 10, 5, 4, SKIN);
 
-    // 6. Chibi Head (large, ~42% of height)
-    const headY = 8 + bob;
-    px(ctx, 15, headY + 4, 18, 17, SKIN);
-    px(ctx, 16, headY + 19, 16, 2, SKIN_SHAD);
-    // Expressive large pixel eyes (deep blue + sky highlight + white sparkle)
-    // Left eye
-    px(ctx, 17, headY + 12, 4, 5, EYE_DARK);
-    px(ctx, 18, headY + 14, 3, 3, EYE_MID);
-    px(ctx, 18, headY + 12, 2, 2, EYE_HI);
-    px(ctx, 20, headY + 16, 1, 1, EYE_HI);
-    // Right eye
-    px(ctx, 27, headY + 12, 4, 5, EYE_DARK);
-    px(ctx, 27, headY + 14, 3, 3, EYE_MID);
-    px(ctx, 28, headY + 12, 2, 2, EYE_HI);
-    px(ctx, 27, headY + 16, 1, 1, EYE_HI);
-    // Subtle cheek blush & quiet mouth
-    px(ctx, 16, headY + 17, 2, 1, BLUSH);
-    px(ctx, 30, headY + 17, 2, 1, BLUSH);
-    px(ctx, 23, headY + 19, 2, 1, '#c9888c');
+    // 5. Crisp Silver Retro Camera + #ff3b3b red recording pixel
+    px(ctx, 25, bodyY + 8, 13, 7, CAM_DARK);
+    px(ctx, 26, bodyY + 9, 11, 5, CAM_BODY);
+    px(ctx, 26, bodyY + 9, 11, 1, STRIPE); // top chrome plate gleam
+    px(ctx, 26, bodyY + 13, 11, 1, CAM_EDGE);
+    px(ctx, 30, bodyY + 9, 5, 5, CAM_DARK); // lens barrel
+    px(ctx, 31, bodyY + 10, 3, 3, EYE_MID); // lens glass
+    px(ctx, 31, bodyY + 10, 1, 1, EYE_HI); // glass specular
+    px(ctx, 35, bodyY + 9, 2, 2, RED_DOT); // iconic OurSongs #ff3b3b dot
 
-    // 7. Silver-blue hair crown, side locks & layered bangs
-    px(ctx, 14, headY, 20, 8, H_BASE);
-    px(ctx, 16, headY - 1, 16, 3, H_HI);
-    px(ctx, 13, headY + 3, 22, 6, H_BASE);
-    // Ahoge / crown highlight band
-    px(ctx, 16, headY + 2, 16, 2, H_HI);
-    px(ctx, 21, headY - 2, 4, 2, H_BASE);
-    px(ctx, 22, headY - 3, 2, 1, H_HI);
-    // Bangs framing face
-    px(ctx, 14, headY + 7, 5, 5, H_BASE);
-    px(ctx, 19, headY + 7, 4, 4, H_HI);
-    px(ctx, 23, headY + 7, 3, 5, H_BASE);
-    px(ctx, 26, headY + 7, 4, 4, H_HI);
-    px(ctx, 30, headY + 7, 4, 5, H_BASE);
-    px(ctx, 22, headY + 8, 2, 5, H_MID);
-    // Side hair locks framing cheeks down past shoulders
-    px(ctx, 12, headY + 7, 3, 22, H_BASE);
-    px(ctx, 13, headY + 9, 2, 18, H_HI);
-    px(ctx, 33, headY + 7, 3, 22, H_BASE);
-    px(ctx, 33, headY + 9, 2, 18, H_HI);
-    px(ctx, 12, headY + 26, 3, 7, H_MID);
-    px(ctx, 33, headY + 26, 3, 7, H_MID);
+    // 6. Chibi Head (slightly turned 3/4 right, soft rounded jaw & radiant face)
+    const headY = 10 + bob;
+    px(ctx, 21, headY + 6, 22, 21, SKIN);
+    px(ctx, 22, headY + 25, 20, 3, SKIN_SHAD);
+    px(ctx, 25, headY + 27, 14, 2, SKIN_SHAD);
 
-    // 8. Automatic 1px crisp dark-indigo outline pass over alpha silhouette
+    // Crisp 5x6 anime-pixel blue eyes (clean silhouette & no diagonal highlight aliasing at overview distance)
+    // Left eye (x=24..28)
+    px(ctx, 23, headY + 15, 6, 1, EYE_LASH);
+    px(ctx, 24, headY + 16, 5, 6, EYE_DEEP);
+    px(ctx, 25, headY + 19, 3, 2, EYE_MID);
+    px(ctx, 24, headY + 16, 2, 1, EYE_HI);
+    // Right eye (x=35..39)
+    px(ctx, 35, headY + 15, 6, 1, EYE_LASH);
+    px(ctx, 35, headY + 16, 5, 6, EYE_DEEP);
+    px(ctx, 36, headY + 19, 3, 2, EYE_MID);
+    px(ctx, 35, headY + 16, 2, 1, EYE_HI);
+    // Cheek blush & small soft smile
+    px(ctx, 22, headY + 22, 3, 1, BLUSH);
+    px(ctx, 39, headY + 22, 3, 1, BLUSH);
+    px(ctx, 31, headY + 25, 2, 1, '#c87f86');
+
+    // 7. Softly rounded Silver-Blue Hair Crown, Wispy Bangs & Tapered Side Locks
+    px(ctx, 21, headY + 1, 22, 8, H_BASE);
+    px(ctx, 24, headY - 1, 16, 4, H_HI);
+    px(ctx, 19, headY + 4, 26, 8, H_BASE);
+    // Bright specular hair halo band + cute ahoge strand
+    px(ctx, 22, headY + 3, 20, 2, H_HI);
+    px(ctx, 30, headY - 3, 4, 3, H_BASE);
+    px(ctx, 31, headY - 4, 2, 2, H_HI);
+    // Wispy parted bangs framing eyes
+    px(ctx, 19, headY + 9, 5, 7, H_BASE);
+    px(ctx, 24, headY + 9, 4, 5, H_HI);
+    px(ctx, 28, headY + 9, 4, 6, H_MID);
+    px(ctx, 32, headY + 9, 5, 5, H_HI);
+    px(ctx, 37, headY + 9, 6, 7, H_BASE);
+    px(ctx, 29, headY + 12, 2, 4, H_MID);
+    // Tapered front side locks draping gently past shoulders
+    px(ctx, 18, headY + 10, 3, 22, H_BASE);
+    px(ctx, 19, headY + 12, 2, 18, H_HI);
+    px(ctx, 19, headY + 31, 2, 8, H_MID);
+    px(ctx, 43, headY + 10, 3, 22, H_BASE);
+    px(ctx, 43, headY + 12, 2, 18, H_HI);
+    px(ctx, 43, headY + 31, 2, 8, H_MID);
+
+    // 8. Soft 1px warm slate-indigo pixel outline pass over alpha silhouette
     const img = ctx.getImageData(0, 0, W, H);
     const src = new Uint8ClampedArray(img.data);
-    const outR = 32, outG = 40, outB = 64;
+    const outR = 54, outG = 64, outB = 92;
     for (let y = 1; y < H - 1; y++) {
       for (let x = 1; x < W - 1; x++) {
         const i = (y * W + x) * 4;
@@ -675,7 +748,51 @@ export function createTextureFactory(renderer) {
     }
     ctx.putImageData(img, 0, 0);
 
-    return register(label, c, { wrap: false, pixel: true, mip: false });
+    return register(label, c, { wrap: false, pixel: true, mip: true });
+  }
+
+  /** Continuous single-piece soft-feathered human silhouette shadow anchored smoothly at shoes. */
+  function chibiShadowMap(label = 'chibi-shadow-map') {
+    if (cache.has(label)) return cache.get(label);
+    const W = 48;
+    const H = 96;
+    const c = makeCanvas(W, H);
+    const ctx = c.getContext('2d');
+    ctx.clearRect(0, 0, W, H);
+    const img = ctx.createImageData(W, H);
+    for (let y = 0; y < H; y++) {
+      const v = y / (H - 1); // 0 = shoe base (near feet), 1 = head crown tip
+      // Continuous connected profile width along shadow projection (zero neck pinch or detached gap!)
+      let halfW = 14.5;
+      if (v < 0.22) {
+        halfW = 11.5 + (v / 0.22) * 3.0;
+      } else if (v < 0.56) {
+        halfW = 14.5 - ((v - 0.22) / 0.34) * 3.0;
+      } else if (v < 0.80) {
+        halfW = 11.5 + ((v - 0.56) / 0.24) * 4.5;
+      } else {
+        halfW = 16.0 * Math.sqrt(Math.max(0.0, 1.0 - Math.pow((v - 0.80) / 0.20, 2)));
+      }
+      // Taper cleanly at front of shoes (v < 0.08)
+      if (v < 0.10) {
+        halfW *= Math.sqrt(Math.max(0.05, v / 0.10));
+      }
+      for (let x = 0; x < W; x++) {
+        const dx = Math.abs(x - (W - 1) * 0.5);
+        const norm = halfW > 0.2 ? dx / halfW : 9.0;
+        if (norm >= 1.15) continue;
+        const edgeAlpha = norm < 0.72 ? 1.0 : Math.max(0, 1.0 - (norm - 0.72) / 0.43);
+        const lenFade = v > 0.88 ? Math.max(0, 1.0 - (v - 0.88) / 0.12) : 1.0;
+        const a = Math.round(255 * edgeAlpha * lenFade);
+        const i = (y * W + x) * 4;
+        img.data[i] = 22;
+        img.data[i + 1] = 34;
+        img.data[i + 2] = 56;
+        img.data[i + 3] = a;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    return register(label, c, { wrap: false, pixel: false, mip: false });
   }
 
   /** Soft circular optical glow sprite for floating golden dust, fireflies & warm lamp halos. */
@@ -716,6 +833,7 @@ export function createTextureFactory(renderer) {
     concretePier,
     glazedTiles,
     sakuraCanopy,
+    leafCanopy,
     sakuraSprig,
     leafSprig,
     facade,
@@ -723,6 +841,7 @@ export function createTextureFactory(renderer) {
     rosette,
     bark,
     protagonistFrame,
+    chibiShadowMap,
     bokehDot,
     getStats,
   };

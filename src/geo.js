@@ -69,6 +69,28 @@ export function mesh(geo, mat, { cast = true, receive = true, pos, rot, scale } 
   return m;
 }
 
+/** Scales BoxGeometry UVs per-face snapped to 0.25 window units so narrow end walls keep natural proportions. */
+export function fitBoxFacadeUVs(geo, w, h, d, fullRepeatSpan = 6.8) {
+  const pos = geo.attributes.position;
+  const nor = geo.attributes.normal;
+  const uv = geo.attributes.uv;
+  if (!pos || !nor || !uv) return geo;
+  const snapQuarter = (val) => Math.max(0.25, Math.round(val * 4) / 4);
+  const repX = snapQuarter(d / fullRepeatSpan);
+  const repZ = snapQuarter(w / fullRepeatSpan);
+  for (let i = 0; i < pos.count; i++) {
+    const nx = Math.abs(nor.getX(i));
+    const nz = Math.abs(nor.getZ(i));
+    const u = uv.getX(i);
+    const v = uv.getY(i);
+    if (nx > 0.5) uv.setXY(i, u * repX, v);
+    else if (nz > 0.5) uv.setXY(i, u * repZ, v);
+    else uv.setXY(i, 0.02, 0.02);
+  }
+  uv.needsUpdate = true;
+  return geo;
+}
+
 /** Transforms a geometry in place by TRS and returns it (for merging). */
 export function xform(geo, pos = [0, 0, 0], rot = [0, 0, 0], scale = [1, 1, 1]) {
   const m = new THREE.Matrix4().compose(
@@ -127,19 +149,39 @@ export function taperedTubeAlong(points, rStart, rEnd, radial = 7, tubular = 8) 
 }
 
 /**
- * Multi-card cupped botanical spray geometry with radial-upward transferred normals.
- * Prevents harsh flat card seams while keeping airy transparent petal/leaf gaps.
+ * Multi-card cupped & domed botanical spray geometry with radial-upward transferred normals.
+ * Breaks up solid silhouettes with feathery alpha-tested petal/leaf rims from every view angle.
  */
-export function crossedSprayGeometry(size = 1.0, cards = 3) {
+export function crossedSprayGeometry(size = 1.0, cards = 4) {
   const parts = [];
-  const tilts = [0.38, -0.44, 0.34];
-  for (let c = 0; c < cards; c++) {
-    const p = new THREE.PlaneGeometry(size, size, 1, 1);
+  const tilts = [0.44, -0.48, 0.38];
+  const radialCards = Math.min(3, cards);
+  for (let c = 0; c < radialCards; c++) {
+    const p = new THREE.PlaneGeometry(size, size, 2, 2);
+    const pPos = p.attributes.position;
+    for (let i = 0; i < pPos.count; i++) {
+      const px = pPos.getX(i);
+      const py = pPos.getY(i);
+      const r2 = (px * px + py * py) / Math.max(0.01, size * size * 0.25);
+      pPos.setZ(i, (1 - Math.min(1, r2)) * size * 0.08);
+    }
     const tilt = tilts[c % tilts.length];
-    const yaw = (c / cards) * Math.PI * 2;
-    xform(p, [0, 0, 0.13 * size], [0, 0, 0], [1, 0.92, 1]);
+    const yaw = (c / radialCards) * Math.PI * 2;
+    xform(p, [0, 0, 0.12 * size], [0, 0, 0], [1, 0.90, 1]);
     xform(p, [0, 0, 0], [tilt, yaw, 0]);
     parts.push(p);
+  }
+  if (cards >= 4) {
+    const cap = new THREE.PlaneGeometry(size * 1.05, size * 1.05, 2, 2);
+    const cPos = cap.attributes.position;
+    for (let i = 0; i < cPos.count; i++) {
+      const px = cPos.getX(i);
+      const py = cPos.getY(i);
+      const r2 = (px * px + py * py) / Math.max(0.01, size * size * 0.28);
+      cPos.setZ(i, (1 - Math.min(1, r2)) * size * 0.14);
+    }
+    xform(cap, [0, size * 0.12, 0], [-Math.PI / 2 + 0.14, 0.4, 0]);
+    parts.push(cap);
   }
   const merged = mergeSafe(parts);
   const pos = merged.attributes.position;
@@ -147,7 +189,7 @@ export function crossedSprayGeometry(size = 1.0, cards = 3) {
   const n = new THREE.Vector3();
   for (let i = 0; i < pos.count; i++) {
     n.fromBufferAttribute(pos, i);
-    n.y += size * 0.65;
+    n.y += size * 0.72;
     n.normalize();
     nor.setXYZ(i, n.x, n.y, n.z);
   }
@@ -307,7 +349,8 @@ export function buildChineseRoof({
             const z = (u * 2 - 1) * zEdge;
             const top = P(halfD - Math.abs(z));
             const yb = P(ins);
-            return [sx * (halfW - ins) * 0.995, yb + (top - yb) * v, z, u, v];
+            const gy = yb + (top - yb) * v;
+            return [sx * (halfW - ins) * 0.995, gy, z, z * 0.32, gy * 0.32];
           },
           false
         )
@@ -375,7 +418,7 @@ export function eaveBand(pts, depth = 0.12) {
   const uvs = [];
   for (let i = 0; i < pts.length; i++) {
     const p = pts[i];
-    verts.push(p.x, p.y, p.z, p.x, p.y - depth, p.z);
+    verts.push(p.x, p.y - 0.028, p.z, p.x, p.y - depth - 0.028, p.z);
     uvs.push(i / (pts.length - 1), 1, i / (pts.length - 1), 0);
   }
   const idx = [];
@@ -393,17 +436,18 @@ export function eaveBand(pts, depth = 0.12) {
 
 /**
  * Solid underside soffit ceiling bridging the upturned eave lip inward to the building core
- * so no sky gaps ever show underneath overhanging flying eaves.
+ * strictly below the curved tile surface so zero triangles pierce upward at corners.
  */
 export function eaveSoffitBand(pts, depth = 0.12, halfW = 1, halfD = 1, inward = 0.72) {
   const verts = [];
   const uvs = [];
   for (let i = 0; i < pts.length; i++) {
     const p = pts[i];
-    const ix = p.x * Math.max(0.15, 1 - inward / Math.max(0.4, halfW));
-    const iz = p.z * Math.max(0.15, 1 - inward / Math.max(0.4, halfD));
-    const iy = Math.min(-0.04, p.y - depth * 0.92);
-    verts.push(p.x, p.y - depth * 0.75, p.z, ix, iy, iz);
+    const ix = p.x * Math.max(0.18, 1 - inward / Math.max(0.4, halfW));
+    const iz = p.z * Math.max(0.18, 1 - inward / Math.max(0.4, halfD));
+    const outerY = p.y - depth * 0.96;
+    const iy = Math.min(-0.04, p.y - depth * 1.15);
+    verts.push(p.x, outerY, p.z, ix, iy, iz);
     uvs.push(i / (pts.length - 1), 0, i / (pts.length - 1), 1);
   }
   const idx = [];
@@ -434,6 +478,23 @@ export function roofGroup(opts, mats) {
     g.castShadow = true;
     g.receiveShadow = true;
     group.add(g);
+    // Flush chevron bargeboard ribs following the gable slope strictly inside the hip tiles
+    if (opts.mode === 'xieshan') {
+      const ins = opts.inset ?? opts.halfD * 0.42;
+      const zSpan = (opts.halfD - ins) * 0.88;
+      const topY = opts.H - 0.04;
+      const botY = opts.H * 0.34;
+      const rafterLen = Math.hypot(zSpan, topY - botY);
+      const slopeAng = Math.atan2(topY - botY, zSpan);
+      for (const sx of [-1, 1]) {
+        const bx = sx * (opts.halfW - ins) * 0.992;
+        for (const sz of [-1, 1]) {
+          const bar = new THREE.BoxGeometry(0.045, 0.055, rafterLen);
+          xform(bar, [bx, (topY + botY) * 0.5, sz * zSpan * 0.5], [sz * slopeAng, 0, 0]);
+          group.add(new THREE.Mesh(bar, mats.fascia || mats.ridge));
+        }
+      }
+    }
   }
   const scale = opts.ridgeR ?? Math.max(0.045, opts.halfD * 0.04);
   const ridgeGeos = r.ridges.map((rd) => tubeAlong(rd.pts, rd.main ? scale * 1.45 : scale * 0.95, 6, 16));
@@ -475,21 +536,21 @@ export function roofGroup(opts, mats) {
     )
   );
 
-  // Optional carved timber eave rafters / brackets (斗拱椽子) under projecting eaves
+  // Optional carved timber eave rafters / brackets (kept strictly inside upturned corner zones)
   if (opts.rafters) {
     for (const pts of r.eave) {
-      const step = Math.max(2, Math.floor(pts.length / 9));
-      for (let i = 2; i < pts.length - 2; i += step) {
+      const step = Math.max(2, Math.floor(pts.length / 8));
+      for (let i = 5; i < pts.length - 5; i += step) {
         const p = pts[i];
-        const len = Math.min(opts.halfW, opts.halfD) * 0.28;
+        const len = Math.min(opts.halfW, opts.halfD) * 0.24;
         const dx = Math.abs(p.x) > opts.halfW * 0.85 ? -Math.sign(p.x) * len * 0.5 : 0;
         const dz = Math.abs(p.z) > opts.halfD * 0.85 ? -Math.sign(p.z) * len * 0.5 : 0;
         const beam = new THREE.BoxGeometry(
-          dx !== 0 ? len : 0.09,
-          0.11,
-          dz !== 0 ? len : 0.09
+          dx !== 0 ? len : 0.08,
+          0.09,
+          dz !== 0 ? len : 0.08
         );
-        xform(beam, [p.x + dx, p.y - fasciaDepth * 1.15, p.z + dz]);
+        xform(beam, [p.x + dx, p.y - fasciaDepth * 1.45, p.z + dz]);
         soffit.push(beam);
       }
     }

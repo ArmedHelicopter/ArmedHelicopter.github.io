@@ -357,8 +357,8 @@ export function createUIController({
     }
 
     const isMobile = viewportW <= 768;
-    const minY = isMobile ? 116 : 76;
-    const maxY = isMobile && drawerOpen ? viewportH * 0.46 : viewportH - (isMobile ? 76 : 84);
+    const minY = isMobile ? 116 : 82;
+    const maxY = isMobile && drawerOpen ? viewportH * 0.46 : viewportH - (isMobile ? 76 : 92);
     const maxX = !isMobile && drawerOpen ? viewportW - 416 : viewportW - 24;
 
     pinElements.forEach(({ el, anchor }) => {

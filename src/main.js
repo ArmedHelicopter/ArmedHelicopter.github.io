@@ -1,6 +1,12 @@
 import * as THREE from 'three';
 import { PROFILE, CHAPTERS } from './data.js';
 import { createTextureFactory } from './textures.js';
+import { createCampusPalette } from './materials.js';
+import { createTerrainComponent } from './terrain.js';
+import { createDormitoryComponent } from './dormitory.js';
+import { createLibraryComponent } from './library.js';
+import { createLakeComponent } from './lake.js';
+import { createFoliageComponent } from './foliage.js';
 import { createArchway } from './archway.js';
 import { createCampusDiorama } from './campus.js';
 import { createLightingSystem } from './lighting.js';
@@ -12,7 +18,32 @@ import { createUIController } from './ui.js';
 
 const TOUR_STOPS = ['overview', 'chapter:0', 'chapter:1', 'chapter:2', 'chapter:3'];
 
+const nextFrame = () => new Promise((resolve) => requestAnimationFrame(() => resolve()));
+
+async function reportProgress(pct, label) {
+  const fill = document.getElementById('loading-bar-fill');
+  const pctEl = document.getElementById('loading-status-pct');
+  const txtEl = document.getElementById('loading-status-text');
+  if (fill) fill.style.width = `${pct}%`;
+  if (pctEl) pctEl.textContent = `${pct}%`;
+  if (txtEl && label) txtEl.textContent = label;
+  await nextFrame();
+}
+
+function dismissLoadingScreen() {
+  const screen = document.getElementById('loading-screen');
+  if (!screen) return;
+  setTimeout(() => {
+    screen.classList.add('is-loaded');
+  }, 180);
+  setTimeout(() => {
+    screen.style.display = 'none';
+  }, 940);
+}
+
 function showWebGLFallback() {
+  const screen = document.getElementById('loading-screen');
+  if (screen) screen.style.display = 'none';
   const fallback = document.getElementById('webgl-fallback');
   if (!fallback) return;
   fallback.hidden = false;
@@ -28,7 +59,8 @@ function showWebGLFallback() {
   }
 }
 
-function init() {
+async function init() {
+  await reportProgress(12, '正在初始化 WebGL 渲染管线...');
   const canvas = document.getElementById('whu-canvas');
   let renderer;
   try {
@@ -58,10 +90,21 @@ function init() {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(24, window.innerWidth / window.innerHeight, 0.5, 320);
 
+  await reportProgress(32, '正在生成像素程序化材质与贴图...');
   const textures = createTextureFactory(renderer);
   const lighting = createLightingSystem(scene, renderer);
+  const palette = createCampusPalette(textures);
+
+  await reportProgress(56, '正在拼装国立武大牌坊与老斋舍组件...');
   const archway = createArchway(textures);
-  const campus = createCampusDiorama(textures);
+  const terrain = createTerrainComponent(textures, palette);
+  const dormitory = createDormitoryComponent(textures, palette);
+
+  await reportProgress(78, '正在构建老图书馆、东湖凌波门与樱林...');
+  const library = createLibraryComponent(textures, palette);
+  const lake = createLakeComponent(textures, palette);
+  const foliage = createFoliageComponent(textures, palette);
+  const campus = createCampusDiorama(textures, { palette, terrain, dormitory, library, lake, foliage });
   const protagonist = createProtagonist(textures);
   const postfx = createHD2DPostFX(renderer, window.innerWidth, window.innerHeight, currentDpr);
 
@@ -76,6 +119,20 @@ function init() {
   protagonist.setMood(currentMood);
   postfx.setMood(currentMood);
 
+  // Expose every major object as an independent modifiable component
+  window.__WHU_COMPONENTS__ = {
+    archway,
+    terrain,
+    dormitory,
+    library,
+    lake,
+    foliage,
+    protagonist,
+    lighting,
+    postfx,
+  };
+
+  await reportProgress(92, '正在烘焙静态日光阴影与预编译着色器...');
   // Bake static shadows once after initial world placement
   lighting.bakeStaticShadows();
 
@@ -92,10 +149,10 @@ function init() {
   document.body.dataset.debug = debugTelemetry ? 'true' : 'false';
 
   let tourIndex = 0; // -1 = portal, 0 = overview, 1..4 = chapters 0..3
-  let scrollTourEnabled = true;
+  let scrollTourEnabled = false;
 
   function renderWithReflection() {
-    campus.updateWaterReflection(renderer, scene, camera, lighting.getKeyLight(), lighting.setSkyLinearOutput);
+    campus.updateWaterReflection(renderer, scene, camera, lighting.getKeyLight(), lighting.setSkyLinearOutput, protagonist.group);
     lighting.setSkyLinearOutput(true);
     campus.setWaterLinearOutput(true);
     postfx.render(scene, camera);
@@ -376,6 +433,10 @@ function init() {
   renderer.compile(scene, camera);
   renderWithReflection();
   ui.updatePins(camera, window.innerWidth, window.innerHeight, cameraRig.getStage() === 'explore');
+
+  window.__WHU_READY__ = true;
+  await reportProgress(100, '构建完成 · 拖动旋转 / 滚轮缩放自由浏览');
+  dismissLoadingScreen();
 
   canvas.addEventListener('webglcontextrestored', () => {
     lighting.bakeStaticShadows();

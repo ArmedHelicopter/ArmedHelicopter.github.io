@@ -8,7 +8,7 @@ import * as THREE from 'three';
  */
 export function createHD2DPostFX(renderer, width, height, dpr = 1) {
   const isWebGL2 = renderer.capabilities.isWebGL2;
-  const maxSamples = isWebGL2 ? Math.min(4, renderer.capabilities.maxSamples || 0) : 0;
+  const maxSamples = isWebGL2 ? Math.min(2, renderer.capabilities.maxSamples || 0) : 0;
   const rtType = renderer.capabilities.isWebGL2 ? THREE.HalfFloatType : THREE.UnsignedByteType;
 
   let curW = Math.max(1, Math.round(width * dpr));
@@ -108,9 +108,10 @@ export function createHD2DPostFX(renderer, width, height, dpr = 1) {
         vec3 sharp = texture2D(tScene, vUv).rgb;
         vec3 blurCol = texture2D(tBlur, vUv).rgb;
 
-        // Tilt-shift miniature focal band centered slightly below mid-screen
-        float coc = smoothstep(0.18, 0.50, abs(vUv.y - 0.50));
-        vec3 col = mix(sharp, blurCol, coc * 0.76);
+        // Miniature tilt-shift blur: preserve foreground boat/props (<=0.10) & upper Library spires (<=0.84) crisp
+        float dy = max(0.0, 0.10 - vUv.y) * 1.45 + max(0.0, vUv.y - 0.84) * 1.55;
+        float coc = smoothstep(0.0, 0.24, dy);
+        vec3 col = mix(sharp, blurCol, coc * 0.72);
 
         // Warm highlight bloom in linear HDR space
         vec3 hi = max(blurCol - vec3(uBloomThreshold), vec3(0.0));
@@ -154,10 +155,10 @@ export function createHD2DPostFX(renderer, width, height, dpr = 1) {
       compositeMat.uniforms.uBloomTint.value.set(1.10, 0.92, 0.72);
       compositeMat.uniforms.uVignetteTint.value.set(0.04, 0.07, 0.16);
     } else {
-      compositeMat.uniforms.uBloomThreshold.value = 0.78;
-      compositeMat.uniforms.uBloomStrength.value = 0.26;
-      compositeMat.uniforms.uBloomTint.value.set(1.05, 0.96, 0.84);
-      compositeMat.uniforms.uVignetteTint.value.set(0.10, 0.12, 0.20);
+      compositeMat.uniforms.uBloomThreshold.value = 0.58;
+      compositeMat.uniforms.uBloomStrength.value = 0.36;
+      compositeMat.uniforms.uBloomTint.value.set(1.08, 0.92, 0.74);
+      compositeMat.uniforms.uVignetteTint.value.set(0.10, 0.12, 0.24);
     }
   }
 

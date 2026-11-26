@@ -6,9 +6,9 @@
   /* OurSongs Amber-Afternoon Palette */
   --sky-top: #3e6c99;
   --sky-low: #eed0aa;
-  --navy: #18233a; /* primary ink */
-  --navy-soft: #43536e; /* secondary ink */
-  --navy-faint: #6c7a92; /* tertiary ink */
+  --navy: #162138; /* primary ink */
+  --navy-soft: #26354d; /* high-contrast secondary ink */
+  --navy-faint: #3b4e6b; /* crisp tertiary ink */
   --peacock: #1c6e8c; /* peacock-teal accent */
   --peacock-hi: #2b8cad;
   --peacock-tint: rgba(28, 110, 140, 0.12);
@@ -36,8 +36,8 @@
   --radius-pill: 999px;
 
   /* Gradient accents */
-  --grad-cta: linear-gradient(120deg, #1c6e8c 0%, #3a8aa3 48%, #d98245 100%);
-  --grad-cta-hover: linear-gradient(120deg, #165a73 0%, #31788f 48%, #bf642c 100%);
+  --grad-cta: linear-gradient(135deg, #1b6582 0%, #244f78 100%);
+  --grad-cta-hover: linear-gradient(135deg, #15536b 0%, #1d4063 100%);
   --grad-hairline: linear-gradient(90deg, rgba(28, 110, 140, 0.60), rgba(217, 130, 69, 0.72));
 
   /* Type */
@@ -55,25 +55,25 @@ body[data-mood='night'],
 body[data-mood='sunset'] {
   --sky-top: #070e20;
   --sky-low: #192b52;
-  --navy: #eef3ff;
-  --navy-soft: #b8c7e4;
-  --navy-faint: #8499c2;
-  --peacock: #6ec4d8;
-  --peacock-hi: #8fd9ea;
-  --peacock-tint: rgba(110, 196, 216, 0.14);
-  --sakura: #ffb85c;
-  --sakura-deep: #ff9c38;
-  --sakura-tint: rgba(255, 184, 92, 0.16);
-  --sakura-glow: rgba(255, 174, 72, 0.45);
-  --pearl: #111b33;
-  --glass: rgba(14, 22, 42, 0.84);
-  --glass-strong: rgba(18, 28, 52, 0.94);
-  --glass-soft: rgba(14, 22, 42, 0.68);
-  --hairline: rgba(130, 164, 224, 0.24);
-  --hairline-strong: rgba(110, 196, 216, 0.40);
-  --hairline-pink: rgba(255, 184, 92, 0.48);
-  --grad-cta: linear-gradient(120deg, #2b5c8a 0%, #5282a8 48%, #e09648 100%);
-  --grad-cta-hover: linear-gradient(120deg, #356da3 0%, #6094bd 48%, #eb9e4d 100%);
+  --navy: #f3f7ff;
+  --navy-soft: #cad8f2;
+  --navy-faint: #98b0dc;
+  --peacock: #7bd4ea;
+  --peacock-hi: #a2e4f4;
+  --peacock-tint: rgba(123, 212, 234, 0.16);
+  --sakura: #ffc26b;
+  --sakura-deep: #ffa640;
+  --sakura-tint: rgba(255, 194, 107, 0.18);
+  --sakura-glow: rgba(255, 180, 82, 0.48);
+  --pearl: #121e3a;
+  --glass: rgba(18, 29, 56, 0.90);
+  --glass-strong: rgba(22, 36, 68, 0.96);
+  --glass-soft: rgba(18, 29, 56, 0.78);
+  --hairline: rgba(155, 190, 248, 0.30);
+  --hairline-strong: rgba(123, 212, 234, 0.48);
+  --hairline-pink: rgba(255, 194, 107, 0.52);
+  --grad-cta: linear-gradient(135deg, #275e91 0%, #364e85 100%);
+  --grad-cta-hover: linear-gradient(135deg, #3272ad 0%, #4460a3 100%);
   --grad-hairline: linear-gradient(90deg, rgba(110, 196, 216, 0.62), rgba(255, 184, 92, 0.72));
 }
 
@@ -218,15 +218,16 @@ a:focus-visible {
 .pill-primary {
   border-color: transparent;
   background: var(--grad-cta);
-  color: #ffffff;
+  color: #ffffff !important;
+  font-weight: 600;
   box-shadow: 0 6px 18px rgba(25, 118, 168, 0.28);
 }
 
 .pill-primary:hover {
   border-color: transparent;
   background: var(--grad-cta-hover);
-  color: #ffffff;
-  box-shadow: 0 8px 22px rgba(230, 122, 163, 0.34);
+  color: #ffffff !important;
+  box-shadow: 0 8px 22px rgba(217, 130, 69, 0.34);
 }
 
 .mono-pill {
@@ -672,10 +673,11 @@ body[data-stage='flythrough'] .pin-tag {
 }
 
 .landmark-pin.is-active .pin-tag {
-  background: var(--sakura);
-  border-color: var(--sakura);
+  background: linear-gradient(120deg, #1c6e8c 0%, #c46228 100%);
+  border-color: rgba(255, 255, 255, 0.85);
   color: #ffffff;
-  box-shadow: 0 6px 18px var(--sakura-glow);
+  font-weight: 700;
+  box-shadow: 0 6px 18px rgba(196, 98, 40, 0.42);
 }
 
 .landmark-pin.is-active .pin-code {
@@ -1130,9 +1132,10 @@ body[data-stage='autoplay'] .autoplay-bar {
 
 .dock-step.is-active {
   color: #ffffff;
-  background: var(--sakura);
-  border-color: var(--sakura);
-  box-shadow: 0 4px 12px var(--sakura-glow);
+  font-weight: 600;
+  background: linear-gradient(120deg, #1c6e8c 0%, #c46228 100%);
+  border-color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 4px 12px rgba(196, 98, 40, 0.36);
 }
 
 .dock-reset {
@@ -1140,28 +1143,45 @@ body[data-stage='autoplay'] .autoplay-bar {
   margin-left: 4px;
   color: var(--peacock);
   border-color: var(--hairline);
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.45);
 }
 
 .dock-reset:hover {
   border-color: var(--hairline-strong);
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.78);
 }
 
 .dock-reset.is-active {
   color: #ffffff;
-  background: var(--sakura);
-  border-color: var(--sakura);
-  box-shadow: 0 4px 12px var(--sakura-glow);
+  font-weight: 600;
+  background: linear-gradient(120deg, #1c6e8c 0%, #c46228 100%);
+  border-color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 4px 12px rgba(196, 98, 40, 0.36);
+}
+
+body[data-mood='night'] .brand-text span,
+body[data-mood='sunset'] .brand-text span {
+  color: #d6e2fc;
 }
 
 .dock-mode {
-  margin-left: 2px;
+  position: relative;
+  margin-left: 14px;
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--navy-soft);
-  border-color: var(--hairline);
-  background: rgba(255, 255, 255, 0.55);
+  border-color: transparent;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.dock-mode::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 22%;
+  bottom: 22%;
+  width: 1px;
+  background: var(--hairline-strong);
 }
 
 .dock-mode.is-tour {
@@ -1222,13 +1242,44 @@ body[data-mood='night'] .entry-link,
 body[data-mood='sunset'] .entry-link,
 body[data-mood='night'] .cv-item,
 body[data-mood='sunset'] .cv-item,
+body[data-mood='night'] .dock-step:not(.is-active):not(.dock-mode),
+body[data-mood='sunset'] .dock-step:not(.is-active):not(.dock-mode) {
+  color: #dce7ff;
+}
+
 body[data-mood='night'] .dock-mode,
 body[data-mood='sunset'] .dock-mode,
-body[data-mood='night'] .pin-tag,
-body[data-mood='sunset'] .pin-tag {
-  background: rgba(22, 34, 62, 0.88);
-  color: var(--navy);
-  border-color: rgba(145, 178, 236, 0.28);
+body[data-mood='night'] .landmark-pin:not(.is-active) .pin-tag,
+body[data-mood='sunset'] .landmark-pin:not(.is-active) .pin-tag {
+  background: rgba(24, 38, 70, 0.94);
+  color: #f3f7ff;
+  border-color: rgba(160, 194, 250, 0.38);
+}
+
+body[data-mood='night'] .pill-btn:not(.pill-primary),
+body[data-mood='sunset'] .pill-btn:not(.pill-primary) {
+  background: rgba(24, 38, 70, 0.90);
+  color: #f3f7ff;
+  border-color: rgba(160, 194, 250, 0.34);
+}
+
+body[data-mood='night'] .dock-step.is-active,
+body[data-mood='sunset'] .dock-step.is-active,
+body[data-mood='night'] .dock-reset.is-active,
+body[data-mood='sunset'] .dock-reset.is-active,
+body[data-mood='night'] .landmark-pin.is-active .pin-tag,
+body[data-mood='sunset'] .landmark-pin.is-active .pin-tag {
+  background: linear-gradient(120deg, #1b5c94 0%, #b85c1e 100%);
+  color: #ffffff;
+  font-weight: 600;
+  border-color: rgba(255, 224, 178, 0.58);
+  box-shadow: 0 4px 14px rgba(18, 34, 68, 0.55);
+}
+
+body[data-mood='night'] .landmark-pin.is-active .pin-code,
+body[data-mood='sunset'] .landmark-pin.is-active .pin-code {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
 }
 
 body[data-mood='night'] .drawer-nav,

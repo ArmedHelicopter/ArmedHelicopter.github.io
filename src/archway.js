@@ -32,9 +32,9 @@ export function createArchway(textures) {
   });
 
   const darkTrimMat = new THREE.MeshStandardMaterial({
-    color: new THREE.Color('#2c3c48'),
-    roughness: 0.55,
-    metalness: 0.12,
+    color: new THREE.Color('#285a64'),
+    roughness: 0.58,
+    metalness: 0.08,
   });
 
   const rosetteMat = new THREE.MeshStandardMaterial({
@@ -351,10 +351,10 @@ export function createArchway(textures) {
   function buildArchwayBay({ xCenter, spanW, yBottom, yEave, yTop, isCentral }) {
     const beamDepth = 0.54;
 
-    // Lower dark trim soffit border (matches dark underside molding in whu_gate_front.jpg)
-    const soffit = new THREE.BoxGeometry(spanW + 0.04, 0.08, beamDepth + 0.06);
-    xform(soffit, [xCenter, yBottom + 0.04, 0]);
-    trimGeos.push(soffit);
+    // Subtle dressed granite shadow-course soffit (flush underneath lintel, never stark black bar)
+    const soffit = new THREE.BoxGeometry(spanW, 0.06, beamDepth + 0.02);
+    xform(soffit, [xCenter, yBottom + 0.03, 0]);
+    graniteGeos.push(soffit);
 
     // Main stone lintel beam below the glazed eave
     const lintelH = yEave - (yBottom + 0.08);
@@ -370,10 +370,10 @@ export function createArchway(textures) {
     // Detailed peacock-blue glazed tile eaves on front & back
     buildGlazedEaveSpan({
       xCenter,
-      spanW: spanW + (isCentral ? 0.18 : 0.1),
+      spanW: isCentral ? spanW + 0.14 : spanW - 0.12,
       yEave,
-      cantZ: isCentral ? 0.66 : 0.56,
-      tubeCount: isCentral ? 30 : 20,
+      cantZ: isCentral ? 0.64 : 0.48,
+      tubeCount: isCentral ? 30 : 18,
     });
 
     // Upper white granite parapet beam ABOVE the glazed tile eave (a signature detail of WHU's archway!)
@@ -514,13 +514,21 @@ export function createArchway(textures) {
     if (mood === 'night' || mood === 'sunset' || mood === 'convergence') {
       veilUniforms.uColorA.value.set('#89a8de');
       veilUniforms.uColorB.value.set('#ffb85c');
-      glazedTileMat.color.set('#1f687a');
-      glazedTileMat.emissiveIntensity = 0.08;
+      glazedTileMat.color.set('#287488');
+      glazedTileMat.emissiveIntensity = 0.10;
+      frontPlaqueMat.emissive.set('#ffcf86');
+      frontPlaqueMat.emissiveMap = frontPlaqueMap;
+      frontPlaqueMat.emissiveIntensity = 0.26;
+      backPlaqueMat.emissive.set('#ffcf86');
+      backPlaqueMat.emissiveMap = backPlaqueMap;
+      backPlaqueMat.emissiveIntensity = 0.22;
     } else {
       veilUniforms.uColorA.value.set('#ffe2a8');
       veilUniforms.uColorB.value.set('#ffcad9');
       glazedTileMat.color.set('#2ba6b4');
       glazedTileMat.emissiveIntensity = 0.06;
+      frontPlaqueMat.emissiveIntensity = 0.0;
+      backPlaqueMat.emissiveIntensity = 0.0;
     }
   }
 

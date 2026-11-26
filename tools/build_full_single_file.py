@@ -269,9 +269,9 @@ html_template = f"""<!doctype html>
           type="button"
           id="scroll-mode-btn"
           class="dock-step dock-mode"
-          title="滚轮向下按顺序游览各个地标；按住 Ctrl + 滚轮可随时缩放视角"
+          title="当前滚轮自由缩放远近；点击可切换为滚轮顺序游览地标"
         >
-          滚轮 · 顺览
+          滚轮 · 缩放
         </button>
       </nav>
     </div>
@@ -296,26 +296,22 @@ html_template = f"""<!doctype html>
       </div>
     </main>
 
+    <!--
+      Modular Component Architecture (all procedural, 0 external files):
+      - src/archway.js     : National WHU Stone Archway (国立武汉大学牌坊)
+      - src/terrain.js     : Luojia Mainland Terrain, Plazas, Terraces & Lamps
+      - src/dormitory.js   : Old Dormitory (老斋舍), Arches, Pavilions & 108 Steps
+      - src/library.js     : Old Library (樱顶老图书馆) & Courtyard Wings
+      - src/lake.js        : East Lake (东湖), Lingbo Pier (凌波门), Pavilion & Boats
+      - src/foliage.js     : Yoshino Cherry Trees, Camphor Forest, Petals & Bokeh
+      - src/protagonist.js : 2.5D Pixel-Art Chibi Protagonist
+      - src/lighting.js    : Sun, Hemisphere Fill, Fog & Mood System
+      - src/postfx.js      : HD-2D Tilt-Shift DOF, Bloom & ACES Tone Mapping
+      Runtime registry: window.__WHU_COMPONENTS__
+    -->
     <!-- Inlined Full Application Bundle -->
     <script type="module">
 {bundle_js}
-
-      // Smooth progress bar completion trigger
-      const loadFill = document.getElementById('loading-bar-fill');
-      const loadPct = document.getElementById('loading-status-pct');
-      const loadTxt = document.getElementById('loading-status-text');
-      const loadScreen = document.getElementById('loading-screen');
-      if (loadFill && loadScreen) {{
-        loadFill.style.width = '100%';
-        if (loadPct) loadPct.textContent = '100%';
-        if (loadTxt) loadTxt.textContent = '构建完成 · 欢迎推门入珈';
-        setTimeout(() => {{
-          loadScreen.classList.add('is-loaded');
-        }}, 350);
-        setTimeout(() => {{
-          loadScreen.style.display = 'none';
-        }}, 1150);
-      }}
     </script>
   </body>
 </html>
