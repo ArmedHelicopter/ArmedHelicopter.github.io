@@ -1,30 +1,33 @@
-# ArmedHelicopter · 晴空樱雪 · 国立武汉大学 3D 校园沙盘主页
+# ArmedHelicopter · 2.5D HD-2D 国立武汉大学校园沙盘主页
 
-> **“推门入珈”** —— 零外部美术/模型依赖的纯代码 Three.js 交互式个人主页。以明媚的 **蓝·白·粉（晴空蓝 · 白石坊 · 珞珈樱粉）** 春日视觉为基调，忠实还原 **四柱三间冲天式国立武汉大学牌坊**、**樱花大道**、**老斋舍与百步梯**、**狮子山顶老图书馆（重檐歇山顶 + 五重轮宝顶）** 与 **东湖凌波门水上栈桥**，徐徐展开 Ruining Yang (`@ArmedHelicopter`) 的科研与工程履历。
+> **“穿坊入珈”** —— 零外部美术/模型依赖的纯代码 Three.js 2.5D HD-2D 交互式个人主页。支持自由鼠标拖拽旋转视角、滚轮缩放以及分段加载进度条，以 **「午后琥珀 (amber)」** 与 **「收敛夜灯 (night)」** 双重光影氛围忠实呈现 **国立武汉大学牌坊**、**老斋舍与百步梯**、**樱顶老图书馆** 及 **东湖凌波门栈桥**，展现 Ruining Yang (`@ArmedHelicopter`) 的科研与工程履历。
 
-## 核心亮点
+## 在线访问
 
-1. **四柱三间冲天式国立武汉大学牌坊 → 穿坊航拍转场**
-   - 首屏正对晴空流云与夹道樱雪下的 **四柱三间冲天式国立武汉大学牌坊**：四根八角倒角花岗岩冲天石柱、三层雕刻云纹柱头、八座双曲卷草抱鼓石与浮雕圆盘、孔雀蓝琉璃筒瓦飞檐，以及正背面阴刻书法 **「學 大 漢 武 立 國」** / **「醫 農 工 理 法 文」**。
-   - 点击 **「推门入珈」** 后触发程序化 Web Audio 五声部和弦与春风声效，春风樱扉向两侧轻启，摄像机沿 `CatmullRomCurve3` 样条从牌坊中央门洞平滑穿过，升维至武汉大学 3/4 俯视立体校园沙盘。
-2. **高精程序化三维建筑与樱花生态**
-   - **樱顶老图书馆**：重檐歇山顶曲面孔雀蓝琉璃瓦、抱厦前廊、白石栏杆与标志性五重轮宝顶。
-   - **老斋舍与百步梯**：长列象牙白石砌立面、三座挤压半圆罗马拱门、三座孔雀蓝歇山顶千字号亭与拾级而上的百步梯。
-   - **东湖与凌波门栈桥**：自定义 GLSL 水面着色器（菲涅尔反射、碧波微澜、岸线泡沫与阳光碎金）及延伸入湖的水上栈桥与凌波亭。
-   - **「晴空樱雪」与「樱霞暮色」双光影切换**：实时切换春日晴空/流云/樱吹雪与暮色粉霞/老斋舍暖窗光影。
-3. **零外链程序化渲染与显存优化（可观测）**
-   - **0 外部网络素材**：所有花岗岩、孔雀蓝琉璃瓦（含凹凸贴图）、樱花花瓣簇、建筑窗格及书法匾额均由本地 Canvas 程序化生成，离线与 GitHub Pages 零外部请求。
-   - **GPU 实例化与静态合批 (`InstancedMesh` + `BufferGeometryUtils`)**：樱花树冠花簇、飘落樱吹雪、满地落樱、立体流云及建筑构件全部合批并锁定静态变换矩阵 (`matrixAutoUpdate = false`)。
-   - **静态阴影烘焙 (`shadowMap.autoUpdate = false`)**：仅在初始化与切换光影时烘焙 `2048×2048` 柔和阴影贴图。
-   - 顶栏集成实时 **GPU Telemetry Pill**（展示真实 Draw Calls、Triangles、Geometries、Textures 与 VRAM 估算）。
+- **首页 (2.5D HD-2D 主版本)**：https://armedhelicopter.github.io/
+- **旧版备份归档**：
+  - [旧版 3D 沙盘 (`archive/v1/index.html`)](https://armedhelicopter.github.io/archive/v1/) · Git 分支 `archive/v1-legacy-main` / 标签 `v1.0-legacy-main` (`d8ea7f9`)
+  - [旧版 FPV 稳像实验版 (`archive/v1-fpv/index.html`)](https://armedhelicopter.github.io/archive/v1-fpv/) · Git 分支 `archive/v1-fpv-dev` (`100daa4`)
 
-## 本地运行
+## 核心特性
+
+1. **100% 纯代码单文件生成（零外部资源请求）**：[index.html](index.html) 与 [standalone.html](standalone.html) 均由 [tools/build_full_single_file.py](tools/build_full_single_file.py) 内联构建，所有几何体、Canvas 程序化贴图、GLSL 着色器、字体回退排版及 Web Audio 音效均纯代码生成。
+2. **独立模块化 3D 组件**：所有主要 3D 物体均拆分为独立模块并在运行时暴露于 `window.__WHU_COMPONENTS__`：
+   - [src/archway.js](src/archway.js) — 国立武汉大学石坊
+   - [src/terrain.js](src/terrain.js) — 珞珈台地、树坑覆土与梯级挡土墙
+   - [src/dormitory.js](src/dormitory.js) — 老斋舍、罗马拱门、百步梯与千字号亭
+   - [src/library.js](src/library.js) — 樱顶老图书馆与双翼庭院
+   - [src/lake.js](src/lake.js) — 东湖自定义 GLSL 水波、实时平面倒影、凌波栈桥与游船
+   - [src/foliage.js](src/foliage.js) — 樱花林、香樟远林与飘落樱瓣
+   - [src/protagonist.js](src/protagonist.js) — 2.5D 像素主角与接触阴影
+   - [src/lighting.js](src/lighting.js) & [src/postfx.js](src/postfx.js) — `amber`/`night` 双氛围光照、雾效与移轴后处理
+3. **自由浏览与流畅性能**：支持鼠标拖拽轨道旋转、滚轮缩放（`scrollTourEnabled: false`）、地标巡游与 `amber`/`night` 光影切换，采用静态阴影烘焙 (`2048×2048`) 与 `InstancedMesh` 合批保证笔记本流畅运行。
+
+## 本地运行与重新打包
 
 ```bash
-npm install
-npm run dev
-# 或直接使用 Python 启动静态服务器：
+python tools/build_full_single_file.py
 python -m http.server 8765
 ```
 
-随后在浏览器打开 `http://127.0.0.1:8765/`。
+或直接用浏览器双击打开 [index.html](index.html) / [standalone.html](standalone.html)。
