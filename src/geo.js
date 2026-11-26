@@ -134,14 +134,7 @@ export function crossedSprayGeometry(size = 1.0, cards = 3) {
   const parts = [];
   const tilts = [0.38, -0.44, 0.34];
   for (let c = 0; c < cards; c++) {
-    const p = new THREE.PlaneGeometry(size, size, 2, 2);
-    const pos = p.attributes.position;
-    for (let i = 0; i < pos.count; i++) {
-      const x = pos.getX(i) / size;
-      const y = pos.getY(i) / size;
-      const cup = (0.28 - (x * x + y * y)) * size * 0.42;
-      pos.setZ(i, cup);
-    }
+    const p = new THREE.PlaneGeometry(size, size, 1, 1);
     const tilt = tilts[c % tilts.length];
     const yaw = (c / cards) * Math.PI * 2;
     xform(p, [0, 0, 0.13 * size], [0, 0, 0], [1, 0.92, 1]);

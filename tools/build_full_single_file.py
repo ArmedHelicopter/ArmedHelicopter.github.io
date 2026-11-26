@@ -65,6 +65,10 @@ loading_css = """
   visibility: hidden;
   pointer-events: none;
 }
+.loading-screen.is-loaded .loading-box {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
 .loading-box {
   width: 90%;
   max-width: 380px;
@@ -308,6 +312,9 @@ html_template = f"""<!doctype html>
         setTimeout(() => {{
           loadScreen.classList.add('is-loaded');
         }}, 350);
+        setTimeout(() => {{
+          loadScreen.style.display = 'none';
+        }}, 1150);
       }}
     </script>
   </body>

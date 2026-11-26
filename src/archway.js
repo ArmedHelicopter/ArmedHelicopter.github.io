@@ -46,7 +46,7 @@ export function createArchway(textures) {
     metalness: 0.05,
   });
 
-  const glazedTileMat = new THREE.MeshPhysicalMaterial({
+  const glazedTileMat = new THREE.MeshStandardMaterial({
     map: tileMaps.map,
     bumpMap: tileMaps.bumpMap,
     bumpScale: 0.04,
@@ -54,9 +54,8 @@ export function createArchway(textures) {
     emissive: new THREE.Color('#0c5c6b'),
     emissiveIntensity: 0.06,
     roughness: 0.22,
-    metalness: 0.08,
-    clearcoat: 0.92,
-    clearcoatRoughness: 0.14,
+    metalness: 0.12,
+    envMapIntensity: 1.2,
   });
 
   const frontPlaqueMat = new THREE.MeshStandardMaterial({
@@ -117,13 +116,13 @@ export function createArchway(textures) {
   function buildCloudFinial(radius, height) {
     const parts = [];
     // Lower collar molding
-    const collar = new THREE.CylinderGeometry(radius * 1.12, radius * 1.06, 0.14, 24);
+    const collar = new THREE.CylinderGeometry(radius * 1.12, radius * 1.06, 0.14, 16);
     xform(collar, [0, 0.07, 0]);
     parts.push(collar);
 
     // Main carved cylinder profile via LatheGeometry
     const lathePts = [];
-    const steps = 28;
+    const steps = 16;
     for (let i = 0; i <= steps; i++) {
       const t = i / steps;
       const y = 0.14 + t * (height - 0.18);
@@ -138,19 +137,19 @@ export function createArchway(textures) {
       }
       lathePts.push(new THREE.Vector2(Math.max(0.02, r), y));
     }
-    parts.push(new THREE.LatheGeometry(lathePts, 28));
+    parts.push(new THREE.LatheGeometry(lathePts, 18));
 
     // Vertical carved cloud-scroll relief ribs around the 3 tiers
     const tiers = [0.28, 0.54, 0.8];
     for (const ty of tiers) {
       const y = ty * height;
-      const ring = new THREE.TorusGeometry(radius * 1.03, 0.022, 8, 24);
+      const ring = new THREE.TorusGeometry(radius * 1.03, 0.022, 6, 16);
       xform(ring, [0, y, 0], [Math.PI / 2, 0, 0]);
       parts.push(ring);
 
-      for (let k = 0; k < 10; k++) {
-        const ang = (k / 10) * Math.PI * 2;
-        const boss = new THREE.SphereGeometry(0.036, 8, 6);
+      for (let k = 0; k < 8; k++) {
+        const ang = (k / 8) * Math.PI * 2;
+        const boss = new THREE.SphereGeometry(0.036, 6, 4);
         xform(
           boss,
           [Math.cos(ang) * radius * 1.02, y - 0.07, Math.sin(ang) * radius * 1.02],
@@ -200,8 +199,8 @@ export function createArchway(textures) {
       bevelEnabled: true,
       bevelThickness: 0.035,
       bevelSize: 0.03,
-      bevelSegments: 3,
-      curveSegments: 24,
+      bevelSegments: 2,
+      curveSegments: 14,
     });
     // Extrude is in (x_shape=z_dist, y_shape=y, z_extrude=x_width)
     // Rotate so x_shape -> dirZ * z, z_extrude -> x centered at colX
@@ -215,17 +214,17 @@ export function createArchway(textures) {
     const medY = 0.76 * scale;
     const medR = 0.34 * scale;
 
-    const disc = new THREE.CylinderGeometry(medR, medR, thickness + 0.11, 28);
+    const disc = new THREE.CylinderGeometry(medR, medR, thickness + 0.11, 18);
     xform(disc, [colX, medY, medZ], [0, 0, Math.PI / 2]);
     rosetteGeos.push(disc);
 
     for (const sx of [-1, 1]) {
-      const ring = new THREE.TorusGeometry(medR * 0.96, 0.025, 10, 28);
+      const ring = new THREE.TorusGeometry(medR * 0.96, 0.025, 6, 18);
       xform(ring, [colX + sx * (thickness * 0.5 + 0.045), medY, medZ], [0, Math.PI / 2, 0]);
       graniteGeos.push(ring);
 
       // Small spiral scroll boss at upper wave
-      const scrollBoss = new THREE.TorusGeometry(0.13 * scale, 0.022, 8, 20);
+      const scrollBoss = new THREE.TorusGeometry(0.13 * scale, 0.022, 6, 14);
       xform(
         scrollBoss,
         [colX + sx * (thickness * 0.5 + 0.025), 1.38 * scale, dirZ * (0.28 + L * 0.36)],
@@ -304,7 +303,7 @@ export function createArchway(textures) {
 
         // Cylindrical 筒瓦 tube
         const tubeLen = cantZ;
-        const tube = new THREE.CylinderGeometry(0.042, 0.048, tubeLen, 10);
+        const tube = new THREE.CylinderGeometry(0.042, 0.048, tubeLen, 6);
         const tiltX = sz * (Math.PI / 2 - 0.36 + cornerLift * 0.45);
         const midY = yEave + 0.11 + cornerLift * 0.65;
         const midZ = sz * (0.28 + tubeLen * 0.46);
@@ -314,7 +313,7 @@ export function createArchway(textures) {
         // Circular 瓦当 end cap disc at outer tip of each tube
         const tipY = yEave + 0.03 + cornerLift * 0.92;
         const tipZ = sz * (0.28 + tubeLen * 0.88);
-        const wadang = new THREE.CylinderGeometry(0.052, 0.052, 0.028, 12);
+        const wadang = new THREE.CylinderGeometry(0.052, 0.052, 0.028, 8);
         xform(wadang, [tx, tipY, tipZ], [Math.PI / 2, 0, 0]);
         glazedGeos.push(wadang);
 
@@ -333,7 +332,7 @@ export function createArchway(textures) {
 
       // Upturned flying corner ridge spine (飞檐翘角脊) at both ends of the eave
       for (const sx of [-1, 1]) {
-        const horn = new THREE.ConeGeometry(0.065, 0.34, 8);
+        const horn = new THREE.ConeGeometry(0.065, 0.34, 6);
         xform(
           horn,
           [xCenter + sx * (halfSpan + 0.14), yEave + 0.24, sz * (0.28 + cantZ * 0.85)],
@@ -344,7 +343,7 @@ export function createArchway(textures) {
     }
 
     // Glazed ridge capping connecting front & back eaves
-    const crest = new THREE.CylinderGeometry(0.07, 0.07, spanW + 0.2, 10);
+    const crest = new THREE.CylinderGeometry(0.07, 0.07, spanW + 0.2, 6);
     xform(crest, [xCenter, yEave + 0.22, 0], [0, 0, Math.PI / 2]);
     glazedGeos.push(crest);
   }

@@ -46,7 +46,8 @@ function init() {
     return;
   }
 
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  let currentDpr = Math.min(window.devicePixelRatio || 1, 1.5);
+  renderer.setPixelRatio(currentDpr);
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -345,13 +346,14 @@ function init() {
     }
   });
 
-  // Immediate frame 0 render
+  // Immediate frame 0 render & synchronous shader pre-compilation
   cameraRig.update(0);
   campus.updateCampus(0, 0, camera.position);
   lighting.update(0);
   if (cameraRig.getStage() === 'portal') {
     archway.updatePortal(0, 0);
   }
+  renderer.compile(scene, camera);
   renderWithReflection();
   ui.updatePins(camera, window.innerWidth, window.innerHeight, cameraRig.getStage() === 'explore');
 
@@ -365,19 +367,23 @@ function init() {
     const h = window.innerHeight;
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
+    renderer.setPixelRatio(currentDpr);
     renderer.setSize(w, h);
   }
   window.addEventListener('resize', onResize);
 
   let lastTime = null;
-  let smoothAutoDt = 1 / 60;
   let paused = false;
+  let perfFrames = 0;
+  let perfTimeSum = 0;
+  let reflReduced = false;
 
   document.addEventListener('visibilitychange', () => {
     paused = document.hidden;
     if (!paused) {
       lastTime = null;
-      smoothAutoDt = 1 / 60;
+      perfFrames = 0;
+      perfTimeSum = 0;
     }
   });
 
@@ -385,19 +391,38 @@ function init() {
     requestAnimationFrame(renderFrame);
     if (paused) return;
 
+    let rawDt = 0;
     if (lastTime === null) {
       lastTime = now;
-      smoothAutoDt = 1 / 60;
+    } else {
+      rawDt = Math.max(0, (now - lastTime) / 1000);
+      lastTime = now;
     }
-    const rawDt = Math.max(0, (now - lastTime) / 1000);
-    lastTime = now;
-    smoothAutoDt += (Math.min(0.08, rawDt) - smoothAutoDt) * 0.25;
-    const camDt = cameraRig.getStage() === 'autoplay' ? smoothAutoDt : Math.min(0.05, rawDt);
-    const fxDt = Math.min(0.05, rawDt);
+
+    if (rawDt > 0 && rawDt < 0.25) {
+      perfFrames += 1;
+      perfTimeSum += rawDt;
+      if (perfFrames >= 45) {
+        const avgMs = (perfTimeSum / perfFrames) * 1000;
+        perfFrames = 0;
+        perfTimeSum = 0;
+        if (avgMs > 22 && currentDpr > 0.85) {
+          currentDpr = Math.max(0.85, +(currentDpr - 0.2).toFixed(2));
+          renderer.setPixelRatio(currentDpr);
+          renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        if (avgMs > 24 && currentDpr <= 1.0 && !reflReduced) {
+          reflReduced = true;
+          campus.setReflectionSize(320, 200);
+        }
+      }
+    }
+
+    const dt = Math.min(0.05, rawDt);
     const elapsed = now * 0.001;
 
-    cameraRig.update(camDt);
-    campus.updateCampus(fxDt, elapsed, camera.position);
+    cameraRig.update(dt);
+    campus.updateCampus(dt, elapsed, camera.position);
     lighting.update(elapsed);
     if (cameraRig.getStage() === 'portal') {
       archway.updatePortal(0, elapsed);
@@ -416,8 +441,10 @@ function init() {
       fpsTimer = 0;
     }
     if (telemetryTimer >= 0.35) {
-      ui.updateTelemetry();
       telemetryTimer = 0;
+      if (document.body.dataset.debug === 'true') {
+        ui.updateTelemetry();
+      }
     }
   }
 

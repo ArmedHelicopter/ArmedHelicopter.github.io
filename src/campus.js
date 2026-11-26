@@ -317,27 +317,25 @@ export function createCampusDiorama(textures) {
     metalness: 0.06,
   });
 
-  const glazedTileMat = new THREE.MeshPhysicalMaterial({
+  const glazedTileMat = new THREE.MeshStandardMaterial({
     map: tileMaps.map,
     bumpMap: tileMaps.bumpMap,
     bumpScale: 0.02,
     color: new THREE.Color('#d8eeee'),
     emissive: new THREE.Color('#06323a'),
     emissiveIntensity: 0.04,
-    roughness: 0.36,
-    metalness: 0.08,
-    clearcoat: 0.38,
-    clearcoatRoughness: 0.32,
+    roughness: 0.30,
+    metalness: 0.10,
+    envMapIntensity: 1.15,
   });
 
-  const glazedRidgeMat = new THREE.MeshPhysicalMaterial({
+  const glazedRidgeMat = new THREE.MeshStandardMaterial({
     color: new THREE.Color('#1d5e66'),
     emissive: new THREE.Color('#072c33'),
     emissiveIntensity: 0.04,
-    roughness: 0.44,
-    metalness: 0.08,
-    clearcoat: 0.22,
-    clearcoatRoughness: 0.42,
+    roughness: 0.38,
+    metalness: 0.10,
+    envMapIntensity: 1.1,
   });
 
   const dormWallMat = new THREE.MeshStandardMaterial({
@@ -356,11 +354,9 @@ export function createCampusDiorama(textures) {
     roughness: 0.68,
   });
 
-  const barkMat = new THREE.MeshStandardMaterial({
+  const barkMat = new THREE.MeshLambertMaterial({
     map: barkMap,
     color: new THREE.Color('#aa8e85'),
-    roughness: 0.86,
-    metalness: 0.02,
   });
 
   // Translucent botanical sakura materials (with subtle sunlit backlight scattering)
@@ -369,16 +365,28 @@ export function createCampusDiorama(textures) {
     mat.onBeforeCompile = (shader) => {
       shader.uniforms.uSunDirW = sunDirUniform;
       shader.uniforms.uSssTint = { value: tintVec };
+      shader.vertexShader = shader.vertexShader
+        .replace(
+          '#include <common>',
+          `#include <common>
+           varying vec3 vSakuraViewPos;`
+        )
+        .replace(
+          '#include <project_vertex>',
+          `#include <project_vertex>
+           vSakuraViewPos = -mvPosition.xyz;`
+        );
       shader.fragmentShader = shader.fragmentShader
         .replace(
           '#include <common>',
           `#include <common>
+           varying vec3 vSakuraViewPos;
            uniform vec3 uSunDirW;
            uniform vec3 uSssTint;`
         )
         .replace(
           '#include <dithering_fragment>',
-          `vec3 viewDirW = normalize(vViewPosition);
+          `vec3 viewDirW = normalize(vSakuraViewPos);
            vec3 sunDirV = normalize((viewMatrix * vec4(uSunDirW, 0.0)).xyz);
            float backLit = pow(max(0.0, dot(viewDirW, -sunDirV)), 2.5);
            gl_FragColor.rgb += uSssTint * backLit * 0.26;
@@ -387,7 +395,7 @@ export function createCampusDiorama(textures) {
     };
   }
 
-  const sakuraOuterMat = new THREE.MeshStandardMaterial({
+  const sakuraOuterMat = new THREE.MeshLambertMaterial({
     map: sakuraSprigTex,
     color: new THREE.Color('#fff9fc'),
     emissive: new THREE.Color('#ffe6f0'),
@@ -395,12 +403,10 @@ export function createCampusDiorama(textures) {
     alphaTest: 0.36,
     alphaToCoverage: true,
     side: THREE.DoubleSide,
-    roughness: 0.72,
-    metalness: 0.0,
   });
   attachSakuraBacklight(sakuraOuterMat, new THREE.Vector3(1.0, 0.86, 0.92));
 
-  const sakuraInnerMat = new THREE.MeshStandardMaterial({
+  const sakuraInnerMat = new THREE.MeshLambertMaterial({
     map: sakuraSprigTex,
     color: new THREE.Color('#ffdbe9'),
     emissive: new THREE.Color('#ffbfd8'),
@@ -408,8 +414,6 @@ export function createCampusDiorama(textures) {
     alphaTest: 0.36,
     alphaToCoverage: true,
     side: THREE.DoubleSide,
-    roughness: 0.76,
-    metalness: 0.0,
   });
   attachSakuraBacklight(sakuraInnerMat, new THREE.Vector3(0.95, 0.72, 0.84));
 
@@ -419,7 +423,7 @@ export function createCampusDiorama(textures) {
     alphaTest: 0.36,
   });
 
-  const camphorLeafMat = new THREE.MeshStandardMaterial({
+  const camphorLeafMat = new THREE.MeshLambertMaterial({
     map: leafSprigTex,
     color: new THREE.Color('#e8f4e3'),
     emissive: new THREE.Color('#27482d'),
@@ -427,8 +431,6 @@ export function createCampusDiorama(textures) {
     alphaTest: 0.42,
     alphaToCoverage: true,
     side: THREE.DoubleSide,
-    roughness: 0.78,
-    metalness: 0.0,
   });
 
   const camphorDepthMat = new THREE.MeshDepthMaterial({
@@ -1207,13 +1209,21 @@ export function createCampusDiorama(textures) {
   /* ---------------------------------------------------------------------- */
   /* 6. Unified Seamless East Lake (东湖) & Lingbo Pier (凌波门水上栈桥)    */
   /* ---------------------------------------------------------------------- */
-  const reflectRT = new THREE.WebGLRenderTarget(960, 600, {
+  const reflectRT = new THREE.WebGLRenderTarget(512, 320, {
     type: THREE.HalfFloatType,
     minFilter: THREE.LinearFilter,
     magFilter: THREE.LinearFilter,
     generateMipmaps: false,
-    samples: 4,
+    samples: 0,
   });
+  let reflectW = 512;
+  let reflectH = 320;
+  function setReflectionSize(w, h) {
+    if (w === reflectW && h === reflectH) return;
+    reflectW = w;
+    reflectH = h;
+    reflectRT.setSize(w, h);
+  }
   const reflectCam = new THREE.PerspectiveCamera();
 
   const waterUniforms = THREE.UniformsUtils.merge([
@@ -1306,18 +1316,7 @@ export function createCampusDiorama(textures) {
         return fract(magic.z * fract(dot(sc, magic.xy)));
       }
 
-      float sampleShadowBilinear(vec2 uv, float compare, vec2 texel) {
-        vec2 texelPos = uv * uShadowMapSize - 0.5;
-        vec2 f = fract(texelPos);
-        vec2 base = (floor(texelPos) + 0.5) * texel;
-        float s00 = step(compare, unpackRGBAToDepth(texture2D(uShadowMap, base)));
-        float s10 = step(compare, unpackRGBAToDepth(texture2D(uShadowMap, base + vec2(texel.x, 0.0))));
-        float s01 = step(compare, unpackRGBAToDepth(texture2D(uShadowMap, base + vec2(0.0, texel.y))));
-        float s11 = step(compare, unpackRGBAToDepth(texture2D(uShadowMap, base + texel)));
-        return mix(mix(s00, s10, f.x), mix(s01, s11, f.x), f.y);
-      }
-
-      // 12-tap Vogel-disk PCF with per-pixel IGN rotation
+      // 5-tap Vogel-disk PCF with per-pixel IGN rotation
       float sampleKeyShadow(vec4 sc) {
         if (uHasShadowMap < 0.5 || sc.w <= 0.0) return 1.0;
         vec3 proj = sc.xyz / sc.w;
@@ -1330,16 +1329,16 @@ export function createCampusDiorama(textures) {
         float ca = cos(angle);
         float sa = sin(angle);
         mat2 rot = mat2(ca, -sa, sa, ca);
-        float spread = 2.4;
+        float spread = 2.0;
         float sum = 0.0;
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 5; i++) {
           float fi = float(i);
-          float r = sqrt((fi + 0.5) / 12.0) * spread;
+          float r = sqrt((fi + 0.5) / 5.0) * spread;
           float th = fi * 2.3999632;
           vec2 off = rot * (vec2(cos(th), sin(th)) * r) * texel;
-          sum += sampleShadowBilinear(proj.xy + off, compare, texel);
+          sum += step(compare, unpackRGBAToDepth(texture2D(uShadowMap, proj.xy + off)));
         }
-        return sum / 12.0;
+        return sum * 0.2;
       }
 
       // Analytic 2D smooth value-noise + gradient (dx, dy)
@@ -1383,6 +1382,7 @@ export function createCampusDiorama(textures) {
         vec2 rp = q;
         mat2 invAcc = mat2(1.0);
         for (int i = 0; i < 5; i++) {
+          if (i >= 3 && camDist > 42.0) break;
           float f = freqs[i];
           float aa = 1.0 / (1.0 + f * f * footprint * footprint * 0.35);
           vec3 ng = noiseGrad2D(rp * f + vels[i] * t);
@@ -1457,7 +1457,9 @@ export function createCampusDiorama(textures) {
         float dCause = sdBox2D(p - vec2(9.55, -6.1), vec2(0.68, 1.80));
         float dPier = min(min(min(dMain, dArm1), min(dArm2, dEnd)), dCause);
 
-        float dPilings = evalPilingsDist(p);
+        float dPilings = (p.x > 7.4 && p.x < 20.6 && p.y > -13.2 && p.y < -3.8)
+          ? evalPilingsDist(p)
+          : 100.0;
 
         vec3 V = normalize(cameraPosition - vWorldPos);
         vec4 wg = evalDualWaveGrad(p, uTime, camDist, V.y);
@@ -1951,8 +1953,8 @@ export function createCampusDiorama(textures) {
         ],
         0.21,
         0.095,
-        8,
-        9
+        6,
+        5
       )
     );
 
@@ -1977,8 +1979,8 @@ export function createCampusDiorama(textures) {
           ],
           0.080,
           0.022,
-          6,
-          8
+          5,
+          4
         )
       );
       twigTips.push([bx, topH, bz]);
@@ -2001,8 +2003,8 @@ export function createCampusDiorama(textures) {
             ],
             0.026,
             0.008,
-            5,
-            6
+            4,
+            3
           )
         );
         twigTips.push([sx, sy, sz]);
@@ -2236,8 +2238,15 @@ export function createCampusDiorama(textures) {
   group.add(allTrunksMesh);
 
   const sprayCardGeo = crossedSprayGeometry(1.18, 3);
-  function buildFoliageInstanced(matrices, mat, depthMat, palette = null, { castShadow = true, receiveShadow = true } = {}) {
-    const inst = new THREE.InstancedMesh(sprayCardGeo, mat, matrices.length);
+  const farSprayGeo = crossedSprayGeometry(1.18, 2);
+  function buildFoliageInstanced(
+    matrices,
+    mat,
+    depthMat,
+    palette = null,
+    { castShadow = true, receiveShadow = true, geo = sprayCardGeo } = {}
+  ) {
+    const inst = new THREE.InstancedMesh(geo, mat, matrices.length);
     inst.name = 'foliage';
     inst.castShadow = castShadow;
     inst.receiveShadow = receiveShadow;
@@ -2255,25 +2264,26 @@ export function createCampusDiorama(textures) {
     return inst;
   }
 
-  group.add(
-    buildFoliageInstanced(
-      outerSprayMatrices,
-      sakuraOuterMat,
-      sakuraDepthMat,
-      ['#ffffff', '#fff0f5', '#ffe3ee', '#ffd6e6'],
-      { castShadow: true, receiveShadow: false }
-    )
+  const sakuraOuterInst = buildFoliageInstanced(
+    outerSprayMatrices,
+    sakuraOuterMat,
+    sakuraDepthMat,
+    ['#ffffff', '#fff0f5', '#ffe3ee', '#ffd6e6'],
+    { castShadow: true, receiveShadow: false }
   );
-  group.add(
-    buildFoliageInstanced(
-      innerSprayMatrices,
-      sakuraInnerMat,
-      sakuraDepthMat,
-      ['#ffffff', '#f7cadb', '#f2bfd3', '#ffe3ee'],
-      { castShadow: true, receiveShadow: false }
-    )
+  group.add(sakuraOuterInst);
+
+  const sakuraInnerInst = buildFoliageInstanced(
+    innerSprayMatrices,
+    sakuraInnerMat,
+    sakuraDepthMat,
+    ['#ffffff', '#f7cadb', '#f2bfd3', '#ffe3ee'],
+    { castShadow: true, receiveShadow: false }
   );
-  group.add(buildFoliageInstanced(camphorSprayMatrices, camphorLeafMat, camphorDepthMat));
+  group.add(sakuraInnerInst);
+
+  const camphorInst = buildFoliageInstanced(camphorSprayMatrices, camphorLeafMat, camphorDepthMat);
+  group.add(camphorInst);
 
   // Organic woodland forest carpet across ALL surrounding Luojia hills (covers SW, SE, NE, NW slopes within <10% budget)
   const farForestMatrices = [];
@@ -2314,18 +2324,18 @@ export function createCampusDiorama(textures) {
     }
   }
   const farForestMat = camphorLeafMat.clone();
+  farForestMat.alphaToCoverage = false;
   farForestMat.color.set('#7f9a72');
   farForestMat.emissive.set('#1d3322');
   farForestMat.emissiveIntensity = 0.05;
-  group.add(
-    buildFoliageInstanced(
-      farForestMatrices,
-      farForestMat,
-      null,
-      ['#ffffff', '#e3ecd5', '#cfdcc0', '#f0ead0'],
-      { castShadow: false, receiveShadow: false }
-    )
+  const farForestInst = buildFoliageInstanced(
+    farForestMatrices,
+    farForestMat,
+    null,
+    ['#ffffff', '#e3ecd5', '#cfdcc0', '#f0ead0'],
+    { castShadow: false, receiveShadow: false, geo: farSprayGeo }
   );
+  group.add(farForestInst);
   console.info('[WHU] Forest carpet instances:', farForestMatrices.length);
 
   /* ---------------------------------------------------------------------- */
@@ -2420,8 +2430,8 @@ export function createCampusDiorama(textures) {
   const _frustum = new THREE.Frustum();
   const _projScreenMatrix = new THREE.Matrix4();
   const _lakeBounds = new THREE.Box3(
-    new THREE.Vector3(7.9, -0.6, -172.0),
-    new THREE.Vector3(172.0, 0.3, 172.0)
+    new THREE.Vector3(7.9, -0.6, -34.0),
+    new THREE.Vector3(68.0, 0.3, 24.0)
   );
 
   function syncShadowLight(keyLight) {
@@ -2444,6 +2454,20 @@ export function createCampusDiorama(textures) {
     _projScreenMatrix.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
     _frustum.setFromProjectionMatrix(_projScreenMatrix);
     if (!_frustum.intersectsBox(_lakeBounds)) {
+      waterUniforms.uHasReflection.value = 0.0;
+      syncShadowLight(keyLight);
+      return;
+    }
+
+    _reflForward.set(0, 0, -1).applyQuaternion(camera.quaternion);
+    if (
+      camera.position.x < 4.5 &&
+      camera.position.z < 14.0 &&
+      camera.position.z > -6.0 &&
+      _reflForward.x < 0.25 &&
+      camera.position.y < 10.5
+    ) {
+      waterUniforms.uHasReflection.value = 0.0;
       syncShadowLight(keyLight);
       return;
     }
@@ -2451,7 +2475,6 @@ export function createCampusDiorama(textures) {
     // Mirror camera position, look target & up vector across y = WATER_Y
     reflectCam.position.set(camera.position.x, 2 * WATER_Y - camera.position.y, camera.position.z);
 
-    _reflForward.set(0, 0, -1).applyQuaternion(camera.quaternion);
     _reflTarget.copy(camera.position).add(_reflForward);
     _reflTarget.y = 2 * WATER_Y - _reflTarget.y;
 
@@ -2504,6 +2527,8 @@ export function createCampusDiorama(textures) {
     eastLakeMesh.visible = false;
     airPetals.visible = false;
     fallenInst.visible = false;
+    farForestInst.visible = false;
+    sakuraInnerInst.visible = false;
     setSkyLinearOutput?.(true);
     renderer.toneMapping = THREE.NoToneMapping;
     renderer.xr.enabled = false;
@@ -2515,6 +2540,8 @@ export function createCampusDiorama(textures) {
     renderer.setRenderTarget(prevTarget);
     renderer.toneMapping = prevToneMapping;
     renderer.xr.enabled = prevXr;
+    sakuraInnerInst.visible = true;
+    farForestInst.visible = true;
     fallenInst.visible = true;
     airPetals.visible = true;
     eastLakeMesh.visible = true;
@@ -2638,6 +2665,7 @@ export function createCampusDiorama(textures) {
     setMood,
     updateCampus,
     updateWaterReflection,
+    setReflectionSize,
     syncShadowLight,
   };
 }
