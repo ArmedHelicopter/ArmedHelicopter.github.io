@@ -297,20 +297,26 @@ export function createUIController({
     }
   }
 
+  let lastAutoLabel = '';
+  let lastAutoPaused = null;
+  let lastAutoStopIdx = null;
   function updateAutoplay({ progress = 0, paused = false, stopIndex = 0, stopLabel = '' } = {}) {
-    if (autoplayStopLabel && stopLabel) {
+    if (autoplayStopLabel && stopLabel && stopLabel !== lastAutoLabel) {
       autoplayStopLabel.textContent = stopLabel;
+      lastAutoLabel = stopLabel;
     }
     if (autoplayProgressFill) {
-      const pct = Math.max(0, Math.min(100, progress * 100));
-      autoplayProgressFill.style.width = `${pct.toFixed(1)}%`;
+      const ratio = Math.max(0, Math.min(1, progress));
+      autoplayProgressFill.style.transform = `scaleX(${ratio.toFixed(4)})`;
     }
-    if (autoplayToggleBtn) {
+    if (autoplayToggleBtn && paused !== lastAutoPaused) {
       autoplayToggleBtn.textContent = paused ? '继续' : '暂停';
       autoplayToggleBtn.setAttribute('aria-pressed', String(paused));
+      lastAutoPaused = paused;
     }
-    if (document.body.dataset.stage === 'autoplay') {
+    if (stopIndex !== lastAutoStopIdx && document.body.dataset.stage === 'autoplay') {
       syncDockActive(stopIndex);
+      lastAutoStopIdx = stopIndex;
     }
   }
 
@@ -332,9 +338,14 @@ export function createUIController({
   // Project 3D landmark anchors onto screen coordinates for pins
   // Bounds stay in sync with styles.css (--drawer-width: 380px, --drawer-gap: 20px)
   const projVec = new THREE.Vector3();
+  let lastPinsVisible = null;
   function updatePins(camera, viewportW, viewportH, visible) {
-    pinsLayer.style.opacity = visible ? '1' : '0';
-    pinsLayer.style.pointerEvents = 'none';
+    if (!visible && lastPinsVisible === false) return;
+    if (visible !== lastPinsVisible) {
+      pinsLayer.style.opacity = visible ? '1' : '0';
+      pinsLayer.style.pointerEvents = 'none';
+      lastPinsVisible = visible;
+    }
     if (!visible) {
       pinElements.forEach(({ el }) => {
         el.style.pointerEvents = 'none';

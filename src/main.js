@@ -370,12 +370,14 @@ function init() {
   window.addEventListener('resize', onResize);
 
   let lastTime = null;
+  let smoothAutoDt = 1 / 60;
   let paused = false;
 
   document.addEventListener('visibilitychange', () => {
     paused = document.hidden;
     if (!paused) {
       lastTime = null;
+      smoothAutoDt = 1 / 60;
     }
   });
 
@@ -385,10 +387,12 @@ function init() {
 
     if (lastTime === null) {
       lastTime = now;
+      smoothAutoDt = 1 / 60;
     }
     const rawDt = Math.max(0, (now - lastTime) / 1000);
     lastTime = now;
-    const camDt = Math.min(0.1, rawDt);
+    smoothAutoDt += (Math.min(0.08, rawDt) - smoothAutoDt) * 0.25;
+    const camDt = cameraRig.getStage() === 'autoplay' ? smoothAutoDt : Math.min(0.05, rawDt);
     const fxDt = Math.min(0.05, rawDt);
     const elapsed = now * 0.001;
 

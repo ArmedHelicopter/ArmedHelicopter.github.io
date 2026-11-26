@@ -320,7 +320,7 @@ export function createCampusDiorama(textures) {
   const glazedTileMat = new THREE.MeshPhysicalMaterial({
     map: tileMaps.map,
     bumpMap: tileMaps.bumpMap,
-    bumpScale: 0.04,
+    bumpScale: 0.02,
     color: new THREE.Color('#d8eeee'),
     emissive: new THREE.Color('#06323a'),
     emissiveIntensity: 0.04,
@@ -393,6 +393,7 @@ export function createCampusDiorama(textures) {
     emissive: new THREE.Color('#ffe6f0'),
     emissiveIntensity: 0.11,
     alphaTest: 0.36,
+    alphaToCoverage: true,
     side: THREE.DoubleSide,
     roughness: 0.72,
     metalness: 0.0,
@@ -405,6 +406,7 @@ export function createCampusDiorama(textures) {
     emissive: new THREE.Color('#ffbfd8'),
     emissiveIntensity: 0.14,
     alphaTest: 0.36,
+    alphaToCoverage: true,
     side: THREE.DoubleSide,
     roughness: 0.76,
     metalness: 0.0,
@@ -423,6 +425,7 @@ export function createCampusDiorama(textures) {
     emissive: new THREE.Color('#27482d'),
     emissiveIntensity: 0.08,
     alphaTest: 0.42,
+    alphaToCoverage: true,
     side: THREE.DoubleSide,
     roughness: 0.78,
     metalness: 0.0,
@@ -1209,6 +1212,7 @@ export function createCampusDiorama(textures) {
     minFilter: THREE.LinearFilter,
     magFilter: THREE.LinearFilter,
     generateMipmaps: false,
+    samples: 4,
   });
   const reflectCam = new THREE.PerspectiveCamera();
 

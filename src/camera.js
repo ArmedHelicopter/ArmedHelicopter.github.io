@@ -24,11 +24,11 @@ const KF = [
   { pos: [0.0, 3.1, 8.2], att: [0.0, 5.0, -1.8], stop: { id: 'sakura', index: 1, label: '02/04 · 老斋舍 & 樱花大道' } },
   { pos: [0.0, 6.8, 2.6], att: [0.0, 8.0, -8.5] },
   { pos: [0.6, 10.6, -1.6], att: [0.8, 9.2, -9.8], stop: { id: 'library', index: 2, label: '03/04 · 樱顶老图书馆' } },
-  { pos: [6.8, 11.2, -4.4], att: [16.0, 9.4, -8.8] },
-  { pos: [13.6, 7.2, -9.6], att: [23.0, 5.6, -6.8] },
-  { pos: [20.6, 3.8, -13.4], att: [20.0, 3.0, -4.6], stop: { id: 'lingbo', index: 3, label: '04/04 · 东湖凌波门' } },
-  { pos: [26.2, 3.3, -9.2], att: [15.5, 2.8, -3.2] },
-  { pos: [28.6, 4.4, -2.0], att: [10.8, 3.0, -0.6] },
+  { pos: [6.8, 11.2, -4.4], att: [14.0, 8.2, -8.8] },
+  { pos: [13.6, 7.2, -9.6], att: [19.0, 4.8, -7.2] },
+  { pos: [20.6, 3.8, -13.4], att: [17.8, 2.8, -5.2], stop: { id: 'lingbo', index: 3, label: '04/04 · 东湖凌波门' } },
+  { pos: [26.2, 3.3, -9.2], att: [14.5, 2.7, -3.5] },
+  { pos: [28.6, 4.4, -2.0], att: [10.5, 3.0, -0.6] },
   { pos: [29.8, 8.2, 7.2], att: [5.5, 3.8, 3.6] },
   { pos: [28.6, 12.6, 16.8], att: [2.0, 4.0, 3.8], stop: { id: 'overview', index: -1, label: '俯瞰全景 · 珞珈校园' } },
   { pos: [25.6, 15.0, 23.4], att: [0.6, 3.7, 1.8] },
@@ -54,7 +54,7 @@ export function createCameraController(
 
   let autoplayElapsed = 0;
   let autoplayPaused = false;
-  const AUTOPLAY_DURATION = 34.0;
+  const AUTOPLAY_DURATION = 42.0;
 
   const pointer = { x: 0, y: 0 };
   const smoothPointer = { x: 0, y: 0 };
@@ -94,6 +94,46 @@ export function createCameraController(
   const curveLengths = autoplayPosCurve.getLengths(CURVE_DIVS);
   const totalCurveLength = curveLengths[curveLengths.length - 1] || 1;
 
+  // Pre-bake uniform-arc-length samples + zero-phase 3-pass C2 smoothing (eliminates knot shudder)
+  function smoothVecArray(arr, radius, passes, normalizeOut) {
+    let cur = arr.map((v) => v.clone());
+    const first = arr[0].clone();
+    const last = arr[arr.length - 1].clone();
+    for (let pass = 0; pass < passes; pass++) {
+      const next = new Array(cur.length);
+      for (let i = 0; i < cur.length; i++) {
+        const edgeR = Math.min(radius, i, cur.length - 1 - i);
+        if (edgeR <= 0) {
+          next[i] = cur[i].clone();
+          continue;
+        }
+        const sum = new THREE.Vector3();
+        for (let j = i - edgeR; j <= i + edgeR; j++) sum.add(cur[j]);
+        sum.divideScalar(2 * edgeR + 1);
+        if (normalizeOut) sum.normalize();
+        next[i] = sum;
+      }
+      next[0].copy(first);
+      next[cur.length - 1].copy(last);
+      cur = next;
+    }
+    return cur;
+  }
+
+  let bakedPos = [];
+  let bakedDir = [];
+  for (let k = 0; k <= CURVE_DIVS; k++) {
+    const u = k / CURVE_DIVS;
+    const tp = autoplayPosCurve.getUtoTmapping(u);
+    const p = autoplayPosCurve.getPoint(tp);
+    const a = autoplayAttCurve.getPoint(tp);
+    bakedPos.push(p);
+    bakedDir.push(a.sub(p).normalize());
+  }
+  bakedPos = smoothVecArray(bakedPos, 18, 3, false);
+  bakedDir = smoothVecArray(bakedDir, 58, 3, true);
+
+  // Angular-velocity-limited speed profile: caps peak pan rate (~12 deg/s) to eliminate stroboscopic judder
   const progressTable = new Float64Array(CURVE_DIVS + 1);
   {
     const ds = totalCurveLength / CURVE_DIVS;
@@ -102,11 +142,12 @@ export function createCameraController(
     for (let k = 1; k <= CURVE_DIVS; k++) {
       const uMid = (k - 0.5) / CURVE_DIVS;
       const sMid = uMid * totalCurveLength;
-      const edge = (0.38 + 0.62 * smooth01(0, 7, sMid)) * (0.22 + 0.78 * smooth01(0, 12, totalCurveLength - sMid));
-      const slowLib = 1.0 - 0.30 * Math.exp(-Math.pow((uMid - 0.31) / 0.08, 2));
-      const slowLake = 1.0 - 0.34 * Math.exp(-Math.pow((uMid - 0.54) / 0.11, 2));
-      const v = edge * slowLib * slowLake;
-      accumT += ds / Math.max(v, 0.08);
+      const dAngRad = Math.acos(THREE.MathUtils.clamp(bakedDir[k].dot(bakedDir[k - 1]), -1, 1));
+      const angPerMeter = dAngRad / ds;
+      const edge = (0.42 + 0.58 * smooth01(0, 7, sMid)) * (0.28 + 0.72 * smooth01(0, 12, totalCurveLength - sMid));
+      const turnCap = 0.052 / Math.max(angPerMeter, 0.01);
+      const v = edge * Math.min(1.0, turnCap);
+      accumT += ds / Math.max(v, 0.12);
       progressTable[k] = accumT;
     }
     const totalTime = progressTable[CURVE_DIVS] || 1;
@@ -161,38 +202,25 @@ export function createCameraController(
 
   const _autoPos = new THREE.Vector3();
   const _autoLook = new THREE.Vector3();
-  const _samplePos = new THREE.Vector3();
-  const _sampleAtt = new THREE.Vector3();
-  const _sampleDir = new THREE.Vector3();
   const _fwd = new THREE.Vector3();
   const _dir = new THREE.Vector3();
-  const GIMBAL_TAPS = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
-  const GIMBAL_SIGMA = 2.5;
-  const GIMBAL_WEIGHTS = GIMBAL_TAPS.map((k) => Math.exp(-0.5 * (k / GIMBAL_SIGMA) ** 2));
-  const GIMBAL_SUM = GIMBAL_WEIGHTS.reduce((a, b) => a + b, 0);
   let lastFwdAttAngleDeg = 0;
   let lastAutoStopId = null;
 
   function applyAutoplayAt(rawT) {
     const clampedT = THREE.MathUtils.clamp(rawT, 0, 1);
     const u = uFromProgress(clampedT);
-    const tp = autoplayPosCurve.getUtoTmapping(u);
+    const c = u * CURVE_DIVS;
+    const lo = Math.min(CURVE_DIVS - 1, Math.floor(c));
+    const hi = lo + 1;
+    const frac = c - lo;
 
-    autoplayPosCurve.getPoint(tp, _autoPos);
-    autoplayPosCurve.getTangentAt(u, _fwd).normalize();
+    _autoPos.copy(bakedPos[lo]).lerp(bakedPos[hi], frac);
+    _dir.copy(bakedDir[lo]).lerp(bakedDir[hi], frac).normalize();
 
-    const endFade = smooth01(0, 0.06, u) * smooth01(0, 0.06, 1 - u);
-    const duStep = 0.0115 * endFade;
-    _dir.set(0, 0, 0);
-    for (let i = 0; i < GIMBAL_TAPS.length; i++) {
-      const uS = THREE.MathUtils.clamp(u + GIMBAL_TAPS[i] * duStep, 0, 1);
-      const tpS = autoplayPosCurve.getUtoTmapping(uS);
-      autoplayPosCurve.getPoint(tpS, _samplePos);
-      autoplayAttCurve.getPoint(tpS, _sampleAtt);
-      _sampleDir.copy(_sampleAtt).sub(_samplePos).normalize();
-      _dir.addScaledVector(_sampleDir, GIMBAL_WEIGHTS[i] / GIMBAL_SUM);
-    }
-    _dir.normalize();
+    const loPrev = Math.max(0, lo - 1);
+    const hiNext = Math.min(CURVE_DIVS, hi + 1);
+    _fwd.copy(bakedPos[hiNext]).sub(bakedPos[loPrev]).normalize();
 
     lastFwdAttAngleDeg = THREE.MathUtils.radToDeg(
       Math.acos(THREE.MathUtils.clamp(_fwd.dot(_dir), -1, 1))

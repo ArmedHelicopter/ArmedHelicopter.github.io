@@ -1020,11 +1020,13 @@ body[data-stage='autoplay'] .autoplay-bar {
 }
 
 .autoplay-progress-fill {
-  width: 0%;
+  width: 100%;
   height: 100%;
   border-radius: var(--radius-pill);
   background: var(--grad-cta);
-  transition: width 0.08s linear;
+  transform-origin: left center;
+  transform: scaleX(0);
+  will-change: transform;
 }
 
 .autoplay-actions {
@@ -13799,7 +13801,7 @@ function createCampusDiorama(textures) {
   const glazedTileMat = new md({
     map: tileMaps.map,
     bumpMap: tileMaps.bumpMap,
-    bumpScale: 0.04,
+    bumpScale: 0.02,
     color: new Kr("#d8eeee"),
     emissive: new Kr("#06323a"),
     emissiveIntensity: 0.04,
@@ -13863,6 +13865,7 @@ function createCampusDiorama(textures) {
     emissive: new Kr("#ffe6f0"),
     emissiveIntensity: 0.11,
     alphaTest: 0.36,
+    alphaToCoverage: true,
     side: p,
     roughness: 0.72,
     metalness: 0
@@ -13874,6 +13877,7 @@ function createCampusDiorama(textures) {
     emissive: new Kr("#ffbfd8"),
     emissiveIntensity: 0.14,
     alphaTest: 0.36,
+    alphaToCoverage: true,
     side: p,
     roughness: 0.76,
     metalness: 0
@@ -13890,6 +13894,7 @@ function createCampusDiorama(textures) {
     emissive: new Kr("#27482d"),
     emissiveIntensity: 0.08,
     alphaTest: 0.42,
+    alphaToCoverage: true,
     side: p,
     roughness: 0.78,
     metalness: 0
@@ -14552,7 +14557,8 @@ function createCampusDiorama(textures) {
     type: Ut,
     minFilter: Mt,
     magFilter: Mt,
-    generateMipmaps: false
+    generateMipmaps: false,
+    samples: 4
   });
   const reflectCam = new Js();
   const waterUniforms = Ws.merge([
@@ -16235,11 +16241,11 @@ var KF = [
   { pos: [0, 3.1, 8.2], att: [0, 5, -1.8], stop: { id: "sakura", index: 1, label: "02/04 \xB7 \u8001\u658B\u820D & \u6A31\u82B1\u5927\u9053" } },
   { pos: [0, 6.8, 2.6], att: [0, 8, -8.5] },
   { pos: [0.6, 10.6, -1.6], att: [0.8, 9.2, -9.8], stop: { id: "library", index: 2, label: "03/04 \xB7 \u6A31\u9876\u8001\u56FE\u4E66\u9986" } },
-  { pos: [6.8, 11.2, -4.4], att: [16, 9.4, -8.8] },
-  { pos: [13.6, 7.2, -9.6], att: [23, 5.6, -6.8] },
-  { pos: [20.6, 3.8, -13.4], att: [20, 3, -4.6], stop: { id: "lingbo", index: 3, label: "04/04 \xB7 \u4E1C\u6E56\u51CC\u6CE2\u95E8" } },
-  { pos: [26.2, 3.3, -9.2], att: [15.5, 2.8, -3.2] },
-  { pos: [28.6, 4.4, -2], att: [10.8, 3, -0.6] },
+  { pos: [6.8, 11.2, -4.4], att: [14, 8.2, -8.8] },
+  { pos: [13.6, 7.2, -9.6], att: [19, 4.8, -7.2] },
+  { pos: [20.6, 3.8, -13.4], att: [17.8, 2.8, -5.2], stop: { id: "lingbo", index: 3, label: "04/04 \xB7 \u4E1C\u6E56\u51CC\u6CE2\u95E8" } },
+  { pos: [26.2, 3.3, -9.2], att: [14.5, 2.7, -3.5] },
+  { pos: [28.6, 4.4, -2], att: [10.5, 3, -0.6] },
   { pos: [29.8, 8.2, 7.2], att: [5.5, 3.8, 3.6] },
   { pos: [28.6, 12.6, 16.8], att: [2, 4, 3.8], stop: { id: "overview", index: -1, label: "\u4FEF\u77B0\u5168\u666F \xB7 \u73DE\u73C8\u6821\u56ED" } },
   { pos: [25.6, 15, 23.4], att: [0.6, 3.7, 1.8] },
@@ -16252,7 +16258,7 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
   const FLY_DURATION = 3.2;
   let autoplayElapsed = 0;
   let autoplayPaused = false;
-  const AUTOPLAY_DURATION = 34;
+  const AUTOPLAY_DURATION = 42;
   const pointer = { x: 0, y: 0 };
   const smoothPointer = { x: 0, y: 0 };
   const posCurve = new Jh([
@@ -16285,6 +16291,42 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
   autoplayAttCurve.arcLengthDivisions = CURVE_DIVS;
   const curveLengths = autoplayPosCurve.getLengths(CURVE_DIVS);
   const totalCurveLength = curveLengths[curveLengths.length - 1] || 1;
+  function smoothVecArray(arr, radius, passes, normalizeOut) {
+    let cur = arr.map((v) => v.clone());
+    const first = arr[0].clone();
+    const last = arr[arr.length - 1].clone();
+    for (let pass = 0; pass < passes; pass++) {
+      const next = new Array(cur.length);
+      for (let i = 0; i < cur.length; i++) {
+        const edgeR = Math.min(radius, i, cur.length - 1 - i);
+        if (edgeR <= 0) {
+          next[i] = cur[i].clone();
+          continue;
+        }
+        const sum = new Ci();
+        for (let j2 = i - edgeR; j2 <= i + edgeR; j2++) sum.add(cur[j2]);
+        sum.divideScalar(2 * edgeR + 1);
+        if (normalizeOut) sum.normalize();
+        next[i] = sum;
+      }
+      next[0].copy(first);
+      next[cur.length - 1].copy(last);
+      cur = next;
+    }
+    return cur;
+  }
+  let bakedPos = [];
+  let bakedDir = [];
+  for (let k2 = 0; k2 <= CURVE_DIVS; k2++) {
+    const u2 = k2 / CURVE_DIVS;
+    const tp2 = autoplayPosCurve.getUtoTmapping(u2);
+    const p2 = autoplayPosCurve.getPoint(tp2);
+    const a = autoplayAttCurve.getPoint(tp2);
+    bakedPos.push(p2);
+    bakedDir.push(a.sub(p2).normalize());
+  }
+  bakedPos = smoothVecArray(bakedPos, 18, 3, false);
+  bakedDir = smoothVecArray(bakedDir, 58, 3, true);
   const progressTable = new Float64Array(CURVE_DIVS + 1);
   {
     const ds = totalCurveLength / CURVE_DIVS;
@@ -16293,11 +16335,12 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
     for (let k2 = 1; k2 <= CURVE_DIVS; k2++) {
       const uMid = (k2 - 0.5) / CURVE_DIVS;
       const sMid = uMid * totalCurveLength;
-      const edge = (0.38 + 0.62 * smooth01(0, 7, sMid)) * (0.22 + 0.78 * smooth01(0, 12, totalCurveLength - sMid));
-      const slowLib = 1 - 0.3 * Math.exp(-Math.pow((uMid - 0.31) / 0.08, 2));
-      const slowLake = 1 - 0.34 * Math.exp(-Math.pow((uMid - 0.54) / 0.11, 2));
-      const v = edge * slowLib * slowLake;
-      accumT += ds / Math.max(v, 0.08);
+      const dAngRad = Math.acos(Zn.clamp(bakedDir[k2].dot(bakedDir[k2 - 1]), -1, 1));
+      const angPerMeter = dAngRad / ds;
+      const edge = (0.42 + 0.58 * smooth01(0, 7, sMid)) * (0.28 + 0.72 * smooth01(0, 12, totalCurveLength - sMid));
+      const turnCap = 0.052 / Math.max(angPerMeter, 0.01);
+      const v = edge * Math.min(1, turnCap);
+      accumT += ds / Math.max(v, 0.12);
       progressTable[k2] = accumT;
     }
     const totalTime = progressTable[CURVE_DIVS] || 1;
@@ -16346,35 +16389,22 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
   }
   const _autoPos = new Ci();
   const _autoLook = new Ci();
-  const _samplePos = new Ci();
-  const _sampleAtt = new Ci();
-  const _sampleDir = new Ci();
   const _fwd = new Ci();
   const _dir = new Ci();
-  const GIMBAL_TAPS = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
-  const GIMBAL_SIGMA = 2.5;
-  const GIMBAL_WEIGHTS = GIMBAL_TAPS.map((k2) => Math.exp(-0.5 * (k2 / GIMBAL_SIGMA) ** 2));
-  const GIMBAL_SUM = GIMBAL_WEIGHTS.reduce((a, b) => a + b, 0);
   let lastFwdAttAngleDeg = 0;
   let lastAutoStopId = null;
   function applyAutoplayAt(rawT) {
     const clampedT = Zn.clamp(rawT, 0, 1);
     const u2 = uFromProgress(clampedT);
-    const tp2 = autoplayPosCurve.getUtoTmapping(u2);
-    autoplayPosCurve.getPoint(tp2, _autoPos);
-    autoplayPosCurve.getTangentAt(u2, _fwd).normalize();
-    const endFade = smooth01(0, 0.06, u2) * smooth01(0, 0.06, 1 - u2);
-    const duStep = 0.0115 * endFade;
-    _dir.set(0, 0, 0);
-    for (let i = 0; i < GIMBAL_TAPS.length; i++) {
-      const uS = Zn.clamp(u2 + GIMBAL_TAPS[i] * duStep, 0, 1);
-      const tpS = autoplayPosCurve.getUtoTmapping(uS);
-      autoplayPosCurve.getPoint(tpS, _samplePos);
-      autoplayAttCurve.getPoint(tpS, _sampleAtt);
-      _sampleDir.copy(_sampleAtt).sub(_samplePos).normalize();
-      _dir.addScaledVector(_sampleDir, GIMBAL_WEIGHTS[i] / GIMBAL_SUM);
-    }
-    _dir.normalize();
+    const c2 = u2 * CURVE_DIVS;
+    const lo2 = Math.min(CURVE_DIVS - 1, Math.floor(c2));
+    const hi2 = lo2 + 1;
+    const frac = c2 - lo2;
+    _autoPos.copy(bakedPos[lo2]).lerp(bakedPos[hi2], frac);
+    _dir.copy(bakedDir[lo2]).lerp(bakedDir[hi2], frac).normalize();
+    const loPrev = Math.max(0, lo2 - 1);
+    const hiNext = Math.min(CURVE_DIVS, hi2 + 1);
+    _fwd.copy(bakedPos[hiNext]).sub(bakedPos[loPrev]).normalize();
     lastFwdAttAngleDeg = Zn.radToDeg(
       Math.acos(Zn.clamp(_fwd.dot(_dir), -1, 1))
     );
@@ -17157,20 +17187,26 @@ function createUIController({
       }
     }
   }
+  let lastAutoLabel = "";
+  let lastAutoPaused = null;
+  let lastAutoStopIdx = null;
   function updateAutoplay({ progress = 0, paused = false, stopIndex = 0, stopLabel = "" } = {}) {
-    if (autoplayStopLabel && stopLabel) {
+    if (autoplayStopLabel && stopLabel && stopLabel !== lastAutoLabel) {
       autoplayStopLabel.textContent = stopLabel;
+      lastAutoLabel = stopLabel;
     }
     if (autoplayProgressFill) {
-      const pct = Math.max(0, Math.min(100, progress * 100));
-      autoplayProgressFill.style.width = `${pct.toFixed(1)}%`;
+      const ratio = Math.max(0, Math.min(1, progress));
+      autoplayProgressFill.style.transform = `scaleX(${ratio.toFixed(4)})`;
     }
-    if (autoplayToggleBtn) {
+    if (autoplayToggleBtn && paused !== lastAutoPaused) {
       autoplayToggleBtn.textContent = paused ? "\u7EE7\u7EED" : "\u6682\u505C";
       autoplayToggleBtn.setAttribute("aria-pressed", String(paused));
+      lastAutoPaused = paused;
     }
-    if (document.body.dataset.stage === "autoplay") {
+    if (stopIndex !== lastAutoStopIdx && document.body.dataset.stage === "autoplay") {
       syncDockActive(stopIndex);
+      lastAutoStopIdx = stopIndex;
     }
   }
   function syncMood(mood) {
@@ -17187,9 +17223,14 @@ function createUIController({
     });
   }
   const projVec = new Ci();
+  let lastPinsVisible = null;
   function updatePins(camera, viewportW, viewportH, visible) {
-    pinsLayer.style.opacity = visible ? "1" : "0";
-    pinsLayer.style.pointerEvents = "none";
+    if (!visible && lastPinsVisible === false) return;
+    if (visible !== lastPinsVisible) {
+      pinsLayer.style.opacity = visible ? "1" : "0";
+      pinsLayer.style.pointerEvents = "none";
+      lastPinsVisible = visible;
+    }
     if (!visible) {
       pinElements.forEach(({ el: el2 }) => {
         el2.style.pointerEvents = "none";
@@ -17629,11 +17670,13 @@ function init() {
   }
   window.addEventListener("resize", onResize);
   let lastTime = null;
+  let smoothAutoDt = 1 / 60;
   let paused = false;
   document.addEventListener("visibilitychange", () => {
     paused = document.hidden;
     if (!paused) {
       lastTime = null;
+      smoothAutoDt = 1 / 60;
     }
   });
   function renderFrame(now) {
@@ -17641,10 +17684,12 @@ function init() {
     if (paused) return;
     if (lastTime === null) {
       lastTime = now;
+      smoothAutoDt = 1 / 60;
     }
     const rawDt = Math.max(0, (now - lastTime) / 1e3);
     lastTime = now;
-    const camDt = Math.min(0.1, rawDt);
+    smoothAutoDt += (Math.min(0.08, rawDt) - smoothAutoDt) * 0.25;
+    const camDt = cameraRig.getStage() === "autoplay" ? smoothAutoDt : Math.min(0.05, rawDt);
     const fxDt = Math.min(0.05, rawDt);
     const elapsed = now * 1e-3;
     cameraRig.update(camDt);
