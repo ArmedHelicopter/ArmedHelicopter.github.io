@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 
 /**
- * Procedural, zero-asset canvas texture factory for the sunlit WHU campus.
- * Every texture is generated at runtime (no external downloads) with lean memory
- * footprint and registered for accurate HUD VRAM telemetry.
+ * Procedural pixel-art texture factory for the OurSongs v5 / Graytail-style 2.5D WHU diorama.
+ * Surfaces use integer-pixel art on compact grids with NearestFilter crispness, paired with
+ * soft optical bokeh sprites for floating golden dust / fireflies and streetlamp halos.
  */
 
 function mulberry32(seed) {
@@ -26,12 +26,9 @@ function makeCanvas(w, h) {
   return c;
 }
 
-function speckle(ctx, w, h, rand, count, colorFn, sizeMin = 1, sizeMax = 2.2) {
-  for (let i = 0; i < count; i++) {
-    ctx.fillStyle = colorFn(rand());
-    const s = sizeMin + rand() * (sizeMax - sizeMin);
-    ctx.fillRect(rand() * w, rand() * h, s, s);
-  }
+function px(ctx, x, y, w, h, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(Math.floor(x), Math.floor(y), Math.max(1, Math.floor(w)), Math.max(1, Math.floor(h)));
 }
 
 export function createTextureFactory(renderer) {
@@ -39,18 +36,26 @@ export function createTextureFactory(renderer) {
   const cache = new Map();
   const maxAniso = renderer ? Math.min(4, renderer.capabilities.getMaxAnisotropy()) : 4;
 
-  function register(label, canvas, { srgb = true, repeat = [1, 1], mip = true, wrap = true } = {}) {
+  function register(label, canvas, { srgb = true, repeat = [1, 1], mip = true, wrap = true, pixel = true } = {}) {
     if (cache.has(label)) return cache.get(label);
     const tex = new THREE.CanvasTexture(canvas);
     if (wrap) {
       tex.wrapS = THREE.RepeatWrapping;
       tex.wrapT = THREE.RepeatWrapping;
+    } else {
+      tex.wrapS = THREE.ClampToEdgeWrapping;
+      tex.wrapT = THREE.ClampToEdgeWrapping;
     }
     tex.repeat.set(repeat[0], repeat[1]);
-    tex.magFilter = THREE.LinearFilter;
-    tex.minFilter = mip ? THREE.LinearMipmapLinearFilter : THREE.LinearFilter;
+    if (pixel) {
+      tex.magFilter = THREE.NearestFilter;
+      tex.minFilter = mip ? THREE.NearestMipmapLinearFilter : THREE.NearestFilter;
+    } else {
+      tex.magFilter = THREE.LinearFilter;
+      tex.minFilter = mip ? THREE.LinearMipmapLinearFilter : THREE.LinearFilter;
+    }
     tex.generateMipmaps = mip;
-    tex.anisotropy = maxAniso;
+    tex.anisotropy = pixel ? 1 : maxAniso;
     if (srgb) tex.colorSpace = THREE.SRGBColorSpace;
     tex.needsUpdate = true;
     const bytes = Math.round(canvas.width * canvas.height * 4 * (mip ? 1.333 : 1));
@@ -59,681 +64,634 @@ export function createTextureFactory(renderer) {
     return tex;
   }
 
-  /** Fine-grained sunlit white granite (archway, balustrades, steps). */
-  function granite(label = 'granite', base = '#f5f2ec', seed = 11) {
-    const S = 256;
+  /** Crisp 32x32 pixel-art warm granite blocks with subtle 3-tone dither & horizontal joints. */
+  function granite(label = 'granite', base = '#f2ece1', seed = 11) {
+    const S = 32;
     const c = makeCanvas(S, S);
     const ctx = c.getContext('2d');
     const rand = mulberry32(seed);
     ctx.fillStyle = base;
     ctx.fillRect(0, 0, S, S);
-    for (let i = 0; i < 45; i++) {
-      const x = rand() * S;
-      const y = rand() * S;
-      const r = 12 + rand() * 36;
-      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-      const dark = rand() > 0.5;
-      g.addColorStop(0, dark ? 'rgba(175,170,164,0.09)' : 'rgba(255,255,255,0.24)');
-      g.addColorStop(1, 'rgba(255,255,255,0)');
-      ctx.fillStyle = g;
-      ctx.fillRect(x - r, y - r, r * 2, r * 2);
-    }
-    speckle(
-      ctx,
-      S,
-      S,
-      rand,
-      2800,
-      (v) =>
-        v > 0.62
-          ? 'rgba(130,128,132,0.18)'
-          : v > 0.3
-            ? 'rgba(205,200,194,0.28)'
-            : 'rgba(255,255,255,0.48)',
-      0.7,
-      1.6
-    );
-    return register(label, c);
-  }
-
-  /** Large sunlit granite paving slabs for the archway plaza & avenues. */
-  function paving(label = 'paving', repeat = [10, 10], base = '#efece6', joint = '#d4cfc7', seed = 21) {
-    const S = 256;
-    const c = makeCanvas(S, S);
-    const ctx = c.getContext('2d');
-    const rand = mulberry32(seed);
-    ctx.fillStyle = joint;
-    ctx.fillRect(0, 0, S, S);
-    const rows = 4;
-    const rh = S / rows;
-    for (let r = 0; r < rows; r++) {
-      const off = r % 2 ? 32 : 0;
-      for (let x = -64; x < S; x += 64) {
-        const tone = Math.floor((rand() - 0.5) * 10);
-        const b = parseInt(base.slice(1), 16);
-        const cr = Math.max(0, Math.min(255, ((b >> 16) & 255) + tone));
-        const cg = Math.max(0, Math.min(255, ((b >> 8) & 255) + tone));
-        const cb = Math.max(0, Math.min(255, (b & 255) + tone + 2));
-        ctx.fillStyle = `rgb(${cr},${cg},${cb})`;
-        ctx.fillRect(x + off + 1, r * rh + 1, 62, rh - 2);
-      }
-    }
-    speckle(
-      ctx,
-      S,
-      S,
-      rand,
-      2200,
-      (v) => (v > 0.55 ? 'rgba(150,146,150,0.14)' : 'rgba(255,255,255,0.35)'),
-      0.7,
-      1.5
-    );
-    return register(label, c, { repeat });
-  }
-
-  /** Seamlessly tiled spring lawn texture (rich natural green micro-variation, zero grid seams). */
-  function grass(label = 'grass', repeat = [24, 24], seed = 31) {
-    const S = 256;
-    const c = makeCanvas(S, S);
-    const ctx = c.getContext('2d');
-    const rand = mulberry32(seed);
-    ctx.fillStyle = '#68985d';
-    ctx.fillRect(0, 0, S, S);
-    // Toroidally wrapped radial gradients so tile edges are 100% invisible
-    for (let i = 0; i < 64; i++) {
-      const x = rand() * S;
-      const y = rand() * S;
-      const r = 18 + rand() * 38;
-      const c0 = rand() > 0.5 ? 'rgba(72,118,62,0.22)' : 'rgba(130,174,104,0.22)';
-      for (const ox of [-S, 0, S]) {
-        for (const oy of [-S, 0, S]) {
-          const px = x + ox;
-          const py = y + oy;
-          if (px + r < 0 || px - r > S || py + r < 0 || py - r > S) continue;
-          const g = ctx.createRadialGradient(px, py, 0, px, py, r);
-          g.addColorStop(0, c0);
-          g.addColorStop(1, 'rgba(0,0,0,0)');
-          ctx.fillStyle = g;
-          ctx.fillRect(px - r, py - r, r * 2, r * 2);
+    const tones = ['#ebe3d5', '#e2d8c8', '#faf6ee'];
+    for (let y = 0; y < S; y++) {
+      for (let x = 0; x < S; x++) {
+        if (y % 8 === 0) {
+          px(ctx, x, y, 1, 1, 'rgba(130,118,105,0.22)');
+        } else if (y % 8 === 1) {
+          px(ctx, x, y, 1, 1, 'rgba(255,252,246,0.35)');
+        } else if (rand() < 0.28) {
+          px(ctx, x, y, 1, 1, tones[Math.floor(rand() * tones.length)]);
         }
       }
     }
-    speckle(
-      ctx,
-      S,
-      S,
-      rand,
-      3600,
-      (v) =>
-        v > 0.68
-          ? 'rgba(58,98,52,0.26)'
-          : v > 0.34
-            ? 'rgba(116,158,90,0.26)'
-            : 'rgba(154,192,122,0.22)',
-      0.8,
-      1.9
-    );
-    return register(label, c, { repeat });
+    return register(label, c, { pixel: true, mip: true });
   }
 
-  /** Dressed ashlar limestone masonry for campus retaining walls & terraces. */
-  function ashlarStone(label = 'ashlar-stone', base = '#eae0cf', seed = 79) {
-    const S = 256;
+  /** Crisp 32x32 pixel-art flagstone paving with mortar seams, top-left highlights & moss flecks. */
+  function paving(label = 'paving', repeat = [10, 10], base = '#e8dfd2', joint = '#8e8476', seed = 21) {
+    const S = 32;
     const c = makeCanvas(S, S);
     const ctx = c.getContext('2d');
     const rand = mulberry32(seed);
-    ctx.fillStyle = '#cbbca5';
-    ctx.fillRect(0, 0, S, S);
+    px(ctx, 0, 0, S, S, joint);
 
-    const rows = 8;
-    const rh = S / rows;
-    const cols = 4;
-    const cw = S / cols;
+    const bInt = parseInt(base.slice(1), 16);
+    const br = (bInt >> 16) & 255;
+    const bg = (bInt >> 8) & 255;
+    const bb = bInt & 255;
+
+    const rows = 4;
+    const rh = S / rows; // 8
+    const cw = 8;
+    for (let r = 0; r < rows; r++) {
+      const off = r % 2 ? 4 : 0;
+      for (let sx = -cw; sx < S; sx += cw) {
+        const x = sx + off;
+        const y = r * rh;
+        const delta = Math.floor((rand() - 0.5) * 18);
+        const rr = Math.max(0, Math.min(255, br + delta));
+        const gg = Math.max(0, Math.min(255, bg + delta - 1));
+        const bb2 = Math.max(0, Math.min(255, bb + delta - 2));
+        px(ctx, x + 1, y + 1, cw - 1, rh - 1, `rgb(${rr},${gg},${bb2})`);
+        // Lit top-left pixel bevel
+        px(ctx, x + 1, y + 1, cw - 1, 1, 'rgba(255,250,240,0.42)');
+        px(ctx, x + 1, y + 1, 1, rh - 1, 'rgba(255,250,240,0.28)');
+        // Shaded bottom edge
+        px(ctx, x + 1, y + rh - 1, cw - 1, 1, 'rgba(104,92,80,0.22)');
+      }
+    }
+    // Subtle moss & grain pixels in joints
+    for (let i = 0; i < 48; i++) {
+      const mx = Math.floor(rand() * S);
+      const my = Math.floor(rand() * S);
+      if (my % rh === 0) {
+        px(ctx, mx, my, 1, 1, rand() > 0.35 ? '#6d8a55' : '#587446');
+      } else if (rand() < 0.45) {
+        px(ctx, mx, my, 1, 1, 'rgba(120,108,96,0.18)');
+      }
+    }
+    return register(label, c, { repeat, pixel: true, mip: true });
+  }
+
+  /** Crisp 32x32 pixel-art meadow with 4 olive-emerald pixel tones & tiny blossom specks. */
+  function grass(label = 'grass', repeat = [24, 24], seed = 31) {
+    const S = 32;
+    const c = makeCanvas(S, S);
+    const ctx = c.getContext('2d');
+    const rand = mulberry32(seed);
+    const tones = ['#5a8248', '#689351', '#78a35c', '#4a6e3e'];
+    px(ctx, 0, 0, S, S, tones[1]);
+    for (let y = 0; y < S; y++) {
+      for (let x = 0; x < S; x++) {
+        const v = rand();
+        if (v < 0.16) px(ctx, x, y, 1, 1, tones[3]);
+        else if (v < 0.42) px(ctx, x, y, 1, 1, tones[0]);
+        else if (v > 0.80) px(ctx, x, y, 1, 1, tones[2]);
+      }
+    }
+    // Tiny warm meadow flower pixels
+    for (let i = 0; i < 12; i++) {
+      const fx = Math.floor(rand() * S);
+      const fy = Math.floor(rand() * S);
+      px(ctx, fx, fy, 1, 1, rand() > 0.45 ? '#fff2be' : '#ffd8e4');
+    }
+    return register(label, c, { repeat, pixel: true, mip: true });
+  }
+
+  /** Crisp 32x32 pixel-art ashlar masonry retaining walls. */
+  function ashlarStone(label = 'ashlar-stone', base = '#dfd2bc', seed = 79) {
+    const S = 32;
+    const c = makeCanvas(S, S);
+    const ctx = c.getContext('2d');
+    const rand = mulberry32(seed);
+    px(ctx, 0, 0, S, S, '#8c7d69');
+
+    const rows = 4;
+    const rh = S / rows; // 8
+    const cw = 8;
     const bInt = parseInt(base.slice(1), 16);
     const br = (bInt >> 16) & 255;
     const bg = (bInt >> 8) & 255;
     const bb = bInt & 255;
 
     for (let r = 0; r < rows; r++) {
-      const offset = (r % 2) * (cw * 0.5);
-      for (let col = -1; col <= cols; col++) {
+      const offset = (r % 2) * 4;
+      for (let col = -1; col <= 4; col++) {
         const x = col * cw + offset;
         const y = r * rh;
-        const tone = Math.floor((rand() - 0.5) * 18);
-        ctx.fillStyle = `rgb(${Math.min(255, Math.max(0, br + tone))},${Math.min(255, Math.max(0, bg + tone - 1))},${Math.min(255, Math.max(0, bb + tone - 3))})`;
-        ctx.fillRect(x + 1.5, y + 1.5, cw - 3, rh - 3);
-        ctx.fillStyle = 'rgba(255,252,246,0.28)';
-        ctx.fillRect(x + 1.5, y + 1.5, cw - 3, 2);
-        ctx.fillStyle = 'rgba(118,104,88,0.18)';
-        ctx.fillRect(x + 1.5, y + rh - 3.5, cw - 3, 2);
+        const tone = Math.floor((rand() - 0.5) * 20);
+        const cr = Math.min(255, Math.max(0, br + tone));
+        const cg = Math.min(255, Math.max(0, bg + tone - 1));
+        const cb = Math.min(255, Math.max(0, bb + tone - 3));
+        px(ctx, x + 1, y + 1, cw - 1, rh - 1, `rgb(${cr},${cg},${cb})`);
+        px(ctx, x + 1, y + 1, cw - 1, 1, 'rgba(255,250,242,0.42)');
+        px(ctx, x + 1, y + rh - 1, cw - 1, 1, 'rgba(96,84,70,0.28)');
       }
     }
-    speckle(
-      ctx,
-      S,
-      S,
-      rand,
-      2600,
-      (v) => (v > 0.5 ? 'rgba(135,120,102,0.12)' : 'rgba(255,252,246,0.22)'),
-      0.7,
-      1.6
-    );
-    return register(label, c);
+    for (let i = 0; i < 40; i++) {
+      px(ctx, rand() * S, rand() * S, 1, 1, rand() > 0.5 ? 'rgba(110,98,84,0.22)' : 'rgba(255,252,246,0.28)');
+    }
+    return register(label, c, { pixel: true, mip: true });
   }
 
-  /** Weathered warm-grey lakeside concrete slab texture with expansion joints for Lingbo Pier. */
+  /** Crisp 32x32 pixel-art concrete pier slabs with weathered planks & seams. */
   function concretePier(label = 'concrete-pier', seed = 83) {
-    const S = 256;
+    const S = 32;
     const c = makeCanvas(S, S);
     const ctx = c.getContext('2d');
     const rand = mulberry32(seed);
-    ctx.fillStyle = '#cfc9bd';
-    ctx.fillRect(0, 0, S, S);
-
-    for (let i = 0; i < 40; i++) {
-      const x = rand() * S;
-      const y = rand() * S;
-      const r = 14 + rand() * 34;
-      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-      g.addColorStop(0, rand() > 0.5 ? 'rgba(156,154,148,0.05)' : 'rgba(255,254,250,0.09)');
-      g.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = g;
-      ctx.fillRect(x - r, y - r, r * 2, r * 2);
-    }
-    // Expansion joints (2 slabs per tile repeat)
-    for (const jx of [0, S * 0.5]) {
-      ctx.fillStyle = 'rgba(112,114,118,0.38)';
-      ctx.fillRect(jx, 0, 2.5, S);
-      ctx.fillStyle = 'rgba(255,255,255,0.45)';
-      ctx.fillRect(jx + 2.5, 0, 1.5, S);
-    }
-    speckle(
-      ctx,
-      S,
-      S,
-      rand,
-      3000,
-      (v) => (v > 0.55 ? 'rgba(128,128,132,0.16)' : 'rgba(252,251,248,0.3)'),
-      0.6,
-      1.5
-    );
-    return register(label, c);
-  }
-
-  /**
-   * Radiant WHU Peacock-Blue/Turquoise Glazed Tiles (孔雀蓝琉璃瓦) —
-   * bright high-value albedo + grayscale bumpMap so curved roof slopes stay vivid turquoise!
-   */
-  function glazedTiles(label = 'glazed') {
-    const W = 128;
-    const H = 128;
-    const albedo = makeCanvas(W, H);
-    const bump = makeCanvas(W, H);
-    const a = albedo.getContext('2d');
-    const b = bump.getContext('2d');
-    const aimg = a.createImageData(W, H);
-    const bimg = b.createImageData(W, H);
-
-    const colValley = new THREE.Color('#123f47');
-    const colBody = new THREE.Color('#1f6b74');
-    const colCrest = new THREE.Color('#5aa9a6');
-
-    for (let y = 0; y < H; y++) {
-      for (let x = 0; x < W; x++) {
-        const u = (x / W) * 6;
-        const fu = u - Math.floor(u);
-        const v = (y / H) * 5;
-        const fv = v - Math.floor(v);
-
-        const dist = Math.abs(fu - 0.5);
-        let hVal = 0.25;
-        if (dist < 0.32) {
-          const s = dist / 0.32;
-          hVal = 0.45 + 0.55 * Math.sqrt(Math.max(0, 1 - s * s));
-        } else {
-          const s = (dist - 0.32) / 0.18;
-          hVal = 0.22 + 0.12 * s;
-        }
-        if (fv > 0.88) hVal *= 0.78;
-        else if (fv < 0.08) hVal = Math.min(1, hVal * 1.12);
-
-        const col =
-          hVal < 0.5
-            ? colValley.clone().lerp(colBody, hVal / 0.5)
-            : colBody.clone().lerp(colCrest, (hVal - 0.5) / 0.5);
-
-        const idx = (y * W + x) * 4;
-        aimg.data[idx] = Math.round(col.r * 255);
-        aimg.data[idx + 1] = Math.round(col.g * 255);
-        aimg.data[idx + 2] = Math.round(col.b * 255);
-        aimg.data[idx + 3] = 255;
-
-        const bv = Math.round(hVal * 255);
-        bimg.data[idx] = bv;
-        bimg.data[idx + 1] = bv;
-        bimg.data[idx + 2] = bv;
-        bimg.data[idx + 3] = 255;
+    px(ctx, 0, 0, S, S, '#cbc3b4');
+    const tones = ['#c1b8a8', '#d4ccb9', '#bdb4a4'];
+    for (let y = 0; y < S; y++) {
+      for (let x = 0; x < S; x++) {
+        if (rand() < 0.25) px(ctx, x, y, 1, 1, tones[Math.floor(rand() * tones.length)]);
       }
     }
-    a.putImageData(aimg, 0, 0);
-    b.putImageData(bimg, 0, 0);
-    return {
-      map: register(`${label}-albedo`, albedo, { repeat: [2, 2] }),
-      bumpMap: register(`${label}-bump`, bump, { srgb: false, repeat: [2, 2] }),
-    };
+    // Expansion joints every 16px
+    for (const jx of [0, 16]) {
+      px(ctx, jx, 0, 1, S, '#6d6962');
+      px(ctx, jx + 1, 0, 1, S, 'rgba(255,252,246,0.48)');
+    }
+    for (const jy of [0, 16]) {
+      px(ctx, 0, jy, S, 1, 'rgba(105,100,92,0.34)');
+    }
+    return register(label, c, { pixel: true, mip: true });
   }
 
-  /**
-   * Lush cherry blossom petal-cluster canopy texture (albedo + soft bump)
-   * so blossom clouds have delicate multi-petal texture instead of flat plastic.
-   */
-  function sakuraCanopy(label = 'sakura-canopy', baseHex = '#ffebf3', accentHex = '#ffadc9', seed = 88) {
-    const S = 128;
+  /** Crisp 32x32 pixel-art fluted peacock-blue glazed tiles + stepped bump map. */
+  function glazedTiles(label = 'glazed') {
+    const S = 32;
     const albedo = makeCanvas(S, S);
     const bump = makeCanvas(S, S);
     const a = albedo.getContext('2d');
     const b = bump.getContext('2d');
-    const rand = mulberry32(seed);
 
-    a.fillStyle = baseHex;
-    a.fillRect(0, 0, S, S);
-    b.fillStyle = '#707070';
-    b.fillRect(0, 0, S, S);
+    const valley = '#113742';
+    const flank = '#1a5663';
+    const body = '#24737e';
+    const ridge = '#4ea3a4';
+    const glint = '#8ed8d3';
 
-    const palette = ['#ffffff', '#fff2f7', baseHex, accentHex, '#ff94b8'];
-    for (let i = 0; i < 420; i++) {
-      const px = rand() * S;
-      const py = rand() * S;
-      const rx = 2.2 + rand() * 3.8;
-      const ry = 1.4 + rand() * 2.4;
-      const rot = rand() * Math.PI;
-
-      a.save();
-      a.translate(px, py);
-      a.rotate(rot);
-      a.fillStyle = palette[Math.floor(rand() * palette.length)];
-      a.beginPath();
-      a.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
-      a.fill();
-      a.restore();
-
-      b.save();
-      b.translate(px, py);
-      b.rotate(rot);
-      const shade = 140 + Math.floor(rand() * 110);
-      b.fillStyle = `rgb(${shade},${shade},${shade})`;
-      b.beginPath();
-      b.ellipse(0, 0, rx * 0.9, ry * 0.9, 0, 0, Math.PI * 2);
-      b.fill();
-      b.restore();
+    // 4 flutes across 32px -> 8px per tile flute
+    for (let y = 0; y < S; y++) {
+      const isLap = y % 8 === 7;
+      const isEdge = y % 8 === 0;
+      for (let x = 0; x < S; x++) {
+        const fx = x % 8;
+        let col = body;
+        let bv = 165;
+        if (fx === 0 || fx === 7) {
+          col = valley;
+          bv = 60;
+        } else if (fx === 1 || fx === 6) {
+          col = flank;
+          bv = 120;
+        } else if (fx === 3 || fx === 4) {
+          col = ridge;
+          bv = 225;
+          if (fx === 3 && y % 4 === 1) {
+            col = glint;
+            bv = 250;
+          }
+        }
+        if (isLap) bv = Math.max(40, bv - 45);
+        else if (isEdge) bv = Math.min(255, bv + 20);
+        px(a, x, y, 1, 1, col);
+        px(b, x, y, 1, 1, `rgb(${bv},${bv},${bv})`);
+      }
     }
-
     return {
-      map: register(`${label}-map`, albedo, { repeat: [2, 2] }),
-      bumpMap: register(`${label}-bump`, bump, { srgb: false, repeat: [2, 2] }),
+      map: register(`${label}-albedo`, albedo, { repeat: [2, 2], pixel: true, mip: true }),
+      bumpMap: register(`${label}-bump`, bump, { srgb: false, repeat: [2, 2], pixel: true, mip: true }),
     };
   }
 
-  /**
-   * Stone facade with blue-tinted glazed windows (albedo + emissive for twilight glow).
-   */
-  function facade(label, { wall = '#f2eadc', cols = 4, rows = 3, arched = true, seed = 41 } = {}) {
-    const S = 256;
+  /** Legacy canopy wrapper kept for API compatibility. */
+  function sakuraCanopy(label = 'sakura-canopy', baseHex = '#ffebf3', accentHex = '#ffadc9', seed = 88) {
+    const tex = sakuraSprig(`${label}-fallback`, seed);
+    return { map: tex, bumpMap: tex };
+  }
+
+  /** Crisp 64x64 pixel-art stone facade with recessed windows & warm amber night glow. */
+  function facade(label, { wall = '#ebd9c1', cols = 4, rows = 3, arched = true, seed = 41 } = {}) {
+    const S = 64;
     const albedo = makeCanvas(S, S);
     const emissive = makeCanvas(S, S);
     const a = albedo.getContext('2d');
     const e = emissive.getContext('2d');
     const rand = mulberry32(seed);
-    a.fillStyle = wall;
-    a.fillRect(0, 0, S, S);
 
-    for (let y = 0; y < S; y += 16) {
-      a.fillStyle = 'rgba(165,148,128,0.15)';
-      a.fillRect(0, y, S, 1);
+    px(a, 0, 0, S, S, wall);
+    px(e, 0, 0, S, S, '#000000');
+
+    // Subtle stone texture pixels & string courses
+    for (let y = 0; y < S; y++) {
+      for (let x = 0; x < S; x++) {
+        if (y % 16 === 0) px(a, x, y, 1, 1, 'rgba(130,110,88,0.18)');
+        else if (rand() < 0.14) px(a, x, y, 1, 1, 'rgba(145,124,102,0.12)');
+      }
     }
-    speckle(
-      a,
-      S,
-      S,
-      rand,
-      1600,
-      (v) => (v > 0.5 ? 'rgba(150,130,110,0.10)' : 'rgba(255,255,255,0.28)'),
-      0.6,
-      1.4
-    );
-    e.fillStyle = '#000';
-    e.fillRect(0, 0, S, S);
 
-    const cw = S / cols;
-    const rh = S / rows;
+    const cw = Math.floor(S / cols);
+    const rh = Math.floor(S / rows);
     for (let r = 0; r < rows; r++) {
-      a.fillStyle = 'rgba(255,252,246,0.92)';
-      a.fillRect(0, r * rh + rh - 5, S, 3);
-      a.fillStyle = 'rgba(155,136,118,0.32)';
-      a.fillRect(0, r * rh + rh - 2, S, 1);
+      // Floor trim band
+      px(a, 0, r * rh + rh - 2, S, 1, '#faf4ea');
+      px(a, 0, r * rh + rh - 1, S, 1, 'rgba(128,110,90,0.32)');
       for (let c = 0; c < cols; c++) {
-        const ww = cw * 0.42;
-        const wh = rh * 0.52;
-        const x = c * cw + (cw - ww) / 2;
-        const y = r * rh + rh * 0.18;
-        // Stone sill, lintel shadow & recessed dark bronze frame
-        a.fillStyle = 'rgba(128,112,96,0.34)';
-        a.fillRect(x - 3.5, y - 3.5, ww + 7, wh + 6);
-        a.fillStyle = '#fcfaf5';
-        a.fillRect(x - 3, y - 2.5, ww + 6, wh + 4);
-        a.fillStyle = '#e7dfd0';
-        a.fillRect(x - 4.5, y + wh + 1.5, ww + 9, 3.5);
-        a.fillStyle = '#334659';
-        a.fillRect(x - 1.5, y - 1.5, ww + 3, wh + 3);
-        const g = a.createLinearGradient(x, y, x + ww, y + wh);
-        g.addColorStop(0, '#3e5e7a');
-        g.addColorStop(0.5, '#284259');
-        g.addColorStop(1, '#1a2d3f');
-        a.fillStyle = g;
-        if (arched && r === rows - 1) {
-          a.beginPath();
-          a.moveTo(x, y + wh);
-          a.lineTo(x, y + ww / 2);
-          a.arc(x + ww / 2, y + ww / 2, ww / 2, Math.PI, 0);
-          a.lineTo(x + ww, y + wh);
-          a.closePath();
-          a.fill();
-        } else {
-          a.fillRect(x, y, ww, wh);
-        }
-        a.fillStyle = 'rgba(205,228,248,0.22)';
-        a.fillRect(x + 2, y + 2, ww * 0.18, wh * 0.55);
-        a.fillStyle = '#d9d3c5';
-        a.fillRect(x + ww / 2 - 1, y, 2, wh);
-        a.fillRect(x, y + wh * 0.42, ww, 2);
-        a.fillRect(x, y + wh * 0.72, ww, 1.5);
+        const ww = Math.max(6, Math.floor(cw * 0.44));
+        const wh = Math.max(8, Math.floor(rh * 0.56));
+        const x = c * cw + Math.floor((cw - ww) / 2);
+        const y = r * rh + Math.floor(rh * 0.18);
 
-        if (rand() < 0.42) {
-          const ge = e.createLinearGradient(x, y, x, y + wh);
-          ge.addColorStop(0, '#ffd8a2');
-          ge.addColorStop(1, '#ffa460');
-          e.fillStyle = ge;
-          e.fillRect(x, y, ww, wh);
-          e.fillStyle = '#000';
-          e.fillRect(x + ww / 2 - 1, y, 2, wh);
-          e.fillRect(x, y + wh * 0.42, ww, 2);
+        // Cream stone surround & dark bronze frame
+        px(a, x - 1, y - 1, ww + 2, wh + 2, '#f7efe2');
+        px(a, x - 1, y + wh + 1, ww + 2, 1, '#b8a894');
+        px(a, x, y, ww, wh, '#2a3b4e');
+
+        const lit = rand() < 0.55;
+        if (arched && r === rows - 1) {
+          px(a, x + 1, y + 2, ww - 2, wh - 3, '#33506b');
+          px(a, x + 2, y + 1, ww - 4, 1, '#33506b');
+        } else {
+          px(a, x + 1, y + 1, ww - 2, wh - 2, '#2d4760');
+        }
+        // Highlight pane reflection
+        px(a, x + 1, y + 2, 1, Math.max(2, wh - 4), '#7da6cc');
+        // Mullion cross
+        px(a, x + Math.floor(ww / 2), y + 1, 1, wh - 2, '#ded4c4');
+        px(a, x + 1, y + Math.floor(wh * 0.48), ww - 2, 1, '#ded4c4');
+
+        if (lit) {
+          px(e, x + 1, y + 1, ww - 2, wh - 2, '#ffb55c');
+          px(e, x + 2, y + 2, ww - 4, wh - 4, '#ffd98a');
+          px(e, x + Math.floor(ww / 2), y + 1, 1, wh - 2, '#000000');
+          px(e, x + 1, y + Math.floor(wh * 0.48), ww - 2, 1, '#000000');
         }
       }
     }
     return {
-      map: register(`${label}-albedo`, albedo),
-      emissiveMap: register(`${label}-emissive`, emissive),
+      map: register(`${label}-albedo`, albedo, { pixel: true, mip: true }),
+      emissiveMap: register(`${label}-emissive`, emissive, { pixel: true, mip: true }),
     };
   }
 
-  /**
-   * Carved inscription panel for the archway central lintel.
-   */
-  function inscription(label, chars, { w = 512, h = 128 } = {}) {
+  /** Crisp inscription panel for the archway lintel (256x64, NearestFilter pixel crispness). */
+  function inscription(label, chars, { w = 256, h = 64 } = {}) {
     const c = makeCanvas(w, h);
     const ctx = c.getContext('2d');
     const rand = mulberry32(label.length * 97);
-    ctx.fillStyle = '#f5f2ec';
-    ctx.fillRect(0, 0, w, h);
-    speckle(
-      ctx,
-      w,
-      h,
-      rand,
-      3200,
-      (v) => (v > 0.6 ? 'rgba(130,126,130,0.16)' : 'rgba(255,255,255,0.45)'),
-      0.6,
-      1.5
-    );
-    ctx.strokeStyle = 'rgba(160,154,148,0.5)';
+    px(ctx, 0, 0, w, h, '#efe8dc');
+    for (let i = 0; i < 420; i++) {
+      px(ctx, rand() * w, rand() * h, 2, 2, rand() > 0.55 ? 'rgba(130,120,108,0.16)' : 'rgba(255,252,246,0.42)');
+    }
+    ctx.strokeStyle = '#9a8f80';
     ctx.lineWidth = 2;
-    ctx.strokeRect(6, 8, w - 12, h - 16);
-    ctx.strokeStyle = 'rgba(255,255,255,0.85)';
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(8, 10, w - 16, h - 20);
+    ctx.strokeRect(3, 4, w - 6, h - 8);
+    ctx.strokeStyle = '#fbf7ef';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(5, 6, w - 10, h - 12);
     const font =
       '"STKaiti","KaiTi","Kaiti SC","BiauKai","DFKai-SB","Songti SC","Noto Serif SC","Noto Serif CJK SC","SimSun",serif';
     ctx.font = `700 ${Math.round(h * 0.52)}px ${font}`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const step = (w - 64) / chars.length;
+    const step = (w - 32) / chars.length;
     chars.forEach((ch, i) => {
-      const x = 32 + step * (i + 0.5);
+      const x = 16 + step * (i + 0.5);
       const y = h * 0.53;
-      ctx.fillStyle = 'rgba(255,255,255,0.92)';
-      ctx.fillText(ch, x + 1.5, y + 1.5);
-      ctx.fillStyle = '#202834';
+      ctx.fillStyle = 'rgba(255,252,245,0.88)';
+      ctx.fillText(ch, x + 1, y + 1);
+      ctx.fillStyle = '#202634';
       ctx.fillText(ch, x, y);
     });
-    return register(label, c, { wrap: false });
+    return register(label, c, { wrap: false, pixel: true, mip: true });
   }
 
-  /** Grayscale relief for the drum-stone medallions (used as bumpMap). */
+  /** Crisp 32x32 pixel-art relief medallion for drum buttresses. */
   function rosette(label = 'rosette') {
-    const S = 128;
+    const S = 32;
     const c = makeCanvas(S, S);
     const ctx = c.getContext('2d');
-    ctx.fillStyle = '#808080';
-    ctx.fillRect(0, 0, S, S);
-    ctx.translate(S / 2, S / 2);
-    ctx.strokeStyle = '#dfdfdf';
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.arc(0, 0, S * 0.43, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(0, 0, S * 0.36, 0, Math.PI * 2);
-    ctx.stroke();
-    for (let i = 0; i < 8; i++) {
-      ctx.save();
-      ctx.rotate((i / 8) * Math.PI * 2);
-      ctx.fillStyle = '#dadada';
-      ctx.beginPath();
-      ctx.ellipse(0, -S * 0.21, S * 0.065, S * 0.12, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
+    px(ctx, 0, 0, S, S, '#7e7e7e');
+    const cx = 15.5;
+    const cy = 15.5;
+    for (let y = 0; y < S; y++) {
+      for (let x = 0; x < S; x++) {
+        const d = Math.hypot(x - cx, y - cy);
+        if (d > 12.2 && d < 14.5) px(ctx, x, y, 1, 1, '#dcdcdc');
+        else if (d > 9.5 && d < 11.0) px(ctx, x, y, 1, 1, '#cfcfcf');
+        else if (d < 3.2) px(ctx, x, y, 1, 1, '#eeeeee');
+        else if (d < 9.2) {
+          const ang = Math.atan2(y - cy, x - cx);
+          if (Math.cos(ang * 8) > 0.35 && d > 4.2) px(ctx, x, y, 1, 1, '#d6d6d6');
+        }
+      }
     }
-    ctx.fillStyle = '#f2f2f2';
-    ctx.beginPath();
-    ctx.arc(0, 0, S * 0.09, 0, Math.PI * 2);
-    ctx.fill();
-    return register(label, c, { srgb: false, wrap: false });
+    return register(label, c, { srgb: false, wrap: false, pixel: true, mip: true });
   }
 
-  /**
-   * Airy alpha-cutout 5-petal Yoshino cherry blossom sprig (染井吉野樱枝簇)
-   * with ~35% transparent negative space so sky & sunlight filter naturally through canopies.
-   */
+  /** Crisp 32x32 pixel-art cherry blossom sprig silhouette (OurSongs block-foliage feel). */
   function sakuraSprig(label = 'sakura-sprig', seed = 901) {
-    const S = 512;
+    const S = 32;
     const c = makeCanvas(S, S);
     const ctx = c.getContext('2d');
     const rand = mulberry32(seed);
-
     ctx.clearRect(0, 0, S, S);
 
-    // Delicate cherrywood twigs strictly tucked inside the blossom volume (no dangling tips!)
-    const twigs = [
-      [S * 0.5, S * 0.68, S * 0.45, S * 0.48, S * 0.30, S * 0.28],
-      [S * 0.5, S * 0.68, S * 0.55, S * 0.50, S * 0.72, S * 0.30],
-      [S * 0.5, S * 0.64, S * 0.50, S * 0.42, S * 0.51, S * 0.22],
-      [S * 0.42, S * 0.52, S * 0.30, S * 0.46, S * 0.22, S * 0.44],
-      [S * 0.58, S * 0.52, S * 0.70, S * 0.46, S * 0.78, S * 0.42],
+    // Subtle interior pixel twigs
+    px(ctx, 15, 16, 2, 8, '#6a4b45');
+    px(ctx, 11, 13, 4, 2, '#6a4b45');
+    px(ctx, 17, 13, 4, 2, '#6a4b45');
+
+    const puffs = [
+      [16, 8, 5.5],
+      [9, 12, 4.8],
+      [23, 12, 4.8],
+      [7, 18, 4.2],
+      [25, 18, 4.2],
+      [15, 14, 5.4],
+      [12, 20, 4.4],
+      [20, 20, 4.4],
+      [16, 23, 3.8],
     ];
-    ctx.lineCap = 'round';
-    twigs.forEach(([x0, y0, cx, cy, x1, y1], idx) => {
-      ctx.strokeStyle = 'rgba(116,86,78,0.40)';
-      ctx.lineWidth = idx < 3 ? 2.5 : 1.6;
-      ctx.beginPath();
-      ctx.moveTo(x0, y0);
-      ctx.quadraticCurveTo(cx, cy, x1, y1);
-      ctx.stroke();
-    });
-
-    function drawBlossom(bx, by, radius, rot, tone) {
-      ctx.save();
-      ctx.translate(bx, by);
-      ctx.rotate(rot);
-
-      const petalFill =
-        tone === 0 ? '#fffcfe' : tone === 1 ? '#fff4f9' : tone === 2 ? '#ffe4ef' : '#fbd1e2';
-      const innerTint = tone === 0 ? '#ffe5ef' : '#f7b8d0';
-
-      for (let p = 0; p < 5; p++) {
-        ctx.save();
-        ctx.rotate((p / 5) * Math.PI * 2);
-        const grad = ctx.createRadialGradient(0, -radius * 0.18, 1, 0, -radius * 0.55, radius * 0.96);
-        grad.addColorStop(0, innerTint);
-        grad.addColorStop(0.5, petalFill);
-        grad.addColorStop(1, 'rgba(255,255,255,0.94)');
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.bezierCurveTo(
-          -radius * 0.48,
-          -radius * 0.35,
-          -radius * 0.46,
-          -radius * 0.92,
-          -radius * 0.1,
-          -radius * 0.95
-        );
-        // Signature notched sakura petal tip
-        ctx.lineTo(0, -radius * 0.78);
-        ctx.lineTo(radius * 0.1, -radius * 0.95);
-        ctx.bezierCurveTo(
-          radius * 0.46,
-          -radius * 0.92,
-          radius * 0.48,
-          -radius * 0.35,
-          0,
-          0
-        );
-        ctx.fill();
-        ctx.restore();
+    for (let y = 1; y < S - 1; y++) {
+      for (let x = 1; x < S - 1; x++) {
+        let minD = 99;
+        for (const [cx, cy, r] of puffs) {
+          const d = Math.hypot(x - cx, y - cy) / r;
+          if (d < minD) minD = d;
+        }
+        if (minD > 0.96) continue;
+        // Airy interior cutout holes (~18%) so canopies never look solid boxy
+        if (minD > 0.62 && rand() < 0.22) continue;
+        const hNorm = y / S;
+        const n = rand();
+        let col = '#ffe2eb';
+        if (hNorm < 0.34 || (minD < 0.45 && n > 0.35)) col = '#fff8f5';
+        else if (hNorm > 0.68 || minD > 0.78) col = n > 0.4 ? '#d98cab' : '#c77ea0';
+        else if (n > 0.55) col = '#ffdbe8';
+        else col = '#f4b5cd';
+        px(ctx, x, y, 1, 1, col);
       }
-
-      // Delicate rose-blush calyx center + warm golden stamen dots (no harsh magenta dot!)
-      ctx.fillStyle = 'rgba(236,154,186,0.78)';
-      ctx.beginPath();
-      ctx.arc(0, 0, radius * 0.13, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = '#f6da8e';
-      for (let st = 0; st < 6; st++) {
-        const a = (st / 6) * Math.PI * 2;
-        ctx.beginPath();
-        ctx.arc(Math.cos(a) * radius * 0.19, Math.sin(a) * radius * 0.19, radius * 0.04, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.restore();
     }
-
-    // Place blossom clusters concentrated around branch tips & lower center so twigs stay covered
-    const anchors = [
-      [0.5, 0.24, 0.19],
-      [0.29, 0.32, 0.17],
-      [0.72, 0.33, 0.17],
-      [0.2, 0.49, 0.15],
-      [0.81, 0.48, 0.15],
-      [0.44, 0.45, 0.18],
-      [0.6, 0.46, 0.17],
-      [0.36, 0.62, 0.14],
-      [0.64, 0.61, 0.14],
-      [0.5, 0.66, 0.13],
-    ];
-
-    for (let i = 0; i < 72; i++) {
-      const anc = anchors[i % anchors.length];
-      const ang = rand() * Math.PI * 2;
-      const dist = rand() * anc[2] * S;
-      const bx = anc[0] * S + Math.cos(ang) * dist;
-      const by = anc[1] * S + Math.sin(ang) * dist;
-      if (bx < 28 || bx > S - 28 || by < 28 || by > S - 36) continue;
-      const radius = 17 + rand() * 17;
-      const rPick = rand();
-      const tone = rPick < 0.48 ? 0 : rPick < 0.78 ? 1 : rPick < 0.93 ? 2 : 3;
-      drawBlossom(bx, by, radius, rand() * Math.PI * 2, tone);
-    }
-
-    // Unopened soft-rose buds along outer tips
-    for (let b = 0; b < 14; b++) {
-      const anc = anchors[b % 5];
-      const bx = anc[0] * S + (rand() - 0.5) * anc[2] * S * 1.4;
-      const by = anc[1] * S + (rand() - 0.5) * anc[2] * S * 1.4;
-      ctx.save();
-      ctx.translate(bx, by);
-      ctx.rotate(rand() * Math.PI * 2);
-      ctx.fillStyle = '#ed8fb4';
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 5.2, 8.5, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
-
-    return register(label, c, { wrap: false });
+    return register(label, c, { wrap: false, pixel: true, mip: false });
   }
 
-  /**
-   * Airy alpha-cutout camphor / evergreen leaf sprig for Luojia background trees.
-   */
+  /** Crisp 32x32 pixel-art camphor / evergreen leaf sprig. */
   function leafSprig(label = 'leaf-sprig', seed = 922) {
-    const S = 256;
+    const S = 32;
     const c = makeCanvas(S, S);
     const ctx = c.getContext('2d');
     const rand = mulberry32(seed);
-
     ctx.clearRect(0, 0, S, S);
-    ctx.strokeStyle = 'rgba(92,82,64,0.7)';
-    ctx.lineWidth = 2.8;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(S * 0.5, S * 0.68);
-    ctx.quadraticCurveTo(S * 0.48, S * 0.50, S * 0.30, S * 0.28);
-    ctx.moveTo(S * 0.5, S * 0.68);
-    ctx.quadraticCurveTo(S * 0.54, S * 0.50, S * 0.72, S * 0.30);
-    ctx.stroke();
 
-    const greens = ['#4c7f53', '#5c9160', '#6da169', '#7eb072', '#90bd7f'];
-    for (let i = 0; i < 72; i++) {
-      const ang = rand() * Math.PI * 2;
-      const rad = Math.pow(rand(), 0.7) * S * 0.36;
-      const lx = S * 0.5 + Math.cos(ang) * rad;
-      const ly = S * 0.46 + Math.sin(ang) * rad * 0.85;
-      const lw = 8 + rand() * 8;
-      const ll = 15 + rand() * 12;
-
-      ctx.save();
-      ctx.translate(lx, ly);
-      ctx.rotate(rand() * Math.PI * 2);
-      ctx.fillStyle = greens[Math.floor(rand() * greens.length)];
-      ctx.beginPath();
-      ctx.moveTo(0, -ll * 0.5);
-      ctx.quadraticCurveTo(lw * 0.7, 0, 0, ll * 0.5);
-      ctx.quadraticCurveTo(-lw * 0.7, 0, 0, -ll * 0.5);
-      ctx.fill();
-      ctx.restore();
+    px(ctx, 15, 16, 2, 9, '#574a38');
+    const puffs = [
+      [16, 8, 5.2],
+      [10, 12, 4.6],
+      [22, 12, 4.6],
+      [8, 18, 4.2],
+      [24, 18, 4.2],
+      [16, 15, 5.2],
+      [13, 21, 4.2],
+      [19, 21, 4.2],
+    ];
+    for (let y = 1; y < S - 1; y++) {
+      for (let x = 1; x < S - 1; x++) {
+        let minD = 99;
+        for (const [cx, cy, r] of puffs) {
+          const d = Math.hypot(x - cx, y - cy) / r;
+          if (d < minD) minD = d;
+        }
+        if (minD > 0.96) continue;
+        if (minD > 0.60 && rand() < 0.25) continue;
+        const hNorm = y / S;
+        const n = rand();
+        let col = '#6f9e5a';
+        if (hNorm < 0.35 && n > 0.25) col = '#a9cc72';
+        else if (hNorm > 0.68 || minD > 0.78) col = n > 0.45 ? '#355c42' : '#284a39';
+        else if (n < 0.42) col = '#4f7f4c';
+        px(ctx, x, y, 1, 1, col);
+      }
     }
-
-    return register(label, c, { wrap: false });
+    return register(label, c, { wrap: false, pixel: true, mip: false });
   }
 
-  /** Warm natural reddish-brown cherrywood bark with horizontal lenticels. */
+  /** Crisp 16x32 pixel-art warm cherrywood bark. */
   function bark(label = 'bark') {
-    const c = makeCanvas(128, 256);
+    const W = 16;
+    const H = 32;
+    const c = makeCanvas(W, H);
     const ctx = c.getContext('2d');
     const rand = mulberry32(77);
-    ctx.fillStyle = '#735750';
-    ctx.fillRect(0, 0, 128, 256);
-    for (let v = 0; v < 90; v++) {
-      ctx.fillStyle = rand() > 0.5 ? 'rgba(54,38,34,0.28)' : 'rgba(136,108,98,0.25)';
-      ctx.fillRect(rand() * 128, rand() * 256, 2 + rand() * 3, 24 + rand() * 55);
+    px(ctx, 0, 0, W, H, '#6a4c44');
+    for (let y = 0; y < H; y++) {
+      for (let x = 0; x < W; x++) {
+        if (x % 4 === 0 && rand() < 0.75) px(ctx, x, y, 1, 1, '#4a322d');
+        else if (x % 4 === 1 && rand() < 0.55) px(ctx, x, y, 1, 1, '#846257');
+      }
     }
-    for (let i = 0; i < 160; i++) {
-      ctx.fillStyle = rand() > 0.4 ? 'rgba(178,136,122,0.45)' : 'rgba(48,32,28,0.48)';
-      ctx.fillRect(rand() * 128, rand() * 256, 8 + rand() * 22, 1.8);
+    for (let i = 0; i < 18; i++) {
+      px(ctx, Math.floor(rand() * (W - 3)), Math.floor(rand() * H), 3, 1, '#9c776b');
     }
-    return register(label, c);
+    return register(label, c, { pixel: true, mip: true });
+  }
+
+  /**
+   * Hand-pixeled 48x64 OurSongs protagonist chibi sprite (2.2-head-tall silver-blue haired girl,
+   * fitted sky-blue tracksuit w/ white stripes, chunky skate sneakers, silver camera + #ff3b3b red dot).
+   */
+  function protagonistFrame(frameIdx = 0) {
+    const label = `protagonist-frame-${frameIdx}`;
+    if (cache.has(label)) return cache.get(label);
+
+    const W = 48;
+    const H = 64;
+    const c = makeCanvas(W, H);
+    const ctx = c.getContext('2d');
+    ctx.clearRect(0, 0, W, H);
+
+    const OUT = '#202840';
+    const H_HI = '#f4f8ff';
+    const H_BASE = '#cfdcf6';
+    const H_MID = '#9fb6e2';
+    const H_SHAD = '#687fb2';
+
+    const SKIN = '#ffe8de';
+    const SKIN_SHAD = '#f1c7b8';
+    const BLUSH = '#ffb8c4';
+    const EYE_DARK = '#1b346e';
+    const EYE_MID = '#428be6';
+    const EYE_HI = '#ffffff';
+
+    const SUIT_HI = '#9ed4f5';
+    const SUIT = '#68b2e5';
+    const SUIT_SHAD = '#4284bc';
+    const SUIT_DARK = '#2a5a8a';
+    const STRIPE = '#f7fbff';
+
+    const SHOE_TOP = '#8cc7ee';
+    const SHOE_SHAD = '#5c9bc9';
+    const SOLE = '#fafcff';
+    const SOLE_SHAD = '#cfd8ea';
+
+    const CAM_BODY = '#cfd7e3';
+    const CAM_DARK = '#384154';
+    const RED_DOT = '#ff3b3b';
+
+    const bob = frameIdx === 1 ? 1 : 0;
+    const hairShift = frameIdx === 1 ? 1 : 0;
+    const step = frameIdx === 1 ? 1 : 0;
+
+    // 1. Hair back curtain falling to lower thigh/waist (iconic silhouette block!)
+    px(ctx, 13, 18 + bob, 22, 26, H_SHAD);
+    px(ctx, 12, 22 + bob, 24, 21, H_SHAD);
+    px(ctx, 14, 26 + bob, 20, 18, H_MID);
+    px(ctx, 11 - hairShift, 32 + bob, 5, 11, H_MID);
+    px(ctx, 32 + hairShift, 32 + bob, 5, 11, H_MID);
+    // Hair tips splayed slightly outward
+    px(ctx, 10 - hairShift, 41 + bob, 4, 3, H_SHAD);
+    px(ctx, 34 + hairShift, 41 + bob, 4, 3, H_SHAD);
+    px(ctx, 15, 42 + bob, 18, 3, H_SHAD);
+
+    // 2. Legs & Track Pants (narrow slender legs)
+    const legY = 44;
+    // Left leg
+    px(ctx, 18, legY, 5, 12 - step, SUIT_SHAD);
+    px(ctx, 19, legY, 3, 12 - step, SUIT);
+    px(ctx, 18, legY, 1, 11 - step, STRIPE); // white side stripe
+    // Right leg
+    px(ctx, 25, legY, 5, 12, SUIT_SHAD);
+    px(ctx, 26, legY, 3, 12, SUIT);
+    px(ctx, 29, legY, 1, 11, STRIPE); // white side stripe
+
+    // 3. Chunky light-blue skate sneakers with flat white cupsole
+    // Left shoe
+    const lsY = 55 - step;
+    px(ctx, 16, lsY, 7, 3, SHOE_TOP);
+    px(ctx, 17, lsY, 5, 1, STRIPE); // laces
+    px(ctx, 16, lsY + 2, 7, 1, SHOE_SHAD);
+    px(ctx, 16, lsY + 3, 7, 2, SOLE);
+    px(ctx, 16, lsY + 5, 7, 1, SOLE_SHAD);
+    // Right shoe
+    const rsY = 55;
+    px(ctx, 25, rsY, 7, 3, SHOE_TOP);
+    px(ctx, 26, rsY, 5, 1, STRIPE);
+    px(ctx, 25, rsY + 2, 7, 1, SHOE_SHAD);
+    px(ctx, 25, rsY + 3, 7, 2, SOLE);
+    px(ctx, 25, rsY + 5, 7, 1, SOLE_SHAD);
+
+    // 4. Fitted Sky-Blue Stand-Collar Zip Track Jacket (slender waist!)
+    const bodyY = 30 + bob;
+    px(ctx, 17, bodyY, 14, 15, SUIT);
+    px(ctx, 17, bodyY + 11, 14, 4, SUIT_SHAD);
+    px(ctx, 23, bodyY, 2, 14, STRIPE); // center zip line
+    px(ctx, 20, bodyY - 2, 8, 3, SUIT_DARK); // stand collar
+    px(ctx, 21, bodyY - 2, 6, 2, SUIT_HI);
+
+    // Arms & white shoulder/sleeve stripes + hands holding silver camera
+    px(ctx, 14, bodyY + 1, 3, 10, SUIT);
+    px(ctx, 14, bodyY + 1, 1, 9, STRIPE);
+    px(ctx, 31, bodyY + 1, 3, 10, SUIT);
+    px(ctx, 33, bodyY + 1, 1, 9, STRIPE);
+    // Sleeve highlights
+    px(ctx, 18, bodyY + 1, 4, 8, SUIT_HI);
+    px(ctx, 26, bodyY + 1, 4, 8, SUIT_HI);
+    // Hands
+    px(ctx, 15, bodyY + 9, 4, 3, SKIN);
+    px(ctx, 28, bodyY + 9, 4, 3, SKIN);
+
+    // 5. Silver Retro Camera with iconic #ff3b3b red recording dot
+    px(ctx, 19, bodyY + 7, 10, 6, CAM_DARK);
+    px(ctx, 20, bodyY + 8, 8, 4, CAM_BODY);
+    px(ctx, 22, bodyY + 8, 4, 4, CAM_DARK); // lens ring
+    px(ctx, 23, bodyY + 9, 2, 2, '#78b0e8'); // lens glass glint
+    px(ctx, 26, bodyY + 8, 2, 2, RED_DOT); // #ff3b3b beacon!
+
+    // 6. Chibi Head (large, ~42% of height)
+    const headY = 8 + bob;
+    px(ctx, 15, headY + 4, 18, 17, SKIN);
+    px(ctx, 16, headY + 19, 16, 2, SKIN_SHAD);
+    // Expressive large pixel eyes (deep blue + sky highlight + white sparkle)
+    // Left eye
+    px(ctx, 17, headY + 12, 4, 5, EYE_DARK);
+    px(ctx, 18, headY + 14, 3, 3, EYE_MID);
+    px(ctx, 18, headY + 12, 2, 2, EYE_HI);
+    px(ctx, 20, headY + 16, 1, 1, EYE_HI);
+    // Right eye
+    px(ctx, 27, headY + 12, 4, 5, EYE_DARK);
+    px(ctx, 27, headY + 14, 3, 3, EYE_MID);
+    px(ctx, 28, headY + 12, 2, 2, EYE_HI);
+    px(ctx, 27, headY + 16, 1, 1, EYE_HI);
+    // Subtle cheek blush & quiet mouth
+    px(ctx, 16, headY + 17, 2, 1, BLUSH);
+    px(ctx, 30, headY + 17, 2, 1, BLUSH);
+    px(ctx, 23, headY + 19, 2, 1, '#c9888c');
+
+    // 7. Silver-blue hair crown, side locks & layered bangs
+    px(ctx, 14, headY, 20, 8, H_BASE);
+    px(ctx, 16, headY - 1, 16, 3, H_HI);
+    px(ctx, 13, headY + 3, 22, 6, H_BASE);
+    // Ahoge / crown highlight band
+    px(ctx, 16, headY + 2, 16, 2, H_HI);
+    px(ctx, 21, headY - 2, 4, 2, H_BASE);
+    px(ctx, 22, headY - 3, 2, 1, H_HI);
+    // Bangs framing face
+    px(ctx, 14, headY + 7, 5, 5, H_BASE);
+    px(ctx, 19, headY + 7, 4, 4, H_HI);
+    px(ctx, 23, headY + 7, 3, 5, H_BASE);
+    px(ctx, 26, headY + 7, 4, 4, H_HI);
+    px(ctx, 30, headY + 7, 4, 5, H_BASE);
+    px(ctx, 22, headY + 8, 2, 5, H_MID);
+    // Side hair locks framing cheeks down past shoulders
+    px(ctx, 12, headY + 7, 3, 22, H_BASE);
+    px(ctx, 13, headY + 9, 2, 18, H_HI);
+    px(ctx, 33, headY + 7, 3, 22, H_BASE);
+    px(ctx, 33, headY + 9, 2, 18, H_HI);
+    px(ctx, 12, headY + 26, 3, 7, H_MID);
+    px(ctx, 33, headY + 26, 3, 7, H_MID);
+
+    // 8. Automatic 1px crisp dark-indigo outline pass over alpha silhouette
+    const img = ctx.getImageData(0, 0, W, H);
+    const src = new Uint8ClampedArray(img.data);
+    const outR = 32, outG = 40, outB = 64;
+    for (let y = 1; y < H - 1; y++) {
+      for (let x = 1; x < W - 1; x++) {
+        const i = (y * W + x) * 4;
+        if (src[i + 3] > 20) continue;
+        const n =
+          src[((y - 1) * W + x) * 4 + 3] > 20 ||
+          src[((y + 1) * W + x) * 4 + 3] > 20 ||
+          src[(y * W + x - 1) * 4 + 3] > 20 ||
+          src[(y * W + x + 1) * 4 + 3] > 20;
+        if (n) {
+          img.data[i] = outR;
+          img.data[i + 1] = outG;
+          img.data[i + 2] = outB;
+          img.data[i + 3] = 255;
+        }
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+
+    return register(label, c, { wrap: false, pixel: true, mip: false });
+  }
+
+  /** Soft circular optical glow sprite for floating golden dust, fireflies & warm lamp halos. */
+  function bokehDot(label = 'bokeh-dot') {
+    if (cache.has(label)) return cache.get(label);
+    const S = 32;
+    const c = makeCanvas(S, S);
+    const ctx = c.getContext('2d');
+    const g = ctx.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
+    g.addColorStop(0, 'rgba(255,255,255,1)');
+    g.addColorStop(0.28, 'rgba(255,244,218,0.82)');
+    g.addColorStop(0.65, 'rgba(255,224,160,0.22)');
+    g.addColorStop(1, 'rgba(255,220,150,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, S, S);
+    return register(label, c, { wrap: false, pixel: false, mip: false });
   }
 
   function getStats() {
@@ -764,6 +722,8 @@ export function createTextureFactory(renderer) {
     inscription,
     rosette,
     bark,
+    protagonistFrame,
+    bokehDot,
     getStats,
   };
 }

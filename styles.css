@@ -3,41 +3,42 @@
    Frosted pearl-white glass over a sunlit cerulean 3D campus.
    ========================================================================= */
 :root {
-  /* Palette */
-  --sky-top: #6fb6e8;
-  --sky-low: #cfe8fb;
-  --navy: #142942; /* primary ink */
-  --navy-soft: #3d5673; /* secondary ink */
-  --navy-faint: #6a7f98; /* tertiary ink */
-  --peacock: #1976a8; /* peacock-blue accent */
-  --peacock-hi: #2a95c9;
-  --peacock-tint: rgba(25, 118, 168, 0.1);
-  --sakura: #e67aa3; /* sakura-pink accent */
-  --sakura-deep: #d45c8b;
-  --sakura-tint: rgba(230, 122, 163, 0.14);
-  --sakura-glow: rgba(230, 122, 163, 0.45);
-  --pearl: #fbfdff;
+  /* OurSongs Amber-Afternoon Palette */
+  --sky-top: #3e6c99;
+  --sky-low: #eed0aa;
+  --navy: #18233a; /* primary ink */
+  --navy-soft: #43536e; /* secondary ink */
+  --navy-faint: #6c7a92; /* tertiary ink */
+  --peacock: #1c6e8c; /* peacock-teal accent */
+  --peacock-hi: #2b8cad;
+  --peacock-tint: rgba(28, 110, 140, 0.12);
+  --sakura: #d98245; /* warm amber accent */
+  --sakura-deep: #bf642c;
+  --sakura-tint: rgba(217, 130, 69, 0.14);
+  --sakura-glow: rgba(255, 180, 96, 0.45);
+  --beacon: #ff3b3b; /* OurSongs red pixel motif */
+  --pearl: #fdfaf5;
 
   /* Surfaces */
-  --glass: rgba(255, 255, 255, 0.84);
-  --glass-strong: rgba(255, 255, 255, 0.93);
-  --glass-soft: rgba(255, 255, 255, 0.62);
+  --glass: rgba(252, 248, 240, 0.86);
+  --glass-strong: rgba(255, 252, 246, 0.94);
+  --glass-soft: rgba(252, 248, 240, 0.66);
   --glass-blur: blur(8px);
-  --hairline: rgba(25, 118, 168, 0.18);
-  --hairline-strong: rgba(25, 118, 168, 0.34);
-  --hairline-pink: rgba(230, 122, 163, 0.42);
-  --shadow: 0 8px 30px rgba(20, 41, 66, 0.12);
-  --shadow-sm: 0 3px 12px rgba(20, 41, 66, 0.1);
-  --shadow-lg: 0 18px 56px rgba(20, 41, 66, 0.18);
+  --hairline: rgba(142, 108, 72, 0.20);
+  --hairline-strong: rgba(28, 110, 140, 0.34);
+  --hairline-pink: rgba(217, 130, 69, 0.44);
+  --shadow: 0 8px 30px rgba(20, 29, 48, 0.16);
+  --shadow-sm: 0 3px 12px rgba(20, 29, 48, 0.12);
+  --shadow-lg: 0 18px 56px rgba(16, 24, 42, 0.22);
   --radius-lg: 14px;
   --radius: 12px;
   --radius-sm: 10px;
   --radius-pill: 999px;
 
   /* Gradient accents */
-  --grad-cta: linear-gradient(120deg, #1976a8 0%, #3d8fd0 46%, #e67aa3 100%);
-  --grad-cta-hover: linear-gradient(120deg, #156894 0%, #347fc0 46%, #d45c8b 100%);
-  --grad-hairline: linear-gradient(90deg, rgba(25, 118, 168, 0.55), rgba(230, 122, 163, 0.65));
+  --grad-cta: linear-gradient(120deg, #1c6e8c 0%, #3a8aa3 48%, #d98245 100%);
+  --grad-cta-hover: linear-gradient(120deg, #165a73 0%, #31788f 48%, #bf642c 100%);
+  --grad-hairline: linear-gradient(90deg, rgba(28, 110, 140, 0.60), rgba(217, 130, 69, 0.72));
 
   /* Type */
   --font-serif: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', Georgia, serif;
@@ -49,25 +50,31 @@
   --drawer-gap: 20px;
 }
 
-/* Second mood: 樱霞暮色 — warmer rose / periwinkle, still light */
+/* Second mood: 收敛夜灯 — deep midnight indigo & warm tungsten amber */
+body[data-mood='night'],
 body[data-mood='sunset'] {
-  --sky-top: #9aa6e6;
-  --sky-low: #fbd9e2;
-  --peacock: #4f63b8; /* periwinkle */
-  --peacock-hi: #6a7ed0;
-  --peacock-tint: rgba(79, 99, 184, 0.1);
-  --sakura: #e2708f; /* rose */
-  --sakura-deep: #cc5677;
-  --sakura-tint: rgba(226, 112, 143, 0.15);
-  --sakura-glow: rgba(226, 112, 143, 0.45);
-  --glass: rgba(255, 250, 252, 0.86);
-  --glass-strong: rgba(255, 251, 253, 0.94);
-  --hairline: rgba(120, 96, 170, 0.2);
-  --hairline-strong: rgba(120, 96, 170, 0.36);
-  --hairline-pink: rgba(226, 112, 143, 0.46);
-  --grad-cta: linear-gradient(120deg, #4f63b8 0%, #8c78c9 48%, #e2708f 100%);
-  --grad-cta-hover: linear-gradient(120deg, #44569f 0%, #7d6abb 48%, #cc5677 100%);
-  --grad-hairline: linear-gradient(90deg, rgba(79, 99, 184, 0.55), rgba(226, 112, 143, 0.7));
+  --sky-top: #070e20;
+  --sky-low: #192b52;
+  --navy: #eef3ff;
+  --navy-soft: #b8c7e4;
+  --navy-faint: #8499c2;
+  --peacock: #6ec4d8;
+  --peacock-hi: #8fd9ea;
+  --peacock-tint: rgba(110, 196, 216, 0.14);
+  --sakura: #ffb85c;
+  --sakura-deep: #ff9c38;
+  --sakura-tint: rgba(255, 184, 92, 0.16);
+  --sakura-glow: rgba(255, 174, 72, 0.45);
+  --pearl: #111b33;
+  --glass: rgba(14, 22, 42, 0.84);
+  --glass-strong: rgba(18, 28, 52, 0.94);
+  --glass-soft: rgba(14, 22, 42, 0.68);
+  --hairline: rgba(130, 164, 224, 0.24);
+  --hairline-strong: rgba(110, 196, 216, 0.40);
+  --hairline-pink: rgba(255, 184, 92, 0.48);
+  --grad-cta: linear-gradient(120deg, #2b5c8a 0%, #5282a8 48%, #e09648 100%);
+  --grad-cta-hover: linear-gradient(120deg, #356da3 0%, #6094bd 48%, #eb9e4d 100%);
+  --grad-hairline: linear-gradient(90deg, rgba(110, 196, 216, 0.62), rgba(255, 184, 92, 0.72));
 }
 
 *,
@@ -137,16 +144,16 @@ a:focus-visible {
   outline-offset: 2px;
 }
 
-/* Soft sakura-pink status dot (replaces v1 red pixel) */
+/* Crisp OurSongs #ff3b3b red pixel beacon */
 .pulse-dot {
   display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #ffd3e3 0%, var(--sakura) 62%, var(--sakura-deep) 100%);
-  box-shadow: 0 0 0 3px var(--sakura-tint), 0 0 10px var(--sakura-glow);
+  width: 6px;
+  height: 6px;
+  border-radius: 1px;
+  background: var(--beacon);
+  box-shadow: 0 0 0 2px rgba(255, 59, 59, 0.22);
   flex-shrink: 0;
-  animation: sakura-pulse 2.6s ease-in-out infinite;
+  animation: sakura-pulse 2.4s ease-in-out infinite;
 }
 
 @keyframes sakura-pulse {
@@ -1184,8 +1191,54 @@ body[data-stage='autoplay'] .autoplay-bar {
   transition: opacity 0.25s ease;
 }
 
+body[data-mood='night'] .glass,
+body[data-mood='sunset'] .glass,
+body[data-mood='night'] .pill-btn:not(.pill-primary),
+body[data-mood='sunset'] .pill-btn:not(.pill-primary),
+body[data-mood='night'] .brand-lockup,
+body[data-mood='sunset'] .brand-lockup,
+body[data-mood='night'] .autoplay-bar,
+body[data-mood='sunset'] .autoplay-bar,
+body[data-mood='night'] .axis-dock,
+body[data-mood='sunset'] .axis-dock,
+body[data-mood='night'] .chronicle-drawer,
+body[data-mood='sunset'] .chronicle-drawer,
+body[data-mood='night'] .portal-footer,
+body[data-mood='sunset'] .portal-footer,
+body[data-mood='night'] .coord-chip,
+body[data-mood='sunset'] .coord-chip {
+  border-color: rgba(145, 178, 236, 0.26);
+}
+
+body[data-mood='night'] .autoplay-btn:not(.autoplay-btn-primary),
+body[data-mood='sunset'] .autoplay-btn:not(.autoplay-btn-primary),
+body[data-mood='night'] .icon-close,
+body[data-mood='sunset'] .icon-close,
+body[data-mood='night'] .nav-step-btn,
+body[data-mood='sunset'] .nav-step-btn,
+body[data-mood='night'] .chronicle-entry,
+body[data-mood='sunset'] .chronicle-entry,
+body[data-mood='night'] .entry-link,
+body[data-mood='sunset'] .entry-link,
+body[data-mood='night'] .cv-item,
+body[data-mood='sunset'] .cv-item,
+body[data-mood='night'] .dock-mode,
+body[data-mood='sunset'] .dock-mode,
+body[data-mood='night'] .pin-tag,
+body[data-mood='sunset'] .pin-tag {
+  background: rgba(22, 34, 62, 0.88);
+  color: var(--navy);
+  border-color: rgba(145, 178, 236, 0.28);
+}
+
+body[data-mood='night'] .drawer-nav,
+body[data-mood='sunset'] .drawer-nav {
+  background: rgba(10, 16, 32, 0.55);
+}
+
+body[data-mood='night'] .cv-modal,
 body[data-mood='sunset'] .cv-modal {
-  background: rgba(250, 232, 242, 0.55);
+  background: rgba(8, 14, 28, 0.72);
 }
 
 .cv-modal:not(.is-open),

@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 
-const OVERVIEW_POS = new THREE.Vector3(21.2, 15.8, 26.2);
-const OVERVIEW_TARGET = new THREE.Vector3(0.0, 3.5, 0.8);
-const CINEMA_FOV = 42;
+const OVERVIEW_POS = new THREE.Vector3(42.0, 31.0, 44.0);
+const OVERVIEW_TARGET = new THREE.Vector3(1.5, 2.8, 2.0);
+const CINEMA_FOV = 24;
 
 function easeInOutCubic(t) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
@@ -18,20 +18,15 @@ function smooth01(e0, e1, x) {
 }
 
 const KF = [
-  { pos: [0.0, 2.7, 36.5], att: [0.0, 4.8, 15.5], stop: { id: 'archway', index: 0, label: '01/04 · 国立武汉大学牌坊' } },
-  { pos: [0.0, 2.25, 24.0], att: [0.0, 4.0, 12.0] },
-  { pos: [0.0, 2.05, 14.5], att: [0.0, 3.6, 2.0] },
-  { pos: [0.0, 3.1, 8.2], att: [0.0, 5.0, -1.8], stop: { id: 'sakura', index: 1, label: '02/04 · 老斋舍 & 樱花大道' } },
-  { pos: [0.0, 6.8, 2.6], att: [0.0, 8.0, -8.5] },
-  { pos: [0.6, 10.6, -1.6], att: [0.8, 9.2, -9.8], stop: { id: 'library', index: 2, label: '03/04 · 樱顶老图书馆' } },
-  { pos: [6.8, 11.2, -4.4], att: [14.0, 8.2, -8.8] },
-  { pos: [13.6, 7.2, -9.6], att: [19.0, 4.8, -7.2] },
-  { pos: [20.6, 3.8, -13.4], att: [17.8, 2.8, -5.2], stop: { id: 'lingbo', index: 3, label: '04/04 · 东湖凌波门' } },
-  { pos: [26.2, 3.3, -9.2], att: [14.5, 2.7, -3.5] },
-  { pos: [28.6, 4.4, -2.0], att: [10.5, 3.0, -0.6] },
-  { pos: [29.8, 8.2, 7.2], att: [5.5, 3.8, 3.6] },
-  { pos: [28.6, 12.6, 16.8], att: [2.0, 4.0, 3.8], stop: { id: 'overview', index: -1, label: '俯瞰全景 · 珞珈校园' } },
-  { pos: [25.6, 15.0, 23.4], att: [0.6, 3.7, 1.8] },
+  { pos: [25.5, 17.5, 39.5], att: [0.5, 4.0, 17.0], stop: { id: 'archway', index: 0, label: '01/04 · 国立武汉大学牌坊' } },
+  { pos: [21.5, 16.0, 34.0], att: [0.5, 3.8, 17.0] },
+  { pos: [19.5, 16.0, 21.0], att: [0.0, 3.6, 2.5], stop: { id: 'sakura', index: 1, label: '02/04 · 老斋舍 & 樱花大道' } },
+  { pos: [18.5, 16.5, 12.0], att: [0.0, 3.6, 2.5] },
+  { pos: [20.5, 22.0, 6.0], att: [0.5, 7.6, -8.5], stop: { id: 'library', index: 2, label: '03/04 · 樱顶老图书馆' } },
+  { pos: [22.5, 22.5, -2.5], att: [0.5, 7.6, -8.5] },
+  { pos: [32.0, 15.5, 3.0], att: [13.8, 1.4, -7.2], stop: { id: 'lingbo', index: 3, label: '04/04 · 东湖凌波门' } },
+  { pos: [31.5, 14.0, 9.5], att: [13.8, 1.4, -7.2] },
+  { pos: [38.0, 24.0, 28.0], att: [1.5, 2.8, 2.0], stop: { id: 'overview', index: -1, label: '微缩全景 · 珞珈沙盘' } },
   { pos: OVERVIEW_POS.toArray(), att: OVERVIEW_TARGET.toArray() },
 ];
 
@@ -54,7 +49,7 @@ export function createCameraController(
 
   let autoplayElapsed = 0;
   let autoplayPaused = false;
-  const AUTOPLAY_DURATION = 42.0;
+  const AUTOPLAY_DURATION = 38.0;
 
   const pointer = { x: 0, y: 0 };
   const smoothPointer = { x: 0, y: 0 };
@@ -284,17 +279,17 @@ export function createCameraController(
   function getPortalBasePos() {
     const aspect = camera.aspect || 1.6;
     if (aspect < 0.85) {
-      if (camera.fov !== 58) {
-        camera.fov = 58;
+      if (camera.fov !== 32) {
+        camera.fov = 32;
         camera.updateProjectionMatrix();
       }
-      return new THREE.Vector3(0, 3.9, 44.5);
+      return new THREE.Vector3(24, 18, 42);
     }
     if (camera.fov !== CINEMA_FOV) {
       camera.fov = CINEMA_FOV;
       camera.updateProjectionMatrix();
     }
-    return new THREE.Vector3(0, 3.25, 31.2);
+    return new THREE.Vector3(22, 16, 36);
   }
 
   function applyPortalCamera(dt) {
@@ -302,12 +297,11 @@ export function createCameraController(
     smoothPointer.y += (pointer.y - smoothPointer.y) * Math.min(1, dt * 4.5);
     const base = getPortalBasePos();
     camera.position.set(
-      base.x + smoothPointer.x * 0.65,
-      base.y + smoothPointer.y * 0.25,
+      base.x + smoothPointer.x * 0.9,
+      base.y + smoothPointer.y * 0.4,
       base.z
     );
-    const lookY = (camera.aspect || 1.6) < 0.85 ? 3.55 : 4.15;
-    camera.lookAt(0, lookY, 15.5);
+    camera.lookAt(0.5, 3.0, 17.0);
   }
 
   function startAutoplay() {
@@ -357,11 +351,11 @@ export function createCameraController(
   function interruptAutoplayToExplore() {
     if (stage !== 'autoplay') return;
     const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
-    const fallbackTarget = camera.position.clone().addScaledVector(forward, 15);
-    fallbackTarget.y = Math.max(0.6, Math.min(fallbackTarget.y, camera.position.y - 1.2));
-    if (fallbackTarget.distanceTo(camera.position) < 13.5) {
-      fallbackTarget.copy(camera.position).addScaledVector(forward, 15);
-      fallbackTarget.y = Math.max(0.4, fallbackTarget.y);
+    const fallbackTarget = camera.position.clone().addScaledVector(forward, 26);
+    fallbackTarget.y = Math.max(0.8, Math.min(fallbackTarget.y, camera.position.y - 2.0));
+    if (fallbackTarget.distanceTo(camera.position) < 22.0) {
+      fallbackTarget.copy(camera.position).addScaledVector(forward, 26);
+      fallbackTarget.y = Math.max(0.6, fallbackTarget.y);
     }
 
     stage = 'explore';
@@ -374,8 +368,8 @@ export function createCameraController(
     target.copy(fallbackTarget);
     desiredTarget.copy(fallbackTarget);
     syncSphericalFromPos(camera.position, fallbackTarget);
-    desiredSpherical.phi = THREE.MathUtils.clamp(desiredSpherical.phi, 0.34, 1.22);
-    desiredSpherical.radius = THREE.MathUtils.clamp(desiredSpherical.radius, 13, 46);
+    desiredSpherical.phi = THREE.MathUtils.clamp(desiredSpherical.phi, 0.42, 1.16);
+    desiredSpherical.radius = THREE.MathUtils.clamp(desiredSpherical.radius, 22, 82);
     onPortalProgress?.(1);
     onStageChange?.('explore');
     onAutoplayInterrupt?.();
@@ -554,7 +548,7 @@ export function createCameraController(
       const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
       if (lastPinchDist !== null) {
         const delta = lastPinchDist - dist;
-        desiredSpherical.radius = THREE.MathUtils.clamp(desiredSpherical.radius + delta * 0.06, 13, 46);
+        desiredSpherical.radius = THREE.MathUtils.clamp(desiredSpherical.radius + delta * 0.09, 22, 82);
       }
       lastPinchDist = dist;
       tweenActive = false;
@@ -567,7 +561,7 @@ export function createCameraController(
       prevDrag = { x: e.clientX, y: e.clientY };
 
       desiredSpherical.theta -= dx * 0.0065;
-      desiredSpherical.phi = THREE.MathUtils.clamp(desiredSpherical.phi - dy * 0.0055, 0.34, 1.22);
+      desiredSpherical.phi = THREE.MathUtils.clamp(desiredSpherical.phi - dy * 0.0055, 0.42, 1.16);
       tweenActive = false;
     }
   }
@@ -593,7 +587,7 @@ export function createCameraController(
 
   function zoomBy(deltaY) {
     if (stage !== 'explore') return;
-    desiredSpherical.radius = THREE.MathUtils.clamp(desiredSpherical.radius + deltaY * 0.022, 13, 46);
+    desiredSpherical.radius = THREE.MathUtils.clamp(desiredSpherical.radius + deltaY * 0.036, 22, 82);
     tweenActive = false;
   }
 

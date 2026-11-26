@@ -9,59 +9,59 @@ import * as THREE from 'three';
  */
 export function createLightingSystem(scene, renderer) {
   const MOODS = {
-    spring: {
-      zenith: '#1866bb',
-      upperMid: '#4da6ed',
-      lowerMid: '#9cd2fa',
-      horizon: '#cfe3f2',
-      sunHalo: '#fff6e4',
-      cloudLit: '#ffffff',
-      cloudShadow: '#a7c6e4',
-      fogColor: '#c6dced',
-      fogDensity: 0.0058,
-      keyColor: '#fff2d8',
-      keyIntensity: 2.9,
-      keyPos: [28, 22, 19],
-      hemiSky: '#8cc4f5',
-      hemiGround: '#5f7285',
-      hemiIntensity: 0.64,
-      rimColor: '#ffd9e6',
-      rimIntensity: 0.34,
-      envIntensity: 0.58,
-      beamColor: '#fff4fa',
-      beamOpacity: 0.045,
-      pointColor: '#ffd4e6',
-      pointIntensity: 3.5,
+    amber: {
+      zenith: '#2a5a8e',
+      upperMid: '#6893bd',
+      lowerMid: '#d4b89c',
+      horizon: '#eed0aa',
+      sunHalo: '#ffe4ad',
+      cloudLit: '#fff4df',
+      cloudShadow: '#8ba0b8',
+      fogColor: '#e0c5a6',
+      fogDensity: 0.0046,
+      keyColor: '#ffc87d',
+      keyIntensity: 3.15,
+      keyPos: [30, 16, 18],
+      hemiSky: '#82b6e0',
+      hemiGround: '#2f4659',
+      hemiIntensity: 0.68,
+      rimColor: '#ffd4b8',
+      rimIntensity: 0.42,
+      envIntensity: 0.50,
+      beamColor: '#ffd999',
+      beamOpacity: 0.10,
+      pointColor: '#ffad4d',
+      pointIntensity: 0.0,
     },
-    sunset: {
-      zenith: '#283f7c',
-      upperMid: '#6b67ab',
-      lowerMid: '#db93b7',
-      horizon: '#ffd2c5',
-      sunHalo: '#ffe2bf',
-      cloudLit: '#fff0f3',
-      cloudShadow: '#9b8bb8',
-      fogColor: '#efc4d8',
-      fogDensity: 0.007,
-      keyColor: '#ffbe92',
-      keyIntensity: 2.65,
-      keyPos: [-24, 17, 16],
-      hemiSky: '#9ea2dc',
-      hemiGround: '#6b5a74',
-      hemiIntensity: 0.62,
-      rimColor: '#ff9ec4',
-      rimIntensity: 0.52,
-      envIntensity: 0.52,
-      beamColor: '#ffc6de',
-      beamOpacity: 0.065,
-      pointColor: '#ffb870',
-      pointIntensity: 14,
+    night: {
+      zenith: '#050a18',
+      upperMid: '#0c1836',
+      lowerMid: '#162850',
+      horizon: '#1c3158',
+      sunHalo: '#7fa8e8',
+      cloudLit: '#2c426e',
+      cloudShadow: '#0d1730',
+      fogColor: '#0f1c36',
+      fogDensity: 0.0068,
+      keyColor: '#8eb4eb',
+      keyIntensity: 1.15,
+      keyPos: [-24, 22, 16],
+      hemiSky: '#2e487a',
+      hemiGround: '#0d1629',
+      hemiIntensity: 0.52,
+      rimColor: '#6d8fd0',
+      rimIntensity: 0.38,
+      envIntensity: 0.28,
+      beamColor: '#8eb8ff',
+      beamOpacity: 0.045,
+      pointColor: '#ffad4d',
+      pointIntensity: 24.0,
     },
   };
 
   function resolveMoodKey(name) {
-    if (name === 'sunset' || name === 'convergence') return 'sunset';
-    return 'spring';
+    if (name === 'night' || name === 'sunset' || name === 'convergence') return 'night';
+    return 'amber';
   }
 
   /* ---------------------------------------------------------------------- */
@@ -184,14 +184,14 @@ export function createLightingSystem(scene, renderer) {
   const cloudNoiseTex = buildCloudNoiseTexture(256);
 
   const skyUniforms = {
-    uZenith: { value: new THREE.Color(MOODS.spring.zenith) },
-    uUpperMid: { value: new THREE.Color(MOODS.spring.upperMid) },
-    uLowerMid: { value: new THREE.Color(MOODS.spring.lowerMid) },
-    uHorizon: { value: new THREE.Color(MOODS.spring.horizon) },
-    uSunHalo: { value: new THREE.Color(MOODS.spring.sunHalo) },
-    uCloudLit: { value: new THREE.Color(MOODS.spring.cloudLit) },
-    uCloudShadow: { value: new THREE.Color(MOODS.spring.cloudShadow) },
-    uSunDir: { value: new THREE.Vector3(...MOODS.spring.keyPos).normalize() },
+    uZenith: { value: new THREE.Color(MOODS.amber.zenith) },
+    uUpperMid: { value: new THREE.Color(MOODS.amber.upperMid) },
+    uLowerMid: { value: new THREE.Color(MOODS.amber.lowerMid) },
+    uHorizon: { value: new THREE.Color(MOODS.amber.horizon) },
+    uSunHalo: { value: new THREE.Color(MOODS.amber.sunHalo) },
+    uCloudLit: { value: new THREE.Color(MOODS.amber.cloudLit) },
+    uCloudShadow: { value: new THREE.Color(MOODS.amber.cloudShadow) },
+    uSunDir: { value: new THREE.Vector3(...MOODS.amber.keyPos).normalize() },
     uCloudNoise: { value: cloudNoiseTex },
     uTime: { value: 0 },
     uLinearOutput: { value: 0.0 },
@@ -287,8 +287,8 @@ export function createLightingSystem(scene, renderer) {
     side: THREE.DoubleSide,
     blending: THREE.AdditiveBlending,
     uniforms: {
-      uColor: { value: new THREE.Color(MOODS.spring.beamColor) },
-      uOpacity: { value: MOODS.spring.beamOpacity },
+      uColor: { value: new THREE.Color(MOODS.amber.beamColor) },
+      uOpacity: { value: MOODS.amber.beamOpacity },
     },
     vertexShader: `
       varying vec2 vUv;
@@ -313,6 +313,8 @@ export function createLightingSystem(scene, renderer) {
   const beamConfigs = [
     { pos: [-1.4, 5.4, 15.8], rot: [-0.28, 0.25, -0.36], scale: [3.2, 6.2, 1] },
     { pos: [0.8, 5.6, 15.7], rot: [-0.28, 0.25, -0.34], scale: [3.6, 6.5, 1] },
+    { pos: [-1.2, 5.0, 6.8], rot: [-0.28, 0.25, -0.36], scale: [3.8, 6.8, 1] },
+    { pos: [1.8, 9.2, -5.2], rot: [-0.28, 0.25, -0.34], scale: [4.2, 7.2, 1] },
   ];
   const beamGeo = new THREE.PlaneGeometry(1, 1);
   beamConfigs.forEach((bc) => {
@@ -329,10 +331,10 @@ export function createLightingSystem(scene, renderer) {
   /* ---------------------------------------------------------------------- */
   /* 4. Atmospheric Fog, Sun Key Light, Sky Hemisphere & Rim Contrast       */
   /* ---------------------------------------------------------------------- */
-  scene.fog = new THREE.FogExp2(MOODS.spring.fogColor, MOODS.spring.fogDensity);
+  scene.fog = new THREE.FogExp2(MOODS.amber.fogColor, MOODS.amber.fogDensity);
 
-  const keyLight = new THREE.DirectionalLight(MOODS.spring.keyColor, MOODS.spring.keyIntensity);
-  keyLight.position.set(...MOODS.spring.keyPos);
+  const keyLight = new THREE.DirectionalLight(MOODS.amber.keyColor, MOODS.amber.keyIntensity);
+  keyLight.position.set(...MOODS.amber.keyPos);
   keyLight.target.position.set(2, 0, 1);
   keyLight.castShadow = true;
   keyLight.shadow.mapSize.set(2048, 2048);
@@ -349,13 +351,13 @@ export function createLightingSystem(scene, renderer) {
   keyLight.target.updateMatrixWorld();
 
   const hemiLight = new THREE.HemisphereLight(
-    MOODS.spring.hemiSky,
-    MOODS.spring.hemiGround,
-    MOODS.spring.hemiIntensity
+    MOODS.amber.hemiSky,
+    MOODS.amber.hemiGround,
+    MOODS.amber.hemiIntensity
   );
   scene.add(hemiLight);
 
-  const rimLight = new THREE.DirectionalLight(MOODS.spring.rimColor, MOODS.spring.rimIntensity);
+  const rimLight = new THREE.DirectionalLight(MOODS.amber.rimColor, MOODS.amber.rimIntensity);
   rimLight.position.set(-20, 14, -24);
   scene.add(rimLight);
 
@@ -366,7 +368,7 @@ export function createLightingSystem(scene, renderer) {
     [13.5, 2.4, -7.8],
   ];
   const pointLights = localLightCoords.map(([x, y, z]) => {
-    const pl = new THREE.PointLight(MOODS.spring.pointColor, MOODS.spring.pointIntensity, 18, 1.6);
+    const pl = new THREE.PointLight(MOODS.night.pointColor, MOODS.night.pointIntensity, 24, 1.45);
     pl.position.set(x, y, z);
     pl.castShadow = false;
     return pl;
@@ -376,7 +378,7 @@ export function createLightingSystem(scene, renderer) {
   renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.shadowMap.autoUpdate = false;
 
-  let currentMood = 'spring';
+  let currentMood = 'amber';
   let rebakeCount = 0;
 
   function bakeStaticShadows() {
@@ -416,7 +418,7 @@ export function createLightingSystem(scene, renderer) {
     beamMat.uniforms.uOpacity.value = cfg.beamOpacity;
 
     pointLights.forEach((pl) => {
-      if (key === 'sunset') {
+      if (key === 'night') {
         if (!pl.parent) scene.add(pl);
         pl.color.set(cfg.pointColor);
         pl.intensity = cfg.pointIntensity;

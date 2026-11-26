@@ -671,6 +671,15 @@ export function createCampusDiorama(textures) {
   lampShaftsMesh.receiveShadow = true;
   group.add(lampShaftsMesh);
 
+  const lampHaloTex = textures.bokehDot('lamp-halo-dot');
+  const lampHaloMat = new THREE.SpriteMaterial({
+    map: lampHaloTex,
+    color: new THREE.Color('#ffd38c'),
+    transparent: true,
+    opacity: 0.25,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  });
   const lampGlowMat = new THREE.MeshStandardMaterial({
     color: new THREE.Color('#fff5dd'),
     emissive: new THREE.Color('#ffd38c'),
@@ -679,6 +688,17 @@ export function createCampusDiorama(textures) {
   });
   const lampHeadsMesh = new THREE.Mesh(mergeSafe(lampHeadGeos), lampGlowMat);
   group.add(lampHeadsMesh);
+
+  for (const sx of [-1, 1]) {
+    for (const lz of [12.0, 8.0, 4.2]) {
+      const halo = new THREE.Sprite(lampHaloMat);
+      halo.position.set(sx * 6.0, 2.34, lz);
+      halo.scale.set(1.55, 1.55, 1);
+      halo.matrixAutoUpdate = false;
+      halo.updateMatrix();
+      group.add(halo);
+    }
+  }
 
   // Tier 1 Terrace (Old Dormitory level): articulated ashlar stone retaining walls + pilasters + lawn cap
   const tier1Body = new THREE.BoxGeometry(23.6, 2.02, 15.2);
@@ -1245,6 +1265,7 @@ export function createCampusDiorama(textures) {
       uShadowMatrix: { value: new THREE.Matrix4() },
       uShadowMapSize: { value: new THREE.Vector2(2048, 2048) },
       uShadowBias: { value: -0.00024 },
+      uLinearOutput: { value: 0.0 },
     },
   ]);
   waterUniforms.tReflection.value = reflectRT.texture;
@@ -1288,6 +1309,7 @@ export function createCampusDiorama(textures) {
       uniform float uHasShadowMap;
       uniform vec2 uShadowMapSize;
       uniform float uShadowBias;
+      uniform float uLinearOutput;
       varying vec3 vWorldPos;
       varying vec4 vReflectCoord;
       varying vec4 vShadowCoord;
@@ -1557,8 +1579,10 @@ export function createCampusDiorama(textures) {
         alpha *= 1.0 - smoothstep(148.0, 161.5, camDist);
 
         gl_FragColor = vec4(col, alpha);
-        #include <tonemapping_fragment>
-        #include <colorspace_fragment>
+        if (uLinearOutput < 0.5) {
+          #include <tonemapping_fragment>
+          #include <colorspace_fragment>
+        }
       }
     `,
   });
@@ -2416,8 +2440,38 @@ export function createCampusDiorama(textures) {
   });
   group.add(airPetals);
 
+  // Floating Golden Bokeh Dust / Night Fireflies across 2.5D diorama volume
+  const bokehCount = 180;
+  const bokehPositions = new Float32Array(bokehCount * 3);
+  const bokehSeeds = Array.from({ length: bokehCount }, (_, idx) => {
+    const r = mulberry32(8801 + idx * 31);
+    const x = -20 + r() * 46;
+    const y = 0.8 + r() * 13.2;
+    const z = -18 + r() * 54;
+    bokehPositions[idx * 3] = x;
+    bokehPositions[idx * 3 + 1] = y;
+    bokehPositions[idx * 3 + 2] = z;
+    return { x, y, z, amp: 0.25 + r() * 0.45, spd: 0.6 + r() * 0.9, ph: r() * Math.PI * 2 };
+  });
+  const bokehGeo = new THREE.BufferGeometry();
+  bokehGeo.setAttribute('position', new THREE.BufferAttribute(bokehPositions, 3));
+  const bokehMat = new THREE.PointsMaterial({
+    map: textures.bokehDot('firefly-dot'),
+    size: 0.55,
+    color: new THREE.Color('#ffe09c'),
+    transparent: true,
+    opacity: 0.42,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    sizeAttenuation: true,
+  });
+  const bokehPoints = new THREE.Points(bokehGeo, bokehMat);
+  bokehPoints.frustumCulled = false;
+  group.add(bokehPoints);
+
   lockStatic(group);
   airPetals.matrixAutoUpdate = false;
+  bokehPoints.matrixAutoUpdate = false;
 
   const _reflForward = new THREE.Vector3();
   const _reflTarget = new THREE.Vector3();
@@ -2552,50 +2606,70 @@ export function createCampusDiorama(textures) {
   }
 
   function setMood(mood) {
-    if (mood === 'sunset' || mood === 'convergence') {
-      sunDirUniform.value.set(-24, 17, 16).normalize();
+    if (mood === 'night' || mood === 'sunset' || mood === 'convergence') {
+      sunDirUniform.value.set(-24, 22, 16).normalize();
       waterUniforms.uSunDir.value.copy(sunDirUniform.value);
-      sunsetWarmthUniform.value = 1.0;
-      dormWallMat.emissiveIntensity = 0.92;
-      libWallMat.emissiveIntensity = 1.05;
-      glazedTileMat.color.set('#e2cfcc');
-      glazedTileMat.emissiveIntensity = 0.12;
-      sakuraOuterMat.color.set('#ffeaf2');
-      sakuraInnerMat.color.set('#ffc2da');
-      cityFootMat.color.set('#5e5670');
-      farCityMat.color.set('#685e7c');
-      cityHazeColor.value.set('#eabfd1');
-      horizonColorUniform.value.set('#ffd2c5');
-      waterUniforms.uDeepColor.value.set('#233b66');
-      waterUniforms.uShallowColor.value.set('#5a8ba6');
-      waterUniforms.uSkyColor.value.set('#d993b8');
-      waterUniforms.uSunColor.value.set('#ffd29c');
-      petalMat.color.set('#df9eb8');
-      petalMat.emissive.set('#b86f8c');
-      petalMat.emissiveIntensity = 0.12;
+      sunsetWarmthUniform.value = 0.15;
+      dormWallMat.emissiveIntensity = 1.35;
+      libWallMat.emissiveIntensity = 1.45;
+      glazedTileMat.color.set('#5a7e9e');
+      glazedTileMat.emissiveIntensity = 0.05;
+      sakuraOuterMat.color.set('#b8c6e0');
+      sakuraInnerMat.color.set('#97a8cc');
+      sakuraOuterMat.emissiveIntensity = 0.04;
+      sakuraInnerMat.emissiveIntensity = 0.04;
+      cityFootMat.color.set('#283354');
+      farCityMat.color.set('#243050');
+      cityHazeColor.value.set('#1c3158');
+      horizonColorUniform.value.set('#1c3158');
+      waterUniforms.uDeepColor.value.set('#09152c');
+      waterUniforms.uShallowColor.value.set('#13284d');
+      waterUniforms.uSkyColor.value.set('#1c335c');
+      waterUniforms.uSunColor.value.set('#b8d2ff');
+      petalMat.color.set('#9ab0d8');
+      petalMat.emissive.set('#4c5f8a');
+      petalMat.emissiveIntensity = 0.16;
       petalMat.opacity = 0.72;
+      lampGlowMat.color.set('#ffbe5c');
+      lampGlowMat.emissive.set('#ff9b36');
+      lampGlowMat.emissiveIntensity = 1.35;
+      lampHaloMat.color.set('#ffb855');
+      lampHaloMat.opacity = 0.85;
+      bokehMat.color.set('#ffbe55');
+      bokehMat.opacity = 0.85;
+      bokehMat.size = 0.72;
     } else {
-      sunDirUniform.value.set(28, 22, 19).normalize();
+      sunDirUniform.value.set(30, 16, 18).normalize();
       waterUniforms.uSunDir.value.copy(sunDirUniform.value);
-      sunsetWarmthUniform.value = 0.0;
-      dormWallMat.emissiveIntensity = 0.0;
-      libWallMat.emissiveIntensity = 0.0;
+      sunsetWarmthUniform.value = 0.55;
+      dormWallMat.emissiveIntensity = 0.18;
+      libWallMat.emissiveIntensity = 0.22;
       glazedTileMat.color.set('#d8eeee');
       glazedTileMat.emissiveIntensity = 0.04;
-      sakuraOuterMat.color.set('#fff9fc');
-      sakuraInnerMat.color.set('#ffdbe9');
-      cityFootMat.color.set('#4e6c64');
-      farCityMat.color.set('#5b7a7c');
-      cityHazeColor.value.set('#c4dced');
-      horizonColorUniform.value.set('#cfe3f2');
-      waterUniforms.uDeepColor.value.set('#0c353f');
-      waterUniforms.uShallowColor.value.set('#1d545d');
-      waterUniforms.uSkyColor.value.set('#cfe9ff');
-      waterUniforms.uSunColor.value.set('#fff6e4');
-      petalMat.color.set('#ffcadf');
-      petalMat.emissive.set('#ffdce9');
+      sakuraOuterMat.color.set('#fff5f2');
+      sakuraInnerMat.color.set('#ffd2dc');
+      sakuraOuterMat.emissiveIntensity = 0.11;
+      sakuraInnerMat.emissiveIntensity = 0.14;
+      cityFootMat.color.set('#55686b');
+      farCityMat.color.set('#63797f');
+      cityHazeColor.value.set('#e0c5a6');
+      horizonColorUniform.value.set('#eed0aa');
+      waterUniforms.uDeepColor.value.set('#163d4a');
+      waterUniforms.uShallowColor.value.set('#2c6369');
+      waterUniforms.uSkyColor.value.set('#d9c8b4');
+      waterUniforms.uSunColor.value.set('#ffe3a8');
+      petalMat.color.set('#ffd0dc');
+      petalMat.emissive.set('#ffe2dc');
       petalMat.emissiveIntensity = 0.25;
       petalMat.opacity = 0.88;
+      lampGlowMat.color.set('#fff5dd');
+      lampGlowMat.emissive.set('#ffd38c');
+      lampGlowMat.emissiveIntensity = 0.45;
+      lampHaloMat.color.set('#ffdd99');
+      lampHaloMat.opacity = 0.25;
+      bokehMat.color.set('#ffe09c');
+      bokehMat.opacity = 0.42;
+      bokehMat.size = 0.55;
     }
   }
 
@@ -2658,6 +2732,18 @@ export function createCampusDiorama(textures) {
       airPetals.setMatrixAt(i, dummy.matrix);
     }
     airPetals.instanceMatrix.needsUpdate = true;
+
+    const bAttr = bokehGeo.attributes.position;
+    for (let i = 0; i < bokehCount; i++) {
+      const s = bokehSeeds[i];
+      bAttr.setXYZ(
+        i,
+        s.x + Math.sin(elapsed * s.spd + s.ph) * s.amp,
+        s.y + Math.sin(elapsed * s.spd * 0.7 + s.ph * 1.3) * (s.amp * 0.55),
+        s.z + Math.cos(elapsed * s.spd * 0.85 + s.ph) * s.amp
+      );
+    }
+    bAttr.needsUpdate = true;
   }
 
   return {
@@ -2666,6 +2752,9 @@ export function createCampusDiorama(textures) {
     updateCampus,
     updateWaterReflection,
     setReflectionSize,
+    setWaterLinearOutput: (enabled) => {
+      waterUniforms.uLinearOutput.value = enabled ? 1.0 : 0.0;
+    },
     syncShadowLight,
   };
 }

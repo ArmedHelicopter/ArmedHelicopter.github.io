@@ -8,7 +8,7 @@
       name="description"
       content="Ruining Yang (@ArmedHelicopter) — 武汉大学人工智能本科生的交互式 3D 校园主页：晴空樱花下穿过国立武汉大学牌坊，在阳光珞珈校园中展开科研、工程与叙事履历。"
     />
-    <meta name="theme-color" content="#6fb6e8" />
+    <meta name="theme-color" content="#3e6c99" />
     <link
       rel="icon"
       type="image/svg+xml"
@@ -20,41 +20,42 @@
    Frosted pearl-white glass over a sunlit cerulean 3D campus.
    ========================================================================= */
 :root {
-  /* Palette */
-  --sky-top: #6fb6e8;
-  --sky-low: #cfe8fb;
-  --navy: #142942; /* primary ink */
-  --navy-soft: #3d5673; /* secondary ink */
-  --navy-faint: #6a7f98; /* tertiary ink */
-  --peacock: #1976a8; /* peacock-blue accent */
-  --peacock-hi: #2a95c9;
-  --peacock-tint: rgba(25, 118, 168, 0.1);
-  --sakura: #e67aa3; /* sakura-pink accent */
-  --sakura-deep: #d45c8b;
-  --sakura-tint: rgba(230, 122, 163, 0.14);
-  --sakura-glow: rgba(230, 122, 163, 0.45);
-  --pearl: #fbfdff;
+  /* OurSongs Amber-Afternoon Palette */
+  --sky-top: #3e6c99;
+  --sky-low: #eed0aa;
+  --navy: #18233a; /* primary ink */
+  --navy-soft: #43536e; /* secondary ink */
+  --navy-faint: #6c7a92; /* tertiary ink */
+  --peacock: #1c6e8c; /* peacock-teal accent */
+  --peacock-hi: #2b8cad;
+  --peacock-tint: rgba(28, 110, 140, 0.12);
+  --sakura: #d98245; /* warm amber accent */
+  --sakura-deep: #bf642c;
+  --sakura-tint: rgba(217, 130, 69, 0.14);
+  --sakura-glow: rgba(255, 180, 96, 0.45);
+  --beacon: #ff3b3b; /* OurSongs red pixel motif */
+  --pearl: #fdfaf5;
 
   /* Surfaces */
-  --glass: rgba(255, 255, 255, 0.84);
-  --glass-strong: rgba(255, 255, 255, 0.93);
-  --glass-soft: rgba(255, 255, 255, 0.62);
+  --glass: rgba(252, 248, 240, 0.86);
+  --glass-strong: rgba(255, 252, 246, 0.94);
+  --glass-soft: rgba(252, 248, 240, 0.66);
   --glass-blur: blur(8px);
-  --hairline: rgba(25, 118, 168, 0.18);
-  --hairline-strong: rgba(25, 118, 168, 0.34);
-  --hairline-pink: rgba(230, 122, 163, 0.42);
-  --shadow: 0 8px 30px rgba(20, 41, 66, 0.12);
-  --shadow-sm: 0 3px 12px rgba(20, 41, 66, 0.1);
-  --shadow-lg: 0 18px 56px rgba(20, 41, 66, 0.18);
+  --hairline: rgba(142, 108, 72, 0.20);
+  --hairline-strong: rgba(28, 110, 140, 0.34);
+  --hairline-pink: rgba(217, 130, 69, 0.44);
+  --shadow: 0 8px 30px rgba(20, 29, 48, 0.16);
+  --shadow-sm: 0 3px 12px rgba(20, 29, 48, 0.12);
+  --shadow-lg: 0 18px 56px rgba(16, 24, 42, 0.22);
   --radius-lg: 14px;
   --radius: 12px;
   --radius-sm: 10px;
   --radius-pill: 999px;
 
   /* Gradient accents */
-  --grad-cta: linear-gradient(120deg, #1976a8 0%, #3d8fd0 46%, #e67aa3 100%);
-  --grad-cta-hover: linear-gradient(120deg, #156894 0%, #347fc0 46%, #d45c8b 100%);
-  --grad-hairline: linear-gradient(90deg, rgba(25, 118, 168, 0.55), rgba(230, 122, 163, 0.65));
+  --grad-cta: linear-gradient(120deg, #1c6e8c 0%, #3a8aa3 48%, #d98245 100%);
+  --grad-cta-hover: linear-gradient(120deg, #165a73 0%, #31788f 48%, #bf642c 100%);
+  --grad-hairline: linear-gradient(90deg, rgba(28, 110, 140, 0.60), rgba(217, 130, 69, 0.72));
 
   /* Type */
   --font-serif: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', Georgia, serif;
@@ -66,25 +67,31 @@
   --drawer-gap: 20px;
 }
 
-/* Second mood: 樱霞暮色 — warmer rose / periwinkle, still light */
+/* Second mood: 收敛夜灯 — deep midnight indigo & warm tungsten amber */
+body[data-mood='night'],
 body[data-mood='sunset'] {
-  --sky-top: #9aa6e6;
-  --sky-low: #fbd9e2;
-  --peacock: #4f63b8; /* periwinkle */
-  --peacock-hi: #6a7ed0;
-  --peacock-tint: rgba(79, 99, 184, 0.1);
-  --sakura: #e2708f; /* rose */
-  --sakura-deep: #cc5677;
-  --sakura-tint: rgba(226, 112, 143, 0.15);
-  --sakura-glow: rgba(226, 112, 143, 0.45);
-  --glass: rgba(255, 250, 252, 0.86);
-  --glass-strong: rgba(255, 251, 253, 0.94);
-  --hairline: rgba(120, 96, 170, 0.2);
-  --hairline-strong: rgba(120, 96, 170, 0.36);
-  --hairline-pink: rgba(226, 112, 143, 0.46);
-  --grad-cta: linear-gradient(120deg, #4f63b8 0%, #8c78c9 48%, #e2708f 100%);
-  --grad-cta-hover: linear-gradient(120deg, #44569f 0%, #7d6abb 48%, #cc5677 100%);
-  --grad-hairline: linear-gradient(90deg, rgba(79, 99, 184, 0.55), rgba(226, 112, 143, 0.7));
+  --sky-top: #070e20;
+  --sky-low: #192b52;
+  --navy: #eef3ff;
+  --navy-soft: #b8c7e4;
+  --navy-faint: #8499c2;
+  --peacock: #6ec4d8;
+  --peacock-hi: #8fd9ea;
+  --peacock-tint: rgba(110, 196, 216, 0.14);
+  --sakura: #ffb85c;
+  --sakura-deep: #ff9c38;
+  --sakura-tint: rgba(255, 184, 92, 0.16);
+  --sakura-glow: rgba(255, 174, 72, 0.45);
+  --pearl: #111b33;
+  --glass: rgba(14, 22, 42, 0.84);
+  --glass-strong: rgba(18, 28, 52, 0.94);
+  --glass-soft: rgba(14, 22, 42, 0.68);
+  --hairline: rgba(130, 164, 224, 0.24);
+  --hairline-strong: rgba(110, 196, 216, 0.40);
+  --hairline-pink: rgba(255, 184, 92, 0.48);
+  --grad-cta: linear-gradient(120deg, #2b5c8a 0%, #5282a8 48%, #e09648 100%);
+  --grad-cta-hover: linear-gradient(120deg, #356da3 0%, #6094bd 48%, #eb9e4d 100%);
+  --grad-hairline: linear-gradient(90deg, rgba(110, 196, 216, 0.62), rgba(255, 184, 92, 0.72));
 }
 
 *,
@@ -154,16 +161,16 @@ a:focus-visible {
   outline-offset: 2px;
 }
 
-/* Soft sakura-pink status dot (replaces v1 red pixel) */
+/* Crisp OurSongs #ff3b3b red pixel beacon */
 .pulse-dot {
   display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #ffd3e3 0%, var(--sakura) 62%, var(--sakura-deep) 100%);
-  box-shadow: 0 0 0 3px var(--sakura-tint), 0 0 10px var(--sakura-glow);
+  width: 6px;
+  height: 6px;
+  border-radius: 1px;
+  background: var(--beacon);
+  box-shadow: 0 0 0 2px rgba(255, 59, 59, 0.22);
   flex-shrink: 0;
-  animation: sakura-pulse 2.6s ease-in-out infinite;
+  animation: sakura-pulse 2.4s ease-in-out infinite;
 }
 
 @keyframes sakura-pulse {
@@ -1201,8 +1208,54 @@ body[data-stage='autoplay'] .autoplay-bar {
   transition: opacity 0.25s ease;
 }
 
+body[data-mood='night'] .glass,
+body[data-mood='sunset'] .glass,
+body[data-mood='night'] .pill-btn:not(.pill-primary),
+body[data-mood='sunset'] .pill-btn:not(.pill-primary),
+body[data-mood='night'] .brand-lockup,
+body[data-mood='sunset'] .brand-lockup,
+body[data-mood='night'] .autoplay-bar,
+body[data-mood='sunset'] .autoplay-bar,
+body[data-mood='night'] .axis-dock,
+body[data-mood='sunset'] .axis-dock,
+body[data-mood='night'] .chronicle-drawer,
+body[data-mood='sunset'] .chronicle-drawer,
+body[data-mood='night'] .portal-footer,
+body[data-mood='sunset'] .portal-footer,
+body[data-mood='night'] .coord-chip,
+body[data-mood='sunset'] .coord-chip {
+  border-color: rgba(145, 178, 236, 0.26);
+}
+
+body[data-mood='night'] .autoplay-btn:not(.autoplay-btn-primary),
+body[data-mood='sunset'] .autoplay-btn:not(.autoplay-btn-primary),
+body[data-mood='night'] .icon-close,
+body[data-mood='sunset'] .icon-close,
+body[data-mood='night'] .nav-step-btn,
+body[data-mood='sunset'] .nav-step-btn,
+body[data-mood='night'] .chronicle-entry,
+body[data-mood='sunset'] .chronicle-entry,
+body[data-mood='night'] .entry-link,
+body[data-mood='sunset'] .entry-link,
+body[data-mood='night'] .cv-item,
+body[data-mood='sunset'] .cv-item,
+body[data-mood='night'] .dock-mode,
+body[data-mood='sunset'] .dock-mode,
+body[data-mood='night'] .pin-tag,
+body[data-mood='sunset'] .pin-tag {
+  background: rgba(22, 34, 62, 0.88);
+  color: var(--navy);
+  border-color: rgba(145, 178, 236, 0.28);
+}
+
+body[data-mood='night'] .drawer-nav,
+body[data-mood='sunset'] .drawer-nav {
+  background: rgba(10, 16, 32, 0.55);
+}
+
+body[data-mood='night'] .cv-modal,
 body[data-mood='sunset'] .cv-modal {
-  background: rgba(250, 232, 242, 0.55);
+  background: rgba(8, 14, 28, 0.72);
 }
 
 .cv-modal:not(.is-open),
@@ -1740,7 +1793,7 @@ body:not([data-debug='true']) .telemetry-wrap *,
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #3d8fcb 0%, #7ec4f4 48%, #fce2ee 100%);
+  background: linear-gradient(135deg, #1b2846 0%, #3a5d82 52%, #e6b886 100%);
   transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.75s;
 }
 .loading-screen.is-loaded {
@@ -1756,12 +1809,12 @@ body:not([data-debug='true']) .telemetry-wrap *,
   width: 90%;
   max-width: 380px;
   padding: 2.5rem 2rem;
-  background: rgba(255, 255, 255, 0.84);
+  background: rgba(252, 248, 240, 0.88);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.95);
-  box-shadow: 0 20px 50px rgba(20, 41, 66, 0.18), 0 4px 12px rgba(255, 255, 255, 0.8) inset;
+  border: 1px solid rgba(255, 250, 240, 0.95);
+  box-shadow: 0 20px 50px rgba(16, 24, 42, 0.22), 0 4px 12px rgba(255, 255, 255, 0.8) inset;
   text-align: center;
 }
 .loading-badge {
@@ -1769,8 +1822,8 @@ body:not([data-debug='true']) .telemetry-wrap *,
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 2px;
-  color: #1f8fa8;
-  background: rgba(31, 143, 168, 0.12);
+  color: #1c6e8c;
+  background: rgba(28, 110, 140, 0.12);
   padding: 4px 12px;
   border-radius: 99px;
   margin-bottom: 0.85rem;
@@ -1779,18 +1832,18 @@ body:not([data-debug='true']) .telemetry-wrap *,
   font-size: 1.55rem;
   font-weight: 800;
   letter-spacing: 1.5px;
-  color: #142942;
+  color: #18233a;
   margin-bottom: 0.35rem;
 }
 .loading-sub {
   font-size: 0.85rem;
-  color: #5a728d;
+  color: #52637e;
   margin-bottom: 1.8rem;
 }
 .loading-bar-track {
   width: 100%;
   height: 8px;
-  background: rgba(20, 41, 66, 0.08);
+  background: rgba(20, 29, 48, 0.10);
   border-radius: 99px;
   overflow: hidden;
   position: relative;
@@ -1802,7 +1855,7 @@ body:not([data-debug='true']) .telemetry-wrap *,
   left: 0;
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #1f8fa8 0%, #35b7c9 60%, #e67aa3 100%);
+  background: linear-gradient(90deg, #1c6e8c 0%, #4b9fb5 55%, #d98245 100%);
   border-radius: 99px;
   transition: width 0.3s ease;
 }
@@ -1815,13 +1868,13 @@ body:not([data-debug='true']) .telemetry-wrap *,
 
     </style>
   </head>
-  <body data-stage="autoplay" data-mood="spring">
+  <body data-stage="autoplay" data-mood="amber">
     <!-- Loading Progress Bar Overlay -->
     <div id="loading-screen" class="loading-screen" aria-label="沙盘构建进度">
       <div class="loading-box">
-        <div class="loading-badge">WUHAN UNIVERSITY · 1893</div>
+        <div class="loading-badge">WUHAN UNIVERSITY · 2.5D PIXEL</div>
         <h2 class="loading-title">国立武汉大学</h2>
-        <p class="loading-sub">3D 校园立体沙盘 · Ruining Yang</p>
+        <p class="loading-sub">2.5D 像素微缩校园 · 午后琥珀</p>
         <div class="loading-bar-track">
           <div id="loading-bar-fill" class="loading-bar-fill"></div>
         </div>
@@ -1842,7 +1895,7 @@ body:not([data-debug='true']) .telemetry-wrap *,
           <span>WHU · 30.536°N 114.364°E</span>
         </div>
         <div class="action-cluster">
-          <button type="button" class="pill-btn" data-action="toggle-mood">光影 · 晴空樱雪</button>
+          <button type="button" class="pill-btn" data-action="toggle-mood">光影 · 午后琥珀</button>
           <button type="button" class="pill-btn" data-action="toggle-sound" aria-pressed="true">音效</button>
         </div>
       </header>
@@ -1888,7 +1941,7 @@ body:not([data-debug='true']) .telemetry-wrap *,
             <div id="telemetry-panel" class="telemetry-panel" role="region" aria-label="渲染与显存统计"></div>
           </div>
           <button type="button" id="replay-intro-btn" class="pill-btn">重播巡游</button>
-          <button type="button" class="pill-btn" data-action="toggle-mood">光影 · 晴空樱雪</button>
+          <button type="button" class="pill-btn" data-action="toggle-mood">光影 · 午后琥珀</button>
           <button type="button" class="pill-btn" data-action="toggle-sound" aria-pressed="true">音效</button>
           <button type="button" id="open-cv-btn" class="pill-btn pill-primary">完整履历</button>
         </div>
@@ -9317,7 +9370,154 @@ var rc = class extends Lr {
     return null !== this.fog && (e.object.fog = this.fog.toJSON()), this.backgroundBlurriness > 0 && (e.object.backgroundBlurriness = this.backgroundBlurriness), 1 !== this.backgroundIntensity && (e.object.backgroundIntensity = this.backgroundIntensity), e.object.backgroundRotation = this.backgroundRotation.toArray(), 1 !== this.environmentIntensity && (e.object.environmentIntensity = this.environmentIntensity), e.object.environmentRotation = this.environmentRotation.toArray(), e;
   }
 };
+var sc = class {
+  constructor(t2, e) {
+    this.isInterleavedBuffer = true, this.array = t2, this.stride = e, this.count = void 0 !== t2 ? t2.length / e : 0, this.usage = wn, this.updateRanges = [], this.version = 0, this.uuid = Gn();
+  }
+  onUploadCallback() {
+  }
+  set needsUpdate(t2) {
+    true === t2 && this.version++;
+  }
+  setUsage(t2) {
+    return this.usage = t2, this;
+  }
+  addUpdateRange(t2, e) {
+    this.updateRanges.push({ start: t2, count: e });
+  }
+  clearUpdateRanges() {
+    this.updateRanges.length = 0;
+  }
+  copy(t2) {
+    return this.array = new t2.array.constructor(t2.array), this.count = t2.count, this.stride = t2.stride, this.usage = t2.usage, this;
+  }
+  copyAt(t2, e, n) {
+    t2 *= this.stride, n *= e.stride;
+    for (let i = 0, r = this.stride; i < r; i++) this.array[t2 + i] = e.array[n + i];
+    return this;
+  }
+  set(t2, e = 0) {
+    return this.array.set(t2, e), this;
+  }
+  clone(t2) {
+    void 0 === t2.arrayBuffers && (t2.arrayBuffers = {}), void 0 === this.array.buffer._uuid && (this.array.buffer._uuid = Gn()), void 0 === t2.arrayBuffers[this.array.buffer._uuid] && (t2.arrayBuffers[this.array.buffer._uuid] = this.array.slice(0).buffer);
+    const e = new this.array.constructor(t2.arrayBuffers[this.array.buffer._uuid]), n = new this.constructor(e, this.stride);
+    return n.setUsage(this.usage), n;
+  }
+  onUpload(t2) {
+    return this.onUploadCallback = t2, this;
+  }
+  toJSON(t2) {
+    return void 0 === t2.arrayBuffers && (t2.arrayBuffers = {}), void 0 === this.array.buffer._uuid && (this.array.buffer._uuid = Gn()), void 0 === t2.arrayBuffers[this.array.buffer._uuid] && (t2.arrayBuffers[this.array.buffer._uuid] = Array.from(new Uint32Array(this.array.buffer))), { uuid: this.uuid, buffer: this.array.buffer._uuid, type: this.array.constructor.name, stride: this.stride };
+  }
+};
 var ac = new Ci();
+var oc = class _oc {
+  constructor(t2, e, n, i = false) {
+    this.isInterleavedBufferAttribute = true, this.name = "", this.data = t2, this.itemSize = e, this.offset = n, this.normalized = i;
+  }
+  get count() {
+    return this.data.count;
+  }
+  get array() {
+    return this.data.array;
+  }
+  set needsUpdate(t2) {
+    this.data.needsUpdate = t2;
+  }
+  applyMatrix4(t2) {
+    for (let e = 0, n = this.data.count; e < n; e++) ac.fromBufferAttribute(this, e), ac.applyMatrix4(t2), this.setXYZ(e, ac.x, ac.y, ac.z);
+    return this;
+  }
+  applyNormalMatrix(t2) {
+    for (let e = 0, n = this.count; e < n; e++) ac.fromBufferAttribute(this, e), ac.applyNormalMatrix(t2), this.setXYZ(e, ac.x, ac.y, ac.z);
+    return this;
+  }
+  transformDirection(t2) {
+    for (let e = 0, n = this.count; e < n; e++) ac.fromBufferAttribute(this, e), ac.transformDirection(t2), this.setXYZ(e, ac.x, ac.y, ac.z);
+    return this;
+  }
+  getComponent(t2, e) {
+    let n = this.array[t2 * this.data.stride + this.offset + e];
+    return this.normalized && (n = qn(n, this.array)), n;
+  }
+  setComponent(t2, e, n) {
+    return this.normalized && (n = Yn(n, this.array)), this.data.array[t2 * this.data.stride + this.offset + e] = n, this;
+  }
+  setX(t2, e) {
+    return this.normalized && (e = Yn(e, this.array)), this.data.array[t2 * this.data.stride + this.offset] = e, this;
+  }
+  setY(t2, e) {
+    return this.normalized && (e = Yn(e, this.array)), this.data.array[t2 * this.data.stride + this.offset + 1] = e, this;
+  }
+  setZ(t2, e) {
+    return this.normalized && (e = Yn(e, this.array)), this.data.array[t2 * this.data.stride + this.offset + 2] = e, this;
+  }
+  setW(t2, e) {
+    return this.normalized && (e = Yn(e, this.array)), this.data.array[t2 * this.data.stride + this.offset + 3] = e, this;
+  }
+  getX(t2) {
+    let e = this.data.array[t2 * this.data.stride + this.offset];
+    return this.normalized && (e = qn(e, this.array)), e;
+  }
+  getY(t2) {
+    let e = this.data.array[t2 * this.data.stride + this.offset + 1];
+    return this.normalized && (e = qn(e, this.array)), e;
+  }
+  getZ(t2) {
+    let e = this.data.array[t2 * this.data.stride + this.offset + 2];
+    return this.normalized && (e = qn(e, this.array)), e;
+  }
+  getW(t2) {
+    let e = this.data.array[t2 * this.data.stride + this.offset + 3];
+    return this.normalized && (e = qn(e, this.array)), e;
+  }
+  setXY(t2, e, n) {
+    return t2 = t2 * this.data.stride + this.offset, this.normalized && (e = Yn(e, this.array), n = Yn(n, this.array)), this.data.array[t2 + 0] = e, this.data.array[t2 + 1] = n, this;
+  }
+  setXYZ(t2, e, n, i) {
+    return t2 = t2 * this.data.stride + this.offset, this.normalized && (e = Yn(e, this.array), n = Yn(n, this.array), i = Yn(i, this.array)), this.data.array[t2 + 0] = e, this.data.array[t2 + 1] = n, this.data.array[t2 + 2] = i, this;
+  }
+  setXYZW(t2, e, n, i, r) {
+    return t2 = t2 * this.data.stride + this.offset, this.normalized && (e = Yn(e, this.array), n = Yn(n, this.array), i = Yn(i, this.array), r = Yn(r, this.array)), this.data.array[t2 + 0] = e, this.data.array[t2 + 1] = n, this.data.array[t2 + 2] = i, this.data.array[t2 + 3] = r, this;
+  }
+  clone(t2) {
+    if (void 0 === t2) {
+      console.log("THREE.InterleavedBufferAttribute.clone(): Cloning an interleaved buffer attribute will de-interleave buffer data.");
+      const t3 = [];
+      for (let e = 0; e < this.count; e++) {
+        const n = e * this.data.stride + this.offset;
+        for (let e2 = 0; e2 < this.itemSize; e2++) t3.push(this.data.array[n + e2]);
+      }
+      return new cs(new this.array.constructor(t3), this.itemSize, this.normalized);
+    }
+    return void 0 === t2.interleavedBuffers && (t2.interleavedBuffers = {}), void 0 === t2.interleavedBuffers[this.data.uuid] && (t2.interleavedBuffers[this.data.uuid] = this.data.clone(t2)), new _oc(t2.interleavedBuffers[this.data.uuid], this.itemSize, this.offset, this.normalized);
+  }
+  toJSON(t2) {
+    if (void 0 === t2) {
+      console.log("THREE.InterleavedBufferAttribute.toJSON(): Serializing an interleaved buffer attribute will de-interleave buffer data.");
+      const t3 = [];
+      for (let e = 0; e < this.count; e++) {
+        const n = e * this.data.stride + this.offset;
+        for (let e2 = 0; e2 < this.itemSize; e2++) t3.push(this.data.array[n + e2]);
+      }
+      return { itemSize: this.itemSize, type: this.array.constructor.name, array: t3, normalized: this.normalized };
+    }
+    return void 0 === t2.interleavedBuffers && (t2.interleavedBuffers = {}), void 0 === t2.interleavedBuffers[this.data.uuid] && (t2.interleavedBuffers[this.data.uuid] = this.data.toJSON(t2)), { isInterleavedBufferAttribute: true, itemSize: this.itemSize, data: this.data.uuid, offset: this.offset, normalized: this.normalized };
+  }
+};
+var lc = class extends ts {
+  static get type() {
+    return "SpriteMaterial";
+  }
+  constructor(t2) {
+    super(), this.isSpriteMaterial = true, this.color = new Kr(16777215), this.map = null, this.alphaMap = null, this.rotation = 0, this.sizeAttenuation = true, this.transparent = true, this.fog = true, this.setValues(t2);
+  }
+  copy(t2) {
+    return super.copy(t2), this.color.copy(t2.color), this.map = t2.map, this.alphaMap = t2.alphaMap, this.rotation = t2.rotation, this.sizeAttenuation = t2.sizeAttenuation, this.fog = t2.fog, this;
+  }
+};
+var cc;
 var hc = new Ci();
 var uc = new Ci();
 var dc = new Ci();
@@ -9330,6 +9530,34 @@ var _c = new Ci();
 var xc = new Jn();
 var yc = new Jn();
 var Mc = new Jn();
+var Sc = class extends Lr {
+  constructor(t2 = new lc()) {
+    if (super(), this.isSprite = true, this.type = "Sprite", void 0 === cc) {
+      cc = new Es();
+      const t3 = new Float32Array([-0.5, -0.5, 0, 0, 0, 0.5, -0.5, 0, 1, 0, 0.5, 0.5, 0, 1, 1, -0.5, 0.5, 0, 0, 1]), e = new sc(t3, 5);
+      cc.setIndex([0, 1, 2, 0, 2, 3]), cc.setAttribute("position", new oc(e, 3, 0, false)), cc.setAttribute("uv", new oc(e, 2, 3, false));
+    }
+    this.geometry = cc, this.material = t2, this.center = new Jn(0.5, 0.5);
+  }
+  raycast(t2, e) {
+    null === t2.camera && console.error('THREE.Sprite: "Raycaster.camera" needs to be set in order to raycast against sprites.'), uc.setFromMatrixScale(this.matrixWorld), fc.copy(t2.camera.matrixWorld), this.modelViewMatrix.multiplyMatrices(t2.camera.matrixWorldInverse, this.matrixWorld), dc.setFromMatrixPosition(this.modelViewMatrix), t2.camera.isPerspectiveCamera && false === this.material.sizeAttenuation && uc.multiplyScalar(-dc.z);
+    const n = this.material.rotation;
+    let i, r;
+    0 !== n && (r = Math.cos(n), i = Math.sin(n));
+    const s = this.center;
+    bc(gc.set(-0.5, -0.5, 0), dc, s, uc, i, r), bc(vc.set(0.5, -0.5, 0), dc, s, uc, i, r), bc(_c.set(0.5, 0.5, 0), dc, s, uc, i, r), xc.set(0, 0), yc.set(1, 0), Mc.set(1, 1);
+    let a = t2.ray.intersectTriangle(gc, vc, _c, false, hc);
+    if (null === a && (bc(vc.set(-0.5, 0.5, 0), dc, s, uc, i, r), yc.set(0, 1), a = t2.ray.intersectTriangle(gc, _c, vc, false, hc), null === a)) return;
+    const o = t2.ray.origin.distanceTo(hc);
+    o < t2.near || o > t2.far || e.push({ distance: o, point: hc.clone(), uv: jr.getInterpolation(hc, gc, vc, _c, xc, yc, Mc, new Jn()), face: null, object: this });
+  }
+  copy(t2, e) {
+    return super.copy(t2, e), void 0 !== t2.center && this.center.copy(t2.center), this.material = t2.material, this;
+  }
+};
+function bc(t2, e, n, i, r, s) {
+  pc.subVectors(t2, n).addScalar(0.5).multiply(i), void 0 !== r ? (mc.x = s * pc.x - r * pc.y, mc.y = r * pc.x + s * pc.y) : mc.copy(pc), t2.copy(e), t2.x += mc.x, t2.y += mc.y, t2.applyMatrix4(fc);
+}
 var Tc = new Ci();
 var wc = new Ci();
 var Ac = new Ci();
@@ -9460,10 +9688,66 @@ var Mh = new Ci();
 var Sh = new Ci();
 var wh = new Ci();
 var Eh = new Ci();
+var Ch = class extends ts {
+  static get type() {
+    return "PointsMaterial";
+  }
+  constructor(t2) {
+    super(), this.isPointsMaterial = true, this.color = new Kr(16777215), this.map = null, this.alphaMap = null, this.size = 1, this.sizeAttenuation = true, this.fog = true, this.setValues(t2);
+  }
+  copy(t2) {
+    return super.copy(t2), this.color.copy(t2.color), this.map = t2.map, this.alphaMap = t2.alphaMap, this.size = t2.size, this.sizeAttenuation = t2.sizeAttenuation, this.fog = t2.fog, this;
+  }
+};
 var Ih = new sr();
 var Ph = new rr();
 var Lh = new Ji();
 var Uh = new Ci();
+var Dh = class extends Lr {
+  constructor(t2 = new Es(), e = new Ch()) {
+    super(), this.isPoints = true, this.type = "Points", this.geometry = t2, this.material = e, this.updateMorphTargets();
+  }
+  copy(t2, e) {
+    return super.copy(t2, e), this.material = Array.isArray(t2.material) ? t2.material.slice() : t2.material, this.geometry = t2.geometry, this;
+  }
+  raycast(t2, e) {
+    const n = this.geometry, i = this.matrixWorld, r = t2.params.Points.threshold, s = n.drawRange;
+    if (null === n.boundingSphere && n.computeBoundingSphere(), Lh.copy(n.boundingSphere), Lh.applyMatrix4(i), Lh.radius += r, false === t2.ray.intersectsSphere(Lh)) return;
+    Ih.copy(i).invert(), Ph.copy(t2.ray).applyMatrix4(Ih);
+    const a = r / ((this.scale.x + this.scale.y + this.scale.z) / 3), o = a * a, l2 = n.index, c = n.attributes.position;
+    if (null !== l2) {
+      for (let n2 = Math.max(0, s.start), r2 = Math.min(l2.count, s.start + s.count); n2 < r2; n2++) {
+        const r3 = l2.getX(n2);
+        Uh.fromBufferAttribute(c, r3), Nh(Uh, r3, o, i, t2, e, this);
+      }
+    } else {
+      for (let n2 = Math.max(0, s.start), r2 = Math.min(c.count, s.start + s.count); n2 < r2; n2++) Uh.fromBufferAttribute(c, n2), Nh(Uh, n2, o, i, t2, e, this);
+    }
+  }
+  updateMorphTargets() {
+    const t2 = this.geometry.morphAttributes, e = Object.keys(t2);
+    if (e.length > 0) {
+      const n = t2[e[0]];
+      if (void 0 !== n) {
+        this.morphTargetInfluences = [], this.morphTargetDictionary = {};
+        for (let t3 = 0, e2 = n.length; t3 < e2; t3++) {
+          const e3 = n[t3].name || String(t3);
+          this.morphTargetInfluences.push(0), this.morphTargetDictionary[e3] = t3;
+        }
+      }
+    }
+  }
+};
+function Nh(t2, e, n, i, r, s, a) {
+  const o = Ph.distanceSqToPoint(t2);
+  if (o < n) {
+    const n2 = new Ci();
+    Ph.closestPointToPoint(t2, n2), n2.applyMatrix4(i);
+    const l2 = r.ray.origin.distanceTo(n2);
+    if (l2 < r.near || l2 > r.far) return;
+    s.push({ distance: l2, distanceToRay: Math.sqrt(o), point: n2, index: e, face: null, faceIndex: null, barycoord: null, object: a });
+  }
+}
 var Vh = class extends yi {
   constructor(t2, e, n, i, r, s, a, o, l2) {
     super(t2, e, n, i, r, s, a, o, l2), this.isCanvasTexture = true, this.needsUpdate = true;
@@ -11780,8 +12064,8 @@ var CHAPTERS = [
     sectionTitle: "01 \u724C\u574A \xB7 \u5E8F",
     subtitle: "\u73DE\u73C8\u5E8F\u7AE0 \xB7 Identity & Engineering Ethos",
     anchor: [0, 7.2, 15.5],
-    camPos: [8.4, 7.6, 28.5],
-    camTarget: [0, 4.4, 15.5],
+    camPos: [21, 15.2, 33.5],
+    camTarget: [0.5, 3.2, 16.5],
     accentColor: "#1976a8",
     summary: "\u7A7F\u8FC7\u56DB\u67F1\u4E09\u95F4\u51B2\u5929\u5F0F\u56FD\u7ACB\u6B66\u6C49\u5927\u5B66\u77F3\u574A\uFF0C\u5728\u6674\u7A7A\u6D41\u4E91\u4E0E\u5939\u9053\u6A31\u96EA\u95F4\u6B65\u5165\u73DE\u73C8\u5C71\u7ACB\u4F53\u6821\u56ED\u3002\u4EE5\u7CFB\u7EDF\u7EA7\u5DE5\u7A0B\u601D\u7EF4\u5BA1\u89C6\u4EBA\u5DE5\u667A\u80FD\u3001\u79D1\u5B66\u8BA1\u7B97\u4E0E\u4EBA\u673A\u4EA4\u4E92\u7684\u5E95\u5C42\u8026\u5408\u3002",
     badges: ["WHU AI Undergrad", "@projectluojia", "Open-Source Builder"],
@@ -11812,8 +12096,8 @@ var CHAPTERS = [
     sectionTitle: "02 \u8001\u658B\u820D \xB7 \u5DE5",
     subtitle: "\u6570\u503C\u4FE1\u53F7\u4E0E\u7CFB\u7EDF\u5DE5\u7A0B \xB7 Signal & Systems",
     anchor: [0, 7.6, -0.8],
-    camPos: [0, 2.1, 13.4],
-    camTarget: [0, 2.4, -0.8],
+    camPos: [18.5, 16.2, 15.5],
+    camTarget: [0, 3.6, 2.2],
     accentColor: "#e67aa3",
     summary: "\u6CBF\u767E\u6B65\u68AF\u4E0E\u6A31\u82B1\u5927\u9053\u62FE\u7EA7\u800C\u4E0A\uFF0C\u8001\u658B\u820D\u4E09\u5EA7\u7F57\u9A6C\u62F1\u95E8\u4E0E\u5B54\u96C0\u84DD\u6B47\u5C71\u9876\u5343\u5B57\u53F7\u4EAD\u6620\u7167\u7740\u786C\u6838\u5DE5\u7A0B\u4EA4\u4ED8\uFF1A\u96F6\u62F7\u8D1D Hankel \u97F3\u9891\u964D\u566A\u77E9\u9635\u3001Fail-Closed \u9694\u79BB\u534F\u8BAE\u4E0E Agent \u57FA\u7840\u8BBE\u65BD\u5DE5\u5177\u94FE\u3002",
     badges: ["Zero-Copy MSSA", "Fail-Closed Security", "Agent Infra"],
@@ -11856,8 +12140,8 @@ var CHAPTERS = [
     sectionTitle: "03 \u8001\u56FE \xB7 \u7814",
     subtitle: "\u79D1\u7814\u534F\u8BAE\u4E0E AI4S \xB7 Research & Protocols",
     anchor: [0, 13.9, -9.8],
-    camPos: [8.8, 11.6, 1.6],
-    camTarget: [0, 7.8, -9.2],
+    camPos: [21.5, 22.2, 2.5],
+    camTarget: [0.5, 7.6, -8.8],
     accentColor: "#1a96ad",
     summary: "\u72EE\u5B50\u5C71\u5DC5\u5B54\u96C0\u84DD\u91CD\u6A90\u6B47\u5C71\u9876\u4E0E\u4E94\u91CD\u8F6E\u5B9D\u9876\u4E4B\u4E0B\uFF0C\u662F\u5173\u4E8E\u79D1\u7814\u667A\u80FD\u4F53\u201C\u5206\u6743\u5236\u8861\u201D\u4E0E\u79D1\u5B66\u8BA1\u7B97\u524D\u7F6E\u786E\u5B9A\u6027\u7EA6\u675F\u7684\u4E24\u9879\u6838\u5FC3\u5F00\u6E90\u63A2\u7D22\u3002",
     badges: ["Separation of Powers", "Deterministic Gating", "AI4S"],
@@ -11890,8 +12174,8 @@ var CHAPTERS = [
     sectionTitle: "04 \u51CC\u6CE2 \xB7 \u884C",
     subtitle: "\u53D9\u4E8B\u3001\u5BA1\u7F8E\u4E0E\u672A\u6765\u540C\u884C \xB7 Vision & Connect",
     anchor: [14.4, 2.2, -7.8],
-    camPos: [23.8, 6.4, 2.2],
-    camTarget: [12.4, 1.3, -7.2],
+    camPos: [31.5, 14.5, 7.5],
+    camTarget: [13.5, 1.4, -7.2],
     accentColor: "#2585b8",
     summary: "\u6808\u6865\u5411\u6F84\u6F88\u4E1C\u6E56\u6DF1\u5904\u5EF6\u4F38\u3002\u6280\u672F\u4E4B\u5916\uFF0C\u4EE5\u9AD8\u5DE5\u827A\u4E09\u7EF4\u6821\u56ED\u6C99\u76D8\u4E0E\u4EA4\u4E92\u5F0F\u7F51\u9875\u53D9\u4E8B\uFF0C\u5BFB\u627E\u613F\u610F\u4E00\u8D77\u628A\u72C2\u60F3\u843D\u5730\u6210\u53EF\u89E6\u78B0\u4F5C\u54C1\u7684\u540C\u8DEF\u4EBA\u3002",
     badges: ["Scrollytelling", "3D Architectural Craft", "Open to Collaborate"],
@@ -11944,29 +12228,34 @@ function makeCanvas(w2, h) {
   c.height = h;
   return c;
 }
-function speckle(ctx, w2, h, rand, count, colorFn, sizeMin = 1, sizeMax = 2.2) {
-  for (let i = 0; i < count; i++) {
-    ctx.fillStyle = colorFn(rand());
-    const s = sizeMin + rand() * (sizeMax - sizeMin);
-    ctx.fillRect(rand() * w2, rand() * h, s, s);
-  }
+function px(ctx, x, y2, w2, h, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(Math.floor(x), Math.floor(y2), Math.max(1, Math.floor(w2)), Math.max(1, Math.floor(h)));
 }
 function createTextureFactory(renderer) {
   const registry = [];
   const cache = /* @__PURE__ */ new Map();
   const maxAniso = renderer ? Math.min(4, renderer.capabilities.getMaxAnisotropy()) : 4;
-  function register(label, canvas, { srgb = true, repeat = [1, 1], mip = true, wrap = true } = {}) {
+  function register(label, canvas, { srgb = true, repeat = [1, 1], mip = true, wrap = true, pixel = true } = {}) {
     if (cache.has(label)) return cache.get(label);
     const tex = new Vh(canvas);
     if (wrap) {
       tex.wrapS = pt;
       tex.wrapT = pt;
+    } else {
+      tex.wrapS = mt;
+      tex.wrapT = mt;
     }
     tex.repeat.set(repeat[0], repeat[1]);
-    tex.magFilter = Mt;
-    tex.minFilter = mip ? Tt : Mt;
+    if (pixel) {
+      tex.magFilter = gt;
+      tex.minFilter = mip ? xt : gt;
+    } else {
+      tex.magFilter = Mt;
+      tex.minFilter = mip ? Tt : Mt;
+    }
     tex.generateMipmaps = mip;
-    tex.anisotropy = maxAniso;
+    tex.anisotropy = pixel ? 1 : maxAniso;
     if (srgb) tex.colorSpace = Je;
     tex.needsUpdate = true;
     const bytes = Math.round(canvas.width * canvas.height * 4 * (mip ? 1.333 : 1));
@@ -11974,586 +12263,529 @@ function createTextureFactory(renderer) {
     cache.set(label, tex);
     return tex;
   }
-  function granite(label = "granite", base = "#f5f2ec", seed = 11) {
-    const S2 = 256;
+  function granite(label = "granite", base = "#f2ece1", seed = 11) {
+    const S2 = 32;
     const c = makeCanvas(S2, S2);
     const ctx = c.getContext("2d");
     const rand = mulberry32(seed);
     ctx.fillStyle = base;
     ctx.fillRect(0, 0, S2, S2);
-    for (let i = 0; i < 45; i++) {
-      const x = rand() * S2;
-      const y2 = rand() * S2;
-      const r = 12 + rand() * 36;
-      const g2 = ctx.createRadialGradient(x, y2, 0, x, y2, r);
-      const dark = rand() > 0.5;
-      g2.addColorStop(0, dark ? "rgba(175,170,164,0.09)" : "rgba(255,255,255,0.24)");
-      g2.addColorStop(1, "rgba(255,255,255,0)");
-      ctx.fillStyle = g2;
-      ctx.fillRect(x - r, y2 - r, r * 2, r * 2);
-    }
-    speckle(
-      ctx,
-      S2,
-      S2,
-      rand,
-      2800,
-      (v) => v > 0.62 ? "rgba(130,128,132,0.18)" : v > 0.3 ? "rgba(205,200,194,0.28)" : "rgba(255,255,255,0.48)",
-      0.7,
-      1.6
-    );
-    return register(label, c);
-  }
-  function paving(label = "paving", repeat = [10, 10], base = "#efece6", joint = "#d4cfc7", seed = 21) {
-    const S2 = 256;
-    const c = makeCanvas(S2, S2);
-    const ctx = c.getContext("2d");
-    const rand = mulberry32(seed);
-    ctx.fillStyle = joint;
-    ctx.fillRect(0, 0, S2, S2);
-    const rows = 4;
-    const rh2 = S2 / rows;
-    for (let r = 0; r < rows; r++) {
-      const off = r % 2 ? 32 : 0;
-      for (let x = -64; x < S2; x += 64) {
-        const tone = Math.floor((rand() - 0.5) * 10);
-        const b = parseInt(base.slice(1), 16);
-        const cr2 = Math.max(0, Math.min(255, (b >> 16 & 255) + tone));
-        const cg = Math.max(0, Math.min(255, (b >> 8 & 255) + tone));
-        const cb = Math.max(0, Math.min(255, (b & 255) + tone + 2));
-        ctx.fillStyle = `rgb(${cr2},${cg},${cb})`;
-        ctx.fillRect(x + off + 1, r * rh2 + 1, 62, rh2 - 2);
-      }
-    }
-    speckle(
-      ctx,
-      S2,
-      S2,
-      rand,
-      2200,
-      (v) => v > 0.55 ? "rgba(150,146,150,0.14)" : "rgba(255,255,255,0.35)",
-      0.7,
-      1.5
-    );
-    return register(label, c, { repeat });
-  }
-  function grass(label = "grass", repeat = [24, 24], seed = 31) {
-    const S2 = 256;
-    const c = makeCanvas(S2, S2);
-    const ctx = c.getContext("2d");
-    const rand = mulberry32(seed);
-    ctx.fillStyle = "#68985d";
-    ctx.fillRect(0, 0, S2, S2);
-    for (let i = 0; i < 64; i++) {
-      const x = rand() * S2;
-      const y2 = rand() * S2;
-      const r = 18 + rand() * 38;
-      const c0 = rand() > 0.5 ? "rgba(72,118,62,0.22)" : "rgba(130,174,104,0.22)";
-      for (const ox of [-S2, 0, S2]) {
-        for (const oy of [-S2, 0, S2]) {
-          const px = x + ox;
-          const py = y2 + oy;
-          if (px + r < 0 || px - r > S2 || py + r < 0 || py - r > S2) continue;
-          const g2 = ctx.createRadialGradient(px, py, 0, px, py, r);
-          g2.addColorStop(0, c0);
-          g2.addColorStop(1, "rgba(0,0,0,0)");
-          ctx.fillStyle = g2;
-          ctx.fillRect(px - r, py - r, r * 2, r * 2);
+    const tones = ["#ebe3d5", "#e2d8c8", "#faf6ee"];
+    for (let y2 = 0; y2 < S2; y2++) {
+      for (let x = 0; x < S2; x++) {
+        if (y2 % 8 === 0) {
+          px(ctx, x, y2, 1, 1, "rgba(130,118,105,0.22)");
+        } else if (y2 % 8 === 1) {
+          px(ctx, x, y2, 1, 1, "rgba(255,252,246,0.35)");
+        } else if (rand() < 0.28) {
+          px(ctx, x, y2, 1, 1, tones[Math.floor(rand() * tones.length)]);
         }
       }
     }
-    speckle(
-      ctx,
-      S2,
-      S2,
-      rand,
-      3600,
-      (v) => v > 0.68 ? "rgba(58,98,52,0.26)" : v > 0.34 ? "rgba(116,158,90,0.26)" : "rgba(154,192,122,0.22)",
-      0.8,
-      1.9
-    );
-    return register(label, c, { repeat });
+    return register(label, c, { pixel: true, mip: true });
   }
-  function ashlarStone(label = "ashlar-stone", base = "#eae0cf", seed = 79) {
-    const S2 = 256;
+  function paving(label = "paving", repeat = [10, 10], base = "#e8dfd2", joint = "#8e8476", seed = 21) {
+    const S2 = 32;
     const c = makeCanvas(S2, S2);
     const ctx = c.getContext("2d");
     const rand = mulberry32(seed);
-    ctx.fillStyle = "#cbbca5";
-    ctx.fillRect(0, 0, S2, S2);
-    const rows = 8;
+    px(ctx, 0, 0, S2, S2, joint);
+    const bInt = parseInt(base.slice(1), 16);
+    const br2 = bInt >> 16 & 255;
+    const bg = bInt >> 8 & 255;
+    const bb = bInt & 255;
+    const rows = 4;
     const rh2 = S2 / rows;
-    const cols = 4;
-    const cw = S2 / cols;
+    const cw = 8;
+    for (let r = 0; r < rows; r++) {
+      const off = r % 2 ? 4 : 0;
+      for (let sx = -cw; sx < S2; sx += cw) {
+        const x = sx + off;
+        const y2 = r * rh2;
+        const delta = Math.floor((rand() - 0.5) * 18);
+        const rr2 = Math.max(0, Math.min(255, br2 + delta));
+        const gg = Math.max(0, Math.min(255, bg + delta - 1));
+        const bb2 = Math.max(0, Math.min(255, bb + delta - 2));
+        px(ctx, x + 1, y2 + 1, cw - 1, rh2 - 1, `rgb(${rr2},${gg},${bb2})`);
+        px(ctx, x + 1, y2 + 1, cw - 1, 1, "rgba(255,250,240,0.42)");
+        px(ctx, x + 1, y2 + 1, 1, rh2 - 1, "rgba(255,250,240,0.28)");
+        px(ctx, x + 1, y2 + rh2 - 1, cw - 1, 1, "rgba(104,92,80,0.22)");
+      }
+    }
+    for (let i = 0; i < 48; i++) {
+      const mx = Math.floor(rand() * S2);
+      const my = Math.floor(rand() * S2);
+      if (my % rh2 === 0) {
+        px(ctx, mx, my, 1, 1, rand() > 0.35 ? "#6d8a55" : "#587446");
+      } else if (rand() < 0.45) {
+        px(ctx, mx, my, 1, 1, "rgba(120,108,96,0.18)");
+      }
+    }
+    return register(label, c, { repeat, pixel: true, mip: true });
+  }
+  function grass(label = "grass", repeat = [24, 24], seed = 31) {
+    const S2 = 32;
+    const c = makeCanvas(S2, S2);
+    const ctx = c.getContext("2d");
+    const rand = mulberry32(seed);
+    const tones = ["#5a8248", "#689351", "#78a35c", "#4a6e3e"];
+    px(ctx, 0, 0, S2, S2, tones[1]);
+    for (let y2 = 0; y2 < S2; y2++) {
+      for (let x = 0; x < S2; x++) {
+        const v = rand();
+        if (v < 0.16) px(ctx, x, y2, 1, 1, tones[3]);
+        else if (v < 0.42) px(ctx, x, y2, 1, 1, tones[0]);
+        else if (v > 0.8) px(ctx, x, y2, 1, 1, tones[2]);
+      }
+    }
+    for (let i = 0; i < 12; i++) {
+      const fx = Math.floor(rand() * S2);
+      const fy = Math.floor(rand() * S2);
+      px(ctx, fx, fy, 1, 1, rand() > 0.45 ? "#fff2be" : "#ffd8e4");
+    }
+    return register(label, c, { repeat, pixel: true, mip: true });
+  }
+  function ashlarStone(label = "ashlar-stone", base = "#dfd2bc", seed = 79) {
+    const S2 = 32;
+    const c = makeCanvas(S2, S2);
+    const ctx = c.getContext("2d");
+    const rand = mulberry32(seed);
+    px(ctx, 0, 0, S2, S2, "#8c7d69");
+    const rows = 4;
+    const rh2 = S2 / rows;
+    const cw = 8;
     const bInt = parseInt(base.slice(1), 16);
     const br2 = bInt >> 16 & 255;
     const bg = bInt >> 8 & 255;
     const bb = bInt & 255;
     for (let r = 0; r < rows; r++) {
-      const offset = r % 2 * (cw * 0.5);
-      for (let col = -1; col <= cols; col++) {
+      const offset = r % 2 * 4;
+      for (let col = -1; col <= 4; col++) {
         const x = col * cw + offset;
         const y2 = r * rh2;
-        const tone = Math.floor((rand() - 0.5) * 18);
-        ctx.fillStyle = `rgb(${Math.min(255, Math.max(0, br2 + tone))},${Math.min(255, Math.max(0, bg + tone - 1))},${Math.min(255, Math.max(0, bb + tone - 3))})`;
-        ctx.fillRect(x + 1.5, y2 + 1.5, cw - 3, rh2 - 3);
-        ctx.fillStyle = "rgba(255,252,246,0.28)";
-        ctx.fillRect(x + 1.5, y2 + 1.5, cw - 3, 2);
-        ctx.fillStyle = "rgba(118,104,88,0.18)";
-        ctx.fillRect(x + 1.5, y2 + rh2 - 3.5, cw - 3, 2);
+        const tone = Math.floor((rand() - 0.5) * 20);
+        const cr2 = Math.min(255, Math.max(0, br2 + tone));
+        const cg = Math.min(255, Math.max(0, bg + tone - 1));
+        const cb = Math.min(255, Math.max(0, bb + tone - 3));
+        px(ctx, x + 1, y2 + 1, cw - 1, rh2 - 1, `rgb(${cr2},${cg},${cb})`);
+        px(ctx, x + 1, y2 + 1, cw - 1, 1, "rgba(255,250,242,0.42)");
+        px(ctx, x + 1, y2 + rh2 - 1, cw - 1, 1, "rgba(96,84,70,0.28)");
       }
     }
-    speckle(
-      ctx,
-      S2,
-      S2,
-      rand,
-      2600,
-      (v) => v > 0.5 ? "rgba(135,120,102,0.12)" : "rgba(255,252,246,0.22)",
-      0.7,
-      1.6
-    );
-    return register(label, c);
+    for (let i = 0; i < 40; i++) {
+      px(ctx, rand() * S2, rand() * S2, 1, 1, rand() > 0.5 ? "rgba(110,98,84,0.22)" : "rgba(255,252,246,0.28)");
+    }
+    return register(label, c, { pixel: true, mip: true });
   }
   function concretePier(label = "concrete-pier", seed = 83) {
-    const S2 = 256;
+    const S2 = 32;
     const c = makeCanvas(S2, S2);
     const ctx = c.getContext("2d");
     const rand = mulberry32(seed);
-    ctx.fillStyle = "#cfc9bd";
-    ctx.fillRect(0, 0, S2, S2);
-    for (let i = 0; i < 40; i++) {
-      const x = rand() * S2;
-      const y2 = rand() * S2;
-      const r = 14 + rand() * 34;
-      const g2 = ctx.createRadialGradient(x, y2, 0, x, y2, r);
-      g2.addColorStop(0, rand() > 0.5 ? "rgba(156,154,148,0.05)" : "rgba(255,254,250,0.09)");
-      g2.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = g2;
-      ctx.fillRect(x - r, y2 - r, r * 2, r * 2);
-    }
-    for (const jx of [0, S2 * 0.5]) {
-      ctx.fillStyle = "rgba(112,114,118,0.38)";
-      ctx.fillRect(jx, 0, 2.5, S2);
-      ctx.fillStyle = "rgba(255,255,255,0.45)";
-      ctx.fillRect(jx + 2.5, 0, 1.5, S2);
-    }
-    speckle(
-      ctx,
-      S2,
-      S2,
-      rand,
-      3e3,
-      (v) => v > 0.55 ? "rgba(128,128,132,0.16)" : "rgba(252,251,248,0.3)",
-      0.6,
-      1.5
-    );
-    return register(label, c);
-  }
-  function glazedTiles(label = "glazed") {
-    const W2 = 128;
-    const H2 = 128;
-    const albedo = makeCanvas(W2, H2);
-    const bump = makeCanvas(W2, H2);
-    const a = albedo.getContext("2d");
-    const b = bump.getContext("2d");
-    const aimg = a.createImageData(W2, H2);
-    const bimg = b.createImageData(W2, H2);
-    const colValley = new Kr("#123f47");
-    const colBody = new Kr("#1f6b74");
-    const colCrest = new Kr("#5aa9a6");
-    for (let y2 = 0; y2 < H2; y2++) {
-      for (let x = 0; x < W2; x++) {
-        const u2 = x / W2 * 6;
-        const fu2 = u2 - Math.floor(u2);
-        const v = y2 / H2 * 5;
-        const fv = v - Math.floor(v);
-        const dist = Math.abs(fu2 - 0.5);
-        let hVal = 0.25;
-        if (dist < 0.32) {
-          const s = dist / 0.32;
-          hVal = 0.45 + 0.55 * Math.sqrt(Math.max(0, 1 - s * s));
-        } else {
-          const s = (dist - 0.32) / 0.18;
-          hVal = 0.22 + 0.12 * s;
-        }
-        if (fv > 0.88) hVal *= 0.78;
-        else if (fv < 0.08) hVal = Math.min(1, hVal * 1.12);
-        const col = hVal < 0.5 ? colValley.clone().lerp(colBody, hVal / 0.5) : colBody.clone().lerp(colCrest, (hVal - 0.5) / 0.5);
-        const idx = (y2 * W2 + x) * 4;
-        aimg.data[idx] = Math.round(col.r * 255);
-        aimg.data[idx + 1] = Math.round(col.g * 255);
-        aimg.data[idx + 2] = Math.round(col.b * 255);
-        aimg.data[idx + 3] = 255;
-        const bv = Math.round(hVal * 255);
-        bimg.data[idx] = bv;
-        bimg.data[idx + 1] = bv;
-        bimg.data[idx + 2] = bv;
-        bimg.data[idx + 3] = 255;
+    px(ctx, 0, 0, S2, S2, "#cbc3b4");
+    const tones = ["#c1b8a8", "#d4ccb9", "#bdb4a4"];
+    for (let y2 = 0; y2 < S2; y2++) {
+      for (let x = 0; x < S2; x++) {
+        if (rand() < 0.25) px(ctx, x, y2, 1, 1, tones[Math.floor(rand() * tones.length)]);
       }
     }
-    a.putImageData(aimg, 0, 0);
-    b.putImageData(bimg, 0, 0);
-    return {
-      map: register(`${label}-albedo`, albedo, { repeat: [2, 2] }),
-      bumpMap: register(`${label}-bump`, bump, { srgb: false, repeat: [2, 2] })
-    };
+    for (const jx of [0, 16]) {
+      px(ctx, jx, 0, 1, S2, "#6d6962");
+      px(ctx, jx + 1, 0, 1, S2, "rgba(255,252,246,0.48)");
+    }
+    for (const jy of [0, 16]) {
+      px(ctx, 0, jy, S2, 1, "rgba(105,100,92,0.34)");
+    }
+    return register(label, c, { pixel: true, mip: true });
   }
-  function sakuraCanopy(label = "sakura-canopy", baseHex = "#ffebf3", accentHex = "#ffadc9", seed = 88) {
-    const S2 = 128;
+  function glazedTiles(label = "glazed") {
+    const S2 = 32;
     const albedo = makeCanvas(S2, S2);
     const bump = makeCanvas(S2, S2);
     const a = albedo.getContext("2d");
     const b = bump.getContext("2d");
-    const rand = mulberry32(seed);
-    a.fillStyle = baseHex;
-    a.fillRect(0, 0, S2, S2);
-    b.fillStyle = "#707070";
-    b.fillRect(0, 0, S2, S2);
-    const palette = ["#ffffff", "#fff2f7", baseHex, accentHex, "#ff94b8"];
-    for (let i = 0; i < 420; i++) {
-      const px = rand() * S2;
-      const py = rand() * S2;
-      const rx = 2.2 + rand() * 3.8;
-      const ry = 1.4 + rand() * 2.4;
-      const rot = rand() * Math.PI;
-      a.save();
-      a.translate(px, py);
-      a.rotate(rot);
-      a.fillStyle = palette[Math.floor(rand() * palette.length)];
-      a.beginPath();
-      a.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
-      a.fill();
-      a.restore();
-      b.save();
-      b.translate(px, py);
-      b.rotate(rot);
-      const shade = 140 + Math.floor(rand() * 110);
-      b.fillStyle = `rgb(${shade},${shade},${shade})`;
-      b.beginPath();
-      b.ellipse(0, 0, rx * 0.9, ry * 0.9, 0, 0, Math.PI * 2);
-      b.fill();
-      b.restore();
+    const valley = "#113742";
+    const flank = "#1a5663";
+    const body = "#24737e";
+    const ridge = "#4ea3a4";
+    const glint = "#8ed8d3";
+    for (let y2 = 0; y2 < S2; y2++) {
+      const isLap = y2 % 8 === 7;
+      const isEdge = y2 % 8 === 0;
+      for (let x = 0; x < S2; x++) {
+        const fx = x % 8;
+        let col = body;
+        let bv = 165;
+        if (fx === 0 || fx === 7) {
+          col = valley;
+          bv = 60;
+        } else if (fx === 1 || fx === 6) {
+          col = flank;
+          bv = 120;
+        } else if (fx === 3 || fx === 4) {
+          col = ridge;
+          bv = 225;
+          if (fx === 3 && y2 % 4 === 1) {
+            col = glint;
+            bv = 250;
+          }
+        }
+        if (isLap) bv = Math.max(40, bv - 45);
+        else if (isEdge) bv = Math.min(255, bv + 20);
+        px(a, x, y2, 1, 1, col);
+        px(b, x, y2, 1, 1, `rgb(${bv},${bv},${bv})`);
+      }
     }
     return {
-      map: register(`${label}-map`, albedo, { repeat: [2, 2] }),
-      bumpMap: register(`${label}-bump`, bump, { srgb: false, repeat: [2, 2] })
+      map: register(`${label}-albedo`, albedo, { repeat: [2, 2], pixel: true, mip: true }),
+      bumpMap: register(`${label}-bump`, bump, { srgb: false, repeat: [2, 2], pixel: true, mip: true })
     };
   }
-  function facade(label, { wall = "#f2eadc", cols = 4, rows = 3, arched = true, seed = 41 } = {}) {
-    const S2 = 256;
+  function sakuraCanopy(label = "sakura-canopy", baseHex = "#ffebf3", accentHex = "#ffadc9", seed = 88) {
+    const tex = sakuraSprig(`${label}-fallback`, seed);
+    return { map: tex, bumpMap: tex };
+  }
+  function facade(label, { wall = "#ebd9c1", cols = 4, rows = 3, arched = true, seed = 41 } = {}) {
+    const S2 = 64;
     const albedo = makeCanvas(S2, S2);
     const emissive = makeCanvas(S2, S2);
     const a = albedo.getContext("2d");
     const e = emissive.getContext("2d");
     const rand = mulberry32(seed);
-    a.fillStyle = wall;
-    a.fillRect(0, 0, S2, S2);
-    for (let y2 = 0; y2 < S2; y2 += 16) {
-      a.fillStyle = "rgba(165,148,128,0.15)";
-      a.fillRect(0, y2, S2, 1);
+    px(a, 0, 0, S2, S2, wall);
+    px(e, 0, 0, S2, S2, "#000000");
+    for (let y2 = 0; y2 < S2; y2++) {
+      for (let x = 0; x < S2; x++) {
+        if (y2 % 16 === 0) px(a, x, y2, 1, 1, "rgba(130,110,88,0.18)");
+        else if (rand() < 0.14) px(a, x, y2, 1, 1, "rgba(145,124,102,0.12)");
+      }
     }
-    speckle(
-      a,
-      S2,
-      S2,
-      rand,
-      1600,
-      (v) => v > 0.5 ? "rgba(150,130,110,0.10)" : "rgba(255,255,255,0.28)",
-      0.6,
-      1.4
-    );
-    e.fillStyle = "#000";
-    e.fillRect(0, 0, S2, S2);
-    const cw = S2 / cols;
-    const rh2 = S2 / rows;
+    const cw = Math.floor(S2 / cols);
+    const rh2 = Math.floor(S2 / rows);
     for (let r = 0; r < rows; r++) {
-      a.fillStyle = "rgba(255,252,246,0.92)";
-      a.fillRect(0, r * rh2 + rh2 - 5, S2, 3);
-      a.fillStyle = "rgba(155,136,118,0.32)";
-      a.fillRect(0, r * rh2 + rh2 - 2, S2, 1);
+      px(a, 0, r * rh2 + rh2 - 2, S2, 1, "#faf4ea");
+      px(a, 0, r * rh2 + rh2 - 1, S2, 1, "rgba(128,110,90,0.32)");
       for (let c = 0; c < cols; c++) {
-        const ww = cw * 0.42;
-        const wh2 = rh2 * 0.52;
-        const x = c * cw + (cw - ww) / 2;
-        const y2 = r * rh2 + rh2 * 0.18;
-        a.fillStyle = "rgba(128,112,96,0.34)";
-        a.fillRect(x - 3.5, y2 - 3.5, ww + 7, wh2 + 6);
-        a.fillStyle = "#fcfaf5";
-        a.fillRect(x - 3, y2 - 2.5, ww + 6, wh2 + 4);
-        a.fillStyle = "#e7dfd0";
-        a.fillRect(x - 4.5, y2 + wh2 + 1.5, ww + 9, 3.5);
-        a.fillStyle = "#334659";
-        a.fillRect(x - 1.5, y2 - 1.5, ww + 3, wh2 + 3);
-        const g2 = a.createLinearGradient(x, y2, x + ww, y2 + wh2);
-        g2.addColorStop(0, "#3e5e7a");
-        g2.addColorStop(0.5, "#284259");
-        g2.addColorStop(1, "#1a2d3f");
-        a.fillStyle = g2;
+        const ww = Math.max(6, Math.floor(cw * 0.44));
+        const wh2 = Math.max(8, Math.floor(rh2 * 0.56));
+        const x = c * cw + Math.floor((cw - ww) / 2);
+        const y2 = r * rh2 + Math.floor(rh2 * 0.18);
+        px(a, x - 1, y2 - 1, ww + 2, wh2 + 2, "#f7efe2");
+        px(a, x - 1, y2 + wh2 + 1, ww + 2, 1, "#b8a894");
+        px(a, x, y2, ww, wh2, "#2a3b4e");
+        const lit = rand() < 0.55;
         if (arched && r === rows - 1) {
-          a.beginPath();
-          a.moveTo(x, y2 + wh2);
-          a.lineTo(x, y2 + ww / 2);
-          a.arc(x + ww / 2, y2 + ww / 2, ww / 2, Math.PI, 0);
-          a.lineTo(x + ww, y2 + wh2);
-          a.closePath();
-          a.fill();
+          px(a, x + 1, y2 + 2, ww - 2, wh2 - 3, "#33506b");
+          px(a, x + 2, y2 + 1, ww - 4, 1, "#33506b");
         } else {
-          a.fillRect(x, y2, ww, wh2);
+          px(a, x + 1, y2 + 1, ww - 2, wh2 - 2, "#2d4760");
         }
-        a.fillStyle = "rgba(205,228,248,0.22)";
-        a.fillRect(x + 2, y2 + 2, ww * 0.18, wh2 * 0.55);
-        a.fillStyle = "#d9d3c5";
-        a.fillRect(x + ww / 2 - 1, y2, 2, wh2);
-        a.fillRect(x, y2 + wh2 * 0.42, ww, 2);
-        a.fillRect(x, y2 + wh2 * 0.72, ww, 1.5);
-        if (rand() < 0.42) {
-          const ge2 = e.createLinearGradient(x, y2, x, y2 + wh2);
-          ge2.addColorStop(0, "#ffd8a2");
-          ge2.addColorStop(1, "#ffa460");
-          e.fillStyle = ge2;
-          e.fillRect(x, y2, ww, wh2);
-          e.fillStyle = "#000";
-          e.fillRect(x + ww / 2 - 1, y2, 2, wh2);
-          e.fillRect(x, y2 + wh2 * 0.42, ww, 2);
+        px(a, x + 1, y2 + 2, 1, Math.max(2, wh2 - 4), "#7da6cc");
+        px(a, x + Math.floor(ww / 2), y2 + 1, 1, wh2 - 2, "#ded4c4");
+        px(a, x + 1, y2 + Math.floor(wh2 * 0.48), ww - 2, 1, "#ded4c4");
+        if (lit) {
+          px(e, x + 1, y2 + 1, ww - 2, wh2 - 2, "#ffb55c");
+          px(e, x + 2, y2 + 2, ww - 4, wh2 - 4, "#ffd98a");
+          px(e, x + Math.floor(ww / 2), y2 + 1, 1, wh2 - 2, "#000000");
+          px(e, x + 1, y2 + Math.floor(wh2 * 0.48), ww - 2, 1, "#000000");
         }
       }
     }
     return {
-      map: register(`${label}-albedo`, albedo),
-      emissiveMap: register(`${label}-emissive`, emissive)
+      map: register(`${label}-albedo`, albedo, { pixel: true, mip: true }),
+      emissiveMap: register(`${label}-emissive`, emissive, { pixel: true, mip: true })
     };
   }
-  function inscription(label, chars, { w: w2 = 512, h = 128 } = {}) {
+  function inscription(label, chars, { w: w2 = 256, h = 64 } = {}) {
     const c = makeCanvas(w2, h);
     const ctx = c.getContext("2d");
     const rand = mulberry32(label.length * 97);
-    ctx.fillStyle = "#f5f2ec";
-    ctx.fillRect(0, 0, w2, h);
-    speckle(
-      ctx,
-      w2,
-      h,
-      rand,
-      3200,
-      (v) => v > 0.6 ? "rgba(130,126,130,0.16)" : "rgba(255,255,255,0.45)",
-      0.6,
-      1.5
-    );
-    ctx.strokeStyle = "rgba(160,154,148,0.5)";
+    px(ctx, 0, 0, w2, h, "#efe8dc");
+    for (let i = 0; i < 420; i++) {
+      px(ctx, rand() * w2, rand() * h, 2, 2, rand() > 0.55 ? "rgba(130,120,108,0.16)" : "rgba(255,252,246,0.42)");
+    }
+    ctx.strokeStyle = "#9a8f80";
     ctx.lineWidth = 2;
-    ctx.strokeRect(6, 8, w2 - 12, h - 16);
-    ctx.strokeStyle = "rgba(255,255,255,0.85)";
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(8, 10, w2 - 16, h - 20);
+    ctx.strokeRect(3, 4, w2 - 6, h - 8);
+    ctx.strokeStyle = "#fbf7ef";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(5, 6, w2 - 10, h - 12);
     const font = '"STKaiti","KaiTi","Kaiti SC","BiauKai","DFKai-SB","Songti SC","Noto Serif SC","Noto Serif CJK SC","SimSun",serif';
     ctx.font = `700 ${Math.round(h * 0.52)}px ${font}`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    const step = (w2 - 64) / chars.length;
+    const step = (w2 - 32) / chars.length;
     chars.forEach((ch2, i) => {
-      const x = 32 + step * (i + 0.5);
+      const x = 16 + step * (i + 0.5);
       const y2 = h * 0.53;
-      ctx.fillStyle = "rgba(255,255,255,0.92)";
-      ctx.fillText(ch2, x + 1.5, y2 + 1.5);
-      ctx.fillStyle = "#202834";
+      ctx.fillStyle = "rgba(255,252,245,0.88)";
+      ctx.fillText(ch2, x + 1, y2 + 1);
+      ctx.fillStyle = "#202634";
       ctx.fillText(ch2, x, y2);
     });
-    return register(label, c, { wrap: false });
+    return register(label, c, { wrap: false, pixel: true, mip: true });
   }
   function rosette(label = "rosette") {
-    const S2 = 128;
+    const S2 = 32;
     const c = makeCanvas(S2, S2);
     const ctx = c.getContext("2d");
-    ctx.fillStyle = "#808080";
-    ctx.fillRect(0, 0, S2, S2);
-    ctx.translate(S2 / 2, S2 / 2);
-    ctx.strokeStyle = "#dfdfdf";
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.arc(0, 0, S2 * 0.43, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(0, 0, S2 * 0.36, 0, Math.PI * 2);
-    ctx.stroke();
-    for (let i = 0; i < 8; i++) {
-      ctx.save();
-      ctx.rotate(i / 8 * Math.PI * 2);
-      ctx.fillStyle = "#dadada";
-      ctx.beginPath();
-      ctx.ellipse(0, -S2 * 0.21, S2 * 0.065, S2 * 0.12, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
+    px(ctx, 0, 0, S2, S2, "#7e7e7e");
+    const cx = 15.5;
+    const cy = 15.5;
+    for (let y2 = 0; y2 < S2; y2++) {
+      for (let x = 0; x < S2; x++) {
+        const d2 = Math.hypot(x - cx, y2 - cy);
+        if (d2 > 12.2 && d2 < 14.5) px(ctx, x, y2, 1, 1, "#dcdcdc");
+        else if (d2 > 9.5 && d2 < 11) px(ctx, x, y2, 1, 1, "#cfcfcf");
+        else if (d2 < 3.2) px(ctx, x, y2, 1, 1, "#eeeeee");
+        else if (d2 < 9.2) {
+          const ang = Math.atan2(y2 - cy, x - cx);
+          if (Math.cos(ang * 8) > 0.35 && d2 > 4.2) px(ctx, x, y2, 1, 1, "#d6d6d6");
+        }
+      }
     }
-    ctx.fillStyle = "#f2f2f2";
-    ctx.beginPath();
-    ctx.arc(0, 0, S2 * 0.09, 0, Math.PI * 2);
-    ctx.fill();
-    return register(label, c, { srgb: false, wrap: false });
+    return register(label, c, { srgb: false, wrap: false, pixel: true, mip: true });
   }
   function sakuraSprig(label = "sakura-sprig", seed = 901) {
-    const S2 = 512;
+    const S2 = 32;
     const c = makeCanvas(S2, S2);
     const ctx = c.getContext("2d");
     const rand = mulberry32(seed);
     ctx.clearRect(0, 0, S2, S2);
-    const twigs = [
-      [S2 * 0.5, S2 * 0.68, S2 * 0.45, S2 * 0.48, S2 * 0.3, S2 * 0.28],
-      [S2 * 0.5, S2 * 0.68, S2 * 0.55, S2 * 0.5, S2 * 0.72, S2 * 0.3],
-      [S2 * 0.5, S2 * 0.64, S2 * 0.5, S2 * 0.42, S2 * 0.51, S2 * 0.22],
-      [S2 * 0.42, S2 * 0.52, S2 * 0.3, S2 * 0.46, S2 * 0.22, S2 * 0.44],
-      [S2 * 0.58, S2 * 0.52, S2 * 0.7, S2 * 0.46, S2 * 0.78, S2 * 0.42]
+    px(ctx, 15, 16, 2, 8, "#6a4b45");
+    px(ctx, 11, 13, 4, 2, "#6a4b45");
+    px(ctx, 17, 13, 4, 2, "#6a4b45");
+    const puffs = [
+      [16, 8, 5.5],
+      [9, 12, 4.8],
+      [23, 12, 4.8],
+      [7, 18, 4.2],
+      [25, 18, 4.2],
+      [15, 14, 5.4],
+      [12, 20, 4.4],
+      [20, 20, 4.4],
+      [16, 23, 3.8]
     ];
-    ctx.lineCap = "round";
-    twigs.forEach(([x0, y0, cx, cy, x1, y1], idx) => {
-      ctx.strokeStyle = "rgba(116,86,78,0.40)";
-      ctx.lineWidth = idx < 3 ? 2.5 : 1.6;
-      ctx.beginPath();
-      ctx.moveTo(x0, y0);
-      ctx.quadraticCurveTo(cx, cy, x1, y1);
-      ctx.stroke();
-    });
-    function drawBlossom(bx, by, radius, rot, tone) {
-      ctx.save();
-      ctx.translate(bx, by);
-      ctx.rotate(rot);
-      const petalFill = tone === 0 ? "#fffcfe" : tone === 1 ? "#fff4f9" : tone === 2 ? "#ffe4ef" : "#fbd1e2";
-      const innerTint = tone === 0 ? "#ffe5ef" : "#f7b8d0";
-      for (let p2 = 0; p2 < 5; p2++) {
-        ctx.save();
-        ctx.rotate(p2 / 5 * Math.PI * 2);
-        const grad = ctx.createRadialGradient(0, -radius * 0.18, 1, 0, -radius * 0.55, radius * 0.96);
-        grad.addColorStop(0, innerTint);
-        grad.addColorStop(0.5, petalFill);
-        grad.addColorStop(1, "rgba(255,255,255,0.94)");
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.bezierCurveTo(
-          -radius * 0.48,
-          -radius * 0.35,
-          -radius * 0.46,
-          -radius * 0.92,
-          -radius * 0.1,
-          -radius * 0.95
-        );
-        ctx.lineTo(0, -radius * 0.78);
-        ctx.lineTo(radius * 0.1, -radius * 0.95);
-        ctx.bezierCurveTo(
-          radius * 0.46,
-          -radius * 0.92,
-          radius * 0.48,
-          -radius * 0.35,
-          0,
-          0
-        );
-        ctx.fill();
-        ctx.restore();
+    for (let y2 = 1; y2 < S2 - 1; y2++) {
+      for (let x = 1; x < S2 - 1; x++) {
+        let minD = 99;
+        for (const [cx, cy, r] of puffs) {
+          const d2 = Math.hypot(x - cx, y2 - cy) / r;
+          if (d2 < minD) minD = d2;
+        }
+        if (minD > 0.96) continue;
+        if (minD > 0.62 && rand() < 0.22) continue;
+        const hNorm = y2 / S2;
+        const n = rand();
+        let col = "#ffe2eb";
+        if (hNorm < 0.34 || minD < 0.45 && n > 0.35) col = "#fff8f5";
+        else if (hNorm > 0.68 || minD > 0.78) col = n > 0.4 ? "#d98cab" : "#c77ea0";
+        else if (n > 0.55) col = "#ffdbe8";
+        else col = "#f4b5cd";
+        px(ctx, x, y2, 1, 1, col);
       }
-      ctx.fillStyle = "rgba(236,154,186,0.78)";
-      ctx.beginPath();
-      ctx.arc(0, 0, radius * 0.13, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = "#f6da8e";
-      for (let st = 0; st < 6; st++) {
-        const a = st / 6 * Math.PI * 2;
-        ctx.beginPath();
-        ctx.arc(Math.cos(a) * radius * 0.19, Math.sin(a) * radius * 0.19, radius * 0.04, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.restore();
     }
-    const anchors = [
-      [0.5, 0.24, 0.19],
-      [0.29, 0.32, 0.17],
-      [0.72, 0.33, 0.17],
-      [0.2, 0.49, 0.15],
-      [0.81, 0.48, 0.15],
-      [0.44, 0.45, 0.18],
-      [0.6, 0.46, 0.17],
-      [0.36, 0.62, 0.14],
-      [0.64, 0.61, 0.14],
-      [0.5, 0.66, 0.13]
-    ];
-    for (let i = 0; i < 72; i++) {
-      const anc = anchors[i % anchors.length];
-      const ang = rand() * Math.PI * 2;
-      const dist = rand() * anc[2] * S2;
-      const bx = anc[0] * S2 + Math.cos(ang) * dist;
-      const by = anc[1] * S2 + Math.sin(ang) * dist;
-      if (bx < 28 || bx > S2 - 28 || by < 28 || by > S2 - 36) continue;
-      const radius = 17 + rand() * 17;
-      const rPick = rand();
-      const tone = rPick < 0.48 ? 0 : rPick < 0.78 ? 1 : rPick < 0.93 ? 2 : 3;
-      drawBlossom(bx, by, radius, rand() * Math.PI * 2, tone);
-    }
-    for (let b = 0; b < 14; b++) {
-      const anc = anchors[b % 5];
-      const bx = anc[0] * S2 + (rand() - 0.5) * anc[2] * S2 * 1.4;
-      const by = anc[1] * S2 + (rand() - 0.5) * anc[2] * S2 * 1.4;
-      ctx.save();
-      ctx.translate(bx, by);
-      ctx.rotate(rand() * Math.PI * 2);
-      ctx.fillStyle = "#ed8fb4";
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 5.2, 8.5, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
-    return register(label, c, { wrap: false });
+    return register(label, c, { wrap: false, pixel: true, mip: false });
   }
   function leafSprig(label = "leaf-sprig", seed = 922) {
-    const S2 = 256;
+    const S2 = 32;
     const c = makeCanvas(S2, S2);
     const ctx = c.getContext("2d");
     const rand = mulberry32(seed);
     ctx.clearRect(0, 0, S2, S2);
-    ctx.strokeStyle = "rgba(92,82,64,0.7)";
-    ctx.lineWidth = 2.8;
-    ctx.lineCap = "round";
-    ctx.beginPath();
-    ctx.moveTo(S2 * 0.5, S2 * 0.68);
-    ctx.quadraticCurveTo(S2 * 0.48, S2 * 0.5, S2 * 0.3, S2 * 0.28);
-    ctx.moveTo(S2 * 0.5, S2 * 0.68);
-    ctx.quadraticCurveTo(S2 * 0.54, S2 * 0.5, S2 * 0.72, S2 * 0.3);
-    ctx.stroke();
-    const greens = ["#4c7f53", "#5c9160", "#6da169", "#7eb072", "#90bd7f"];
-    for (let i = 0; i < 72; i++) {
-      const ang = rand() * Math.PI * 2;
-      const rad = Math.pow(rand(), 0.7) * S2 * 0.36;
-      const lx = S2 * 0.5 + Math.cos(ang) * rad;
-      const ly = S2 * 0.46 + Math.sin(ang) * rad * 0.85;
-      const lw = 8 + rand() * 8;
-      const ll2 = 15 + rand() * 12;
-      ctx.save();
-      ctx.translate(lx, ly);
-      ctx.rotate(rand() * Math.PI * 2);
-      ctx.fillStyle = greens[Math.floor(rand() * greens.length)];
-      ctx.beginPath();
-      ctx.moveTo(0, -ll2 * 0.5);
-      ctx.quadraticCurveTo(lw * 0.7, 0, 0, ll2 * 0.5);
-      ctx.quadraticCurveTo(-lw * 0.7, 0, 0, -ll2 * 0.5);
-      ctx.fill();
-      ctx.restore();
+    px(ctx, 15, 16, 2, 9, "#574a38");
+    const puffs = [
+      [16, 8, 5.2],
+      [10, 12, 4.6],
+      [22, 12, 4.6],
+      [8, 18, 4.2],
+      [24, 18, 4.2],
+      [16, 15, 5.2],
+      [13, 21, 4.2],
+      [19, 21, 4.2]
+    ];
+    for (let y2 = 1; y2 < S2 - 1; y2++) {
+      for (let x = 1; x < S2 - 1; x++) {
+        let minD = 99;
+        for (const [cx, cy, r] of puffs) {
+          const d2 = Math.hypot(x - cx, y2 - cy) / r;
+          if (d2 < minD) minD = d2;
+        }
+        if (minD > 0.96) continue;
+        if (minD > 0.6 && rand() < 0.25) continue;
+        const hNorm = y2 / S2;
+        const n = rand();
+        let col = "#6f9e5a";
+        if (hNorm < 0.35 && n > 0.25) col = "#a9cc72";
+        else if (hNorm > 0.68 || minD > 0.78) col = n > 0.45 ? "#355c42" : "#284a39";
+        else if (n < 0.42) col = "#4f7f4c";
+        px(ctx, x, y2, 1, 1, col);
+      }
     }
-    return register(label, c, { wrap: false });
+    return register(label, c, { wrap: false, pixel: true, mip: false });
   }
   function bark(label = "bark") {
-    const c = makeCanvas(128, 256);
+    const W2 = 16;
+    const H2 = 32;
+    const c = makeCanvas(W2, H2);
     const ctx = c.getContext("2d");
     const rand = mulberry32(77);
-    ctx.fillStyle = "#735750";
-    ctx.fillRect(0, 0, 128, 256);
-    for (let v = 0; v < 90; v++) {
-      ctx.fillStyle = rand() > 0.5 ? "rgba(54,38,34,0.28)" : "rgba(136,108,98,0.25)";
-      ctx.fillRect(rand() * 128, rand() * 256, 2 + rand() * 3, 24 + rand() * 55);
+    px(ctx, 0, 0, W2, H2, "#6a4c44");
+    for (let y2 = 0; y2 < H2; y2++) {
+      for (let x = 0; x < W2; x++) {
+        if (x % 4 === 0 && rand() < 0.75) px(ctx, x, y2, 1, 1, "#4a322d");
+        else if (x % 4 === 1 && rand() < 0.55) px(ctx, x, y2, 1, 1, "#846257");
+      }
     }
-    for (let i = 0; i < 160; i++) {
-      ctx.fillStyle = rand() > 0.4 ? "rgba(178,136,122,0.45)" : "rgba(48,32,28,0.48)";
-      ctx.fillRect(rand() * 128, rand() * 256, 8 + rand() * 22, 1.8);
+    for (let i = 0; i < 18; i++) {
+      px(ctx, Math.floor(rand() * (W2 - 3)), Math.floor(rand() * H2), 3, 1, "#9c776b");
     }
-    return register(label, c);
+    return register(label, c, { pixel: true, mip: true });
+  }
+  function protagonistFrame(frameIdx = 0) {
+    const label = `protagonist-frame-${frameIdx}`;
+    if (cache.has(label)) return cache.get(label);
+    const W2 = 48;
+    const H2 = 64;
+    const c = makeCanvas(W2, H2);
+    const ctx = c.getContext("2d");
+    ctx.clearRect(0, 0, W2, H2);
+    const OUT = "#202840";
+    const H_HI = "#f4f8ff";
+    const H_BASE = "#cfdcf6";
+    const H_MID = "#9fb6e2";
+    const H_SHAD = "#687fb2";
+    const SKIN = "#ffe8de";
+    const SKIN_SHAD = "#f1c7b8";
+    const BLUSH = "#ffb8c4";
+    const EYE_DARK = "#1b346e";
+    const EYE_MID = "#428be6";
+    const EYE_HI = "#ffffff";
+    const SUIT_HI = "#9ed4f5";
+    const SUIT = "#68b2e5";
+    const SUIT_SHAD = "#4284bc";
+    const SUIT_DARK = "#2a5a8a";
+    const STRIPE = "#f7fbff";
+    const SHOE_TOP = "#8cc7ee";
+    const SHOE_SHAD = "#5c9bc9";
+    const SOLE = "#fafcff";
+    const SOLE_SHAD = "#cfd8ea";
+    const CAM_BODY = "#cfd7e3";
+    const CAM_DARK = "#384154";
+    const RED_DOT = "#ff3b3b";
+    const bob = frameIdx === 1 ? 1 : 0;
+    const hairShift = frameIdx === 1 ? 1 : 0;
+    const step = frameIdx === 1 ? 1 : 0;
+    px(ctx, 13, 18 + bob, 22, 26, H_SHAD);
+    px(ctx, 12, 22 + bob, 24, 21, H_SHAD);
+    px(ctx, 14, 26 + bob, 20, 18, H_MID);
+    px(ctx, 11 - hairShift, 32 + bob, 5, 11, H_MID);
+    px(ctx, 32 + hairShift, 32 + bob, 5, 11, H_MID);
+    px(ctx, 10 - hairShift, 41 + bob, 4, 3, H_SHAD);
+    px(ctx, 34 + hairShift, 41 + bob, 4, 3, H_SHAD);
+    px(ctx, 15, 42 + bob, 18, 3, H_SHAD);
+    const legY = 44;
+    px(ctx, 18, legY, 5, 12 - step, SUIT_SHAD);
+    px(ctx, 19, legY, 3, 12 - step, SUIT);
+    px(ctx, 18, legY, 1, 11 - step, STRIPE);
+    px(ctx, 25, legY, 5, 12, SUIT_SHAD);
+    px(ctx, 26, legY, 3, 12, SUIT);
+    px(ctx, 29, legY, 1, 11, STRIPE);
+    const lsY = 55 - step;
+    px(ctx, 16, lsY, 7, 3, SHOE_TOP);
+    px(ctx, 17, lsY, 5, 1, STRIPE);
+    px(ctx, 16, lsY + 2, 7, 1, SHOE_SHAD);
+    px(ctx, 16, lsY + 3, 7, 2, SOLE);
+    px(ctx, 16, lsY + 5, 7, 1, SOLE_SHAD);
+    const rsY = 55;
+    px(ctx, 25, rsY, 7, 3, SHOE_TOP);
+    px(ctx, 26, rsY, 5, 1, STRIPE);
+    px(ctx, 25, rsY + 2, 7, 1, SHOE_SHAD);
+    px(ctx, 25, rsY + 3, 7, 2, SOLE);
+    px(ctx, 25, rsY + 5, 7, 1, SOLE_SHAD);
+    const bodyY = 30 + bob;
+    px(ctx, 17, bodyY, 14, 15, SUIT);
+    px(ctx, 17, bodyY + 11, 14, 4, SUIT_SHAD);
+    px(ctx, 23, bodyY, 2, 14, STRIPE);
+    px(ctx, 20, bodyY - 2, 8, 3, SUIT_DARK);
+    px(ctx, 21, bodyY - 2, 6, 2, SUIT_HI);
+    px(ctx, 14, bodyY + 1, 3, 10, SUIT);
+    px(ctx, 14, bodyY + 1, 1, 9, STRIPE);
+    px(ctx, 31, bodyY + 1, 3, 10, SUIT);
+    px(ctx, 33, bodyY + 1, 1, 9, STRIPE);
+    px(ctx, 18, bodyY + 1, 4, 8, SUIT_HI);
+    px(ctx, 26, bodyY + 1, 4, 8, SUIT_HI);
+    px(ctx, 15, bodyY + 9, 4, 3, SKIN);
+    px(ctx, 28, bodyY + 9, 4, 3, SKIN);
+    px(ctx, 19, bodyY + 7, 10, 6, CAM_DARK);
+    px(ctx, 20, bodyY + 8, 8, 4, CAM_BODY);
+    px(ctx, 22, bodyY + 8, 4, 4, CAM_DARK);
+    px(ctx, 23, bodyY + 9, 2, 2, "#78b0e8");
+    px(ctx, 26, bodyY + 8, 2, 2, RED_DOT);
+    const headY = 8 + bob;
+    px(ctx, 15, headY + 4, 18, 17, SKIN);
+    px(ctx, 16, headY + 19, 16, 2, SKIN_SHAD);
+    px(ctx, 17, headY + 12, 4, 5, EYE_DARK);
+    px(ctx, 18, headY + 14, 3, 3, EYE_MID);
+    px(ctx, 18, headY + 12, 2, 2, EYE_HI);
+    px(ctx, 20, headY + 16, 1, 1, EYE_HI);
+    px(ctx, 27, headY + 12, 4, 5, EYE_DARK);
+    px(ctx, 27, headY + 14, 3, 3, EYE_MID);
+    px(ctx, 28, headY + 12, 2, 2, EYE_HI);
+    px(ctx, 27, headY + 16, 1, 1, EYE_HI);
+    px(ctx, 16, headY + 17, 2, 1, BLUSH);
+    px(ctx, 30, headY + 17, 2, 1, BLUSH);
+    px(ctx, 23, headY + 19, 2, 1, "#c9888c");
+    px(ctx, 14, headY, 20, 8, H_BASE);
+    px(ctx, 16, headY - 1, 16, 3, H_HI);
+    px(ctx, 13, headY + 3, 22, 6, H_BASE);
+    px(ctx, 16, headY + 2, 16, 2, H_HI);
+    px(ctx, 21, headY - 2, 4, 2, H_BASE);
+    px(ctx, 22, headY - 3, 2, 1, H_HI);
+    px(ctx, 14, headY + 7, 5, 5, H_BASE);
+    px(ctx, 19, headY + 7, 4, 4, H_HI);
+    px(ctx, 23, headY + 7, 3, 5, H_BASE);
+    px(ctx, 26, headY + 7, 4, 4, H_HI);
+    px(ctx, 30, headY + 7, 4, 5, H_BASE);
+    px(ctx, 22, headY + 8, 2, 5, H_MID);
+    px(ctx, 12, headY + 7, 3, 22, H_BASE);
+    px(ctx, 13, headY + 9, 2, 18, H_HI);
+    px(ctx, 33, headY + 7, 3, 22, H_BASE);
+    px(ctx, 33, headY + 9, 2, 18, H_HI);
+    px(ctx, 12, headY + 26, 3, 7, H_MID);
+    px(ctx, 33, headY + 26, 3, 7, H_MID);
+    const img = ctx.getImageData(0, 0, W2, H2);
+    const src = new Uint8ClampedArray(img.data);
+    const outR = 32, outG = 40, outB = 64;
+    for (let y2 = 1; y2 < H2 - 1; y2++) {
+      for (let x = 1; x < W2 - 1; x++) {
+        const i = (y2 * W2 + x) * 4;
+        if (src[i + 3] > 20) continue;
+        const n = src[((y2 - 1) * W2 + x) * 4 + 3] > 20 || src[((y2 + 1) * W2 + x) * 4 + 3] > 20 || src[(y2 * W2 + x - 1) * 4 + 3] > 20 || src[(y2 * W2 + x + 1) * 4 + 3] > 20;
+        if (n) {
+          img.data[i] = outR;
+          img.data[i + 1] = outG;
+          img.data[i + 2] = outB;
+          img.data[i + 3] = 255;
+        }
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    return register(label, c, { wrap: false, pixel: true, mip: false });
+  }
+  function bokehDot(label = "bokeh-dot") {
+    if (cache.has(label)) return cache.get(label);
+    const S2 = 32;
+    const c = makeCanvas(S2, S2);
+    const ctx = c.getContext("2d");
+    const g2 = ctx.createRadialGradient(S2 / 2, S2 / 2, 0, S2 / 2, S2 / 2, S2 / 2);
+    g2.addColorStop(0, "rgba(255,255,255,1)");
+    g2.addColorStop(0.28, "rgba(255,244,218,0.82)");
+    g2.addColorStop(0.65, "rgba(255,224,160,0.22)");
+    g2.addColorStop(1, "rgba(255,220,150,0)");
+    ctx.fillStyle = g2;
+    ctx.fillRect(0, 0, S2, S2);
+    return register(label, c, { wrap: false, pixel: false, mip: false });
   }
   function getStats() {
     const totalBytes = registry.reduce((acc, item) => acc + item.bytes, 0);
@@ -12582,6 +12814,8 @@ function createTextureFactory(renderer) {
     inscription,
     rosette,
     bark,
+    protagonistFrame,
+    bokehDot,
     getStats
   };
 }
@@ -13494,14 +13728,14 @@ function createArchway(textures) {
   leftVeil.matrixAutoUpdate = true;
   rightVeil.matrixAutoUpdate = true;
   function setMood(mood) {
-    if (mood === "sunset" || mood === "convergence") {
-      veilUniforms.uColorA.value.set("#b9d4ff");
-      veilUniforms.uColorB.value.set("#ff9ec4");
-      glazedTileMat.color.set("#2694a4");
-      glazedTileMat.emissiveIntensity = 0.12;
+    if (mood === "night" || mood === "sunset" || mood === "convergence") {
+      veilUniforms.uColorA.value.set("#89a8de");
+      veilUniforms.uColorB.value.set("#ffb85c");
+      glazedTileMat.color.set("#1f687a");
+      glazedTileMat.emissiveIntensity = 0.08;
     } else {
-      veilUniforms.uColorA.value.set("#dff2ff");
-      veilUniforms.uColorB.value.set("#ffc2da");
+      veilUniforms.uColorA.value.set("#ffe2a8");
+      veilUniforms.uColorB.value.set("#ffcad9");
       glazedTileMat.color.set("#2ba6b4");
       glazedTileMat.emissiveIntensity = 0.06;
     }
@@ -14075,6 +14309,15 @@ function createCampusDiorama(textures) {
   lampShaftsMesh.castShadow = true;
   lampShaftsMesh.receiveShadow = true;
   group.add(lampShaftsMesh);
+  const lampHaloTex = textures.bokehDot("lamp-halo-dot");
+  const lampHaloMat = new lc({
+    map: lampHaloTex,
+    color: new Kr("#ffd38c"),
+    transparent: true,
+    opacity: 0.25,
+    blending: g,
+    depthWrite: false
+  });
   const lampGlowMat = new pd({
     color: new Kr("#fff5dd"),
     emissive: new Kr("#ffd38c"),
@@ -14083,6 +14326,16 @@ function createCampusDiorama(textures) {
   });
   const lampHeadsMesh = new Bs(mergeSafe(lampHeadGeos), lampGlowMat);
   group.add(lampHeadsMesh);
+  for (const sx of [-1, 1]) {
+    for (const lz of [12, 8, 4.2]) {
+      const halo = new Sc(lampHaloMat);
+      halo.position.set(sx * 6, 2.34, lz);
+      halo.scale.set(1.55, 1.55, 1);
+      halo.matrixAutoUpdate = false;
+      halo.updateMatrix();
+      group.add(halo);
+    }
+  }
   const tier1Body = new ks(23.6, 2.02, 15.2);
   xform(tier1Body, [-3.6, 1.01, -3.2]);
   applyWorldPlanarUVs(tier1Body, 0.28, 0.34);
@@ -14164,9 +14417,9 @@ function createCampusDiorama(textures) {
       ashlarGeos.push(lowerPanel);
     }
   });
-  for (const px of [-9.8, -6.6, -5, -2.6, -1.2, 1.2, 3.8, 6.4, 8.85]) {
+  for (const px2 of [-9.8, -6.6, -5, -2.6, -1.2, 1.2, 3.8, 6.4, 8.85]) {
     const sPil = new ks(0.46, 4.48, 0.32);
-    xform(sPil, [px, 2.24, -4.34]);
+    xform(sPil, [px2, 2.24, -4.34]);
     graniteGeos.push(sPil);
   }
   const tier2Lawn = new ks(20.8, 0.18, 11.2);
@@ -14204,19 +14457,19 @@ function createCampusDiorama(textures) {
   xform(tier2SouthRail, [5.03, 5.34, -4.45]);
   graniteGeos.push(tier2SouthRail);
   const southNewelXs = [1.2, 3.8, 6.4, 8.86];
-  southNewelXs.forEach((px, idx) => {
-    if (px < 8.8) {
+  southNewelXs.forEach((px2, idx) => {
+    if (px2 < 8.8) {
       const post = new ks(0.26, 0.86, 0.26);
-      xform(post, [px, 4.98, -4.45]);
+      xform(post, [px2, 4.98, -4.45]);
       graniteGeos.push(post);
       const cap = new ks(0.32, 0.1, 0.32);
-      xform(cap, [px, 5.44, -4.45]);
+      xform(cap, [px2, 5.44, -4.45]);
       graniteGeos.push(cap);
     }
     if (idx < southNewelXs.length - 1) {
       const xNext = southNewelXs[idx + 1];
       for (let b = 1; b <= 3; b++) {
-        const bx = Zn.lerp(px, xNext, b / 4);
+        const bx = Zn.lerp(px2, xNext, b / 4);
         const bal = new ks(0.09, 0.54, 0.09);
         xform(bal, [bx, 4.96, -4.45]);
         graniteGeos.push(bal);
@@ -14310,10 +14563,10 @@ function createCampusDiorama(textures) {
     xform(cornice, [worldX, worldY + 2.88, worldZ]);
     graniteGeos.push(cornice);
     const pavY = worldY + 2.96;
-    for (const px of [-0.62, 0.62]) {
+    for (const px2 of [-0.62, 0.62]) {
       for (const pz of [-0.88, 0.88]) {
         const col = new pu(0.075, 0.08, 1.02, 10);
-        col.translate(worldX + px, pavY + 0.51, worldZ + pz);
+        col.translate(worldX + px2, pavY + 0.51, worldZ + pz);
         const colMesh = new Bs(col, crimsonColumnMat);
         colMesh.castShadow = true;
         group.add(colMesh);
@@ -14448,10 +14701,10 @@ function createCampusDiorama(textures) {
       warmStoneGeos.push(uPil);
     }
   }
-  for (const px of [-2.85, -1.75, -0.65, 0.65, 1.75, 2.85]) {
+  for (const px2 of [-2.85, -1.75, -0.65, 0.65, 1.75, 2.85]) {
     for (const pz of [-1.96, 1.96]) {
       const col = new pu(0.055, 0.06, 1.32, 8);
-      col.translate(px, 0.55 + 4.16, pz);
+      col.translate(px2, 0.55 + 4.16, pz);
       const cMesh = new Bs(col, crimsonColumnMat);
       cMesh.castShadow = true;
       libGroup.add(cMesh);
@@ -14567,7 +14820,8 @@ function createCampusDiorama(textures) {
       uHasShadowMap: { value: 0 },
       uShadowMatrix: { value: new sr() },
       uShadowMapSize: { value: new Jn(2048, 2048) },
-      uShadowBias: { value: -24e-5 }
+      uShadowBias: { value: -24e-5 },
+      uLinearOutput: { value: 0 }
     }
   ]);
   waterUniforms.tReflection.value = reflectRT.texture;
@@ -14610,6 +14864,7 @@ function createCampusDiorama(textures) {
       uniform float uHasShadowMap;
       uniform vec2 uShadowMapSize;
       uniform float uShadowBias;
+      uniform float uLinearOutput;
       varying vec3 vWorldPos;
       varying vec4 vReflectCoord;
       varying vec4 vShadowCoord;
@@ -14879,8 +15134,10 @@ function createCampusDiorama(textures) {
         alpha *= 1.0 - smoothstep(148.0, 161.5, camDist);
 
         gl_FragColor = vec4(col, alpha);
-        #include <tonemapping_fragment>
-        #include <colorspace_fragment>
+        if (uLinearOutput < 0.5) {
+          #include <tonemapping_fragment>
+          #include <colorspace_fragment>
+        }
       }
     `
   });
@@ -15032,14 +15289,14 @@ function createCampusDiorama(textures) {
   xform(endConnect, [16.9, pierY, pierZ - 3.6]);
   applyWorldPlanarUVs(endConnect, 0.28, 0.28, false);
   pierGeos.push(endConnect);
-  function addPierPile(px, pz) {
+  function addPierPile(px2, pz) {
     const pile = new pu(0.082, 0.092, 1.24, 10);
-    xform(pile, [px, -0.05, pz]);
+    xform(pile, [px2, -0.05, pz]);
     pierGeos.push(pile);
   }
-  for (let px = 9.2; px <= 19; px += 1.4) {
+  for (let px2 = 9.2; px2 <= 19; px2 += 1.4) {
     for (const pz of [-0.44, 0.44]) {
-      addPierPile(px, pierZ + pz);
+      addPierPile(px2, pierZ + pz);
     }
   }
   for (const pz of [-11.5, -10.3, -9.1, -6.5, -5.5]) {
@@ -15052,9 +15309,9 @@ function createCampusDiorama(textures) {
       addPierPile(18.4 + dx, pz);
     }
   }
-  for (const px of [16.2, 17.6, 18.35]) {
+  for (const px2 of [16.2, 17.6, 18.35]) {
     for (const dz of [-0.32, 0.32]) {
-      addPierPile(px, pierZ - 3.6 + dz);
+      addPierPile(px2, pierZ - 3.6 + dz);
     }
   }
   const southLanding = new ks(1.65, 0.24, 4.4);
@@ -15452,14 +15709,14 @@ function createCampusDiorama(textures) {
   shrubCoords.forEach(([sx, sy, sz, ss], idx) => {
     const sr2 = mulberry32(1400 + idx * 29);
     for (let k2 = 0; k2 < 4; k2++) {
-      const px = sx + (sr2() - 0.5) * 0.48;
+      const px2 = sx + (sr2() - 0.5) * 0.48;
       const py = sy + (sr2() - 0.4) * 0.36;
       const pz = sz + (sr2() - 0.5) * 0.72;
-      const inPierBox = px >= 7.8 && px <= 20 && pz >= -9.2 && pz <= -6.4;
-      const inPavRad = Math.hypot(px - pavX, pz - pavZ) < 2.25;
-      const nearSeawall = pz > -17.2 && pz < 11 && px > 6.6 && py < 3.5;
+      const inPierBox = px2 >= 7.8 && px2 <= 20 && pz >= -9.2 && pz <= -6.4;
+      const inPavRad = Math.hypot(px2 - pavX, pz - pavZ) < 2.25;
+      const nearSeawall = pz > -17.2 && pz < 11 && px2 > 6.6 && py < 3.5;
       if (inPierBox || inPavRad || nearSeawall) continue;
-      dummy.position.set(px, py, pz);
+      dummy.position.set(px2, py, pz);
       dummy.rotation.set((sr2() - 0.5) * 0.5, sr2() * Math.PI * 2, (sr2() - 0.5) * 0.5);
       const sc2 = (0.78 + sr2() * 0.45) * ss;
       dummy.scale.set(sc2 * 1.1, sc2 * 0.78, sc2 * 1.1);
@@ -15525,13 +15782,13 @@ function createCampusDiorama(textures) {
       const isInner = Math.abs(fx) < 58 && Math.abs(fz) < 58;
       const clusterCount = isInner ? 2 : 1;
       for (let c = 0; c < clusterCount && farForestMatrices.length < 1400; c++) {
-        const px = fx + (forestRand() - 0.5) * 1.8;
+        const px2 = fx + (forestRand() - 0.5) * 1.8;
         const pz = fz + (forestRand() - 0.5) * 1.8;
-        if (pz > -18 && pz < 12 && px > 6.5) continue;
-        const ph = luojiaHeight(px, pz);
-        if (ph <= 0.65 || px >= shoreX(pz) - 2.8) continue;
+        if (pz > -18 && pz < 12 && px2 > 6.5) continue;
+        const ph = luojiaHeight(px2, pz);
+        if (ph <= 0.65 || px2 >= shoreX(pz) - 2.8) continue;
         const py = ph + 0.42 + forestRand() * 0.48;
-        dummy.position.set(px, py, pz);
+        dummy.position.set(px2, py, pz);
         dummy.rotation.set(
           (forestRand() - 0.5) * 0.22,
           forestRand() * Math.PI * 2,
@@ -15589,9 +15846,9 @@ function createCampusDiorama(textures) {
   const fallenCount = 480;
   const fallenInst = new Jc(petalGeo, petalMat, fallenCount);
   for (let i = 0; i < fallenCount; i++) {
-    const px = (rand() - 0.5) * 20;
+    const px2 = (rand() - 0.5) * 20;
     const pz = 4.6 + rand() * 25;
-    const safeX = pz <= 9.4 ? Math.min(px, 7.3) : px;
+    const safeX = pz <= 9.4 ? Math.min(px2, 7.3) : px2;
     dummy.position.set(safeX, 0.145, pz);
     dummy.rotation.set(-Math.PI / 2, 0, rand() * Math.PI * 2);
     const sc2 = 0.75 + rand() * 0.75;
@@ -15621,8 +15878,36 @@ function createCampusDiorama(textures) {
     };
   });
   group.add(airPetals);
+  const bokehCount = 180;
+  const bokehPositions = new Float32Array(bokehCount * 3);
+  const bokehSeeds = Array.from({ length: bokehCount }, (_, idx) => {
+    const r = mulberry32(8801 + idx * 31);
+    const x = -20 + r() * 46;
+    const y2 = 0.8 + r() * 13.2;
+    const z2 = -18 + r() * 54;
+    bokehPositions[idx * 3] = x;
+    bokehPositions[idx * 3 + 1] = y2;
+    bokehPositions[idx * 3 + 2] = z2;
+    return { x, y: y2, z: z2, amp: 0.25 + r() * 0.45, spd: 0.6 + r() * 0.9, ph: r() * Math.PI * 2 };
+  });
+  const bokehGeo = new Es();
+  bokehGeo.setAttribute("position", new cs(bokehPositions, 3));
+  const bokehMat = new Ch({
+    map: textures.bokehDot("firefly-dot"),
+    size: 0.55,
+    color: new Kr("#ffe09c"),
+    transparent: true,
+    opacity: 0.42,
+    blending: g,
+    depthWrite: false,
+    sizeAttenuation: true
+  });
+  const bokehPoints = new Dh(bokehGeo, bokehMat);
+  bokehPoints.frustumCulled = false;
+  group.add(bokehPoints);
   lockStatic(group);
   airPetals.matrixAutoUpdate = false;
+  bokehPoints.matrixAutoUpdate = false;
   const _reflForward = new Ci();
   const _reflTarget = new Ci();
   const _reflUp = new Ci();
@@ -15729,63 +16014,83 @@ function createCampusDiorama(textures) {
     syncShadowLight(keyLight);
   }
   function setMood(mood) {
-    if (mood === "sunset" || mood === "convergence") {
-      sunDirUniform.value.set(-24, 17, 16).normalize();
+    if (mood === "night" || mood === "sunset" || mood === "convergence") {
+      sunDirUniform.value.set(-24, 22, 16).normalize();
       waterUniforms.uSunDir.value.copy(sunDirUniform.value);
-      sunsetWarmthUniform.value = 1;
-      dormWallMat.emissiveIntensity = 0.92;
-      libWallMat.emissiveIntensity = 1.05;
-      glazedTileMat.color.set("#e2cfcc");
-      glazedTileMat.emissiveIntensity = 0.12;
-      sakuraOuterMat.color.set("#ffeaf2");
-      sakuraInnerMat.color.set("#ffc2da");
-      cityFootMat.color.set("#5e5670");
-      farCityMat.color.set("#685e7c");
-      cityHazeColor.value.set("#eabfd1");
-      horizonColorUniform.value.set("#ffd2c5");
-      waterUniforms.uDeepColor.value.set("#233b66");
-      waterUniforms.uShallowColor.value.set("#5a8ba6");
-      waterUniforms.uSkyColor.value.set("#d993b8");
-      waterUniforms.uSunColor.value.set("#ffd29c");
-      petalMat.color.set("#df9eb8");
-      petalMat.emissive.set("#b86f8c");
-      petalMat.emissiveIntensity = 0.12;
+      sunsetWarmthUniform.value = 0.15;
+      dormWallMat.emissiveIntensity = 1.35;
+      libWallMat.emissiveIntensity = 1.45;
+      glazedTileMat.color.set("#5a7e9e");
+      glazedTileMat.emissiveIntensity = 0.05;
+      sakuraOuterMat.color.set("#b8c6e0");
+      sakuraInnerMat.color.set("#97a8cc");
+      sakuraOuterMat.emissiveIntensity = 0.04;
+      sakuraInnerMat.emissiveIntensity = 0.04;
+      cityFootMat.color.set("#283354");
+      farCityMat.color.set("#243050");
+      cityHazeColor.value.set("#1c3158");
+      horizonColorUniform.value.set("#1c3158");
+      waterUniforms.uDeepColor.value.set("#09152c");
+      waterUniforms.uShallowColor.value.set("#13284d");
+      waterUniforms.uSkyColor.value.set("#1c335c");
+      waterUniforms.uSunColor.value.set("#b8d2ff");
+      petalMat.color.set("#9ab0d8");
+      petalMat.emissive.set("#4c5f8a");
+      petalMat.emissiveIntensity = 0.16;
       petalMat.opacity = 0.72;
+      lampGlowMat.color.set("#ffbe5c");
+      lampGlowMat.emissive.set("#ff9b36");
+      lampGlowMat.emissiveIntensity = 1.35;
+      lampHaloMat.color.set("#ffb855");
+      lampHaloMat.opacity = 0.85;
+      bokehMat.color.set("#ffbe55");
+      bokehMat.opacity = 0.85;
+      bokehMat.size = 0.72;
     } else {
-      sunDirUniform.value.set(28, 22, 19).normalize();
+      sunDirUniform.value.set(30, 16, 18).normalize();
       waterUniforms.uSunDir.value.copy(sunDirUniform.value);
-      sunsetWarmthUniform.value = 0;
-      dormWallMat.emissiveIntensity = 0;
-      libWallMat.emissiveIntensity = 0;
+      sunsetWarmthUniform.value = 0.55;
+      dormWallMat.emissiveIntensity = 0.18;
+      libWallMat.emissiveIntensity = 0.22;
       glazedTileMat.color.set("#d8eeee");
       glazedTileMat.emissiveIntensity = 0.04;
-      sakuraOuterMat.color.set("#fff9fc");
-      sakuraInnerMat.color.set("#ffdbe9");
-      cityFootMat.color.set("#4e6c64");
-      farCityMat.color.set("#5b7a7c");
-      cityHazeColor.value.set("#c4dced");
-      horizonColorUniform.value.set("#cfe3f2");
-      waterUniforms.uDeepColor.value.set("#0c353f");
-      waterUniforms.uShallowColor.value.set("#1d545d");
-      waterUniforms.uSkyColor.value.set("#cfe9ff");
-      waterUniforms.uSunColor.value.set("#fff6e4");
-      petalMat.color.set("#ffcadf");
-      petalMat.emissive.set("#ffdce9");
+      sakuraOuterMat.color.set("#fff5f2");
+      sakuraInnerMat.color.set("#ffd2dc");
+      sakuraOuterMat.emissiveIntensity = 0.11;
+      sakuraInnerMat.emissiveIntensity = 0.14;
+      cityFootMat.color.set("#55686b");
+      farCityMat.color.set("#63797f");
+      cityHazeColor.value.set("#e0c5a6");
+      horizonColorUniform.value.set("#eed0aa");
+      waterUniforms.uDeepColor.value.set("#163d4a");
+      waterUniforms.uShallowColor.value.set("#2c6369");
+      waterUniforms.uSkyColor.value.set("#d9c8b4");
+      waterUniforms.uSunColor.value.set("#ffe3a8");
+      petalMat.color.set("#ffd0dc");
+      petalMat.emissive.set("#ffe2dc");
       petalMat.emissiveIntensity = 0.25;
       petalMat.opacity = 0.88;
+      lampGlowMat.color.set("#fff5dd");
+      lampGlowMat.emissive.set("#ffd38c");
+      lampGlowMat.emissiveIntensity = 0.45;
+      lampHaloMat.color.set("#ffdd99");
+      lampHaloMat.opacity = 0.25;
+      bokehMat.color.set("#ffe09c");
+      bokehMat.opacity = 0.42;
+      bokehMat.size = 0.55;
     }
   }
   function updateCampus(dt2, elapsed, camPos = null) {
     sharedTimeUniform.value = elapsed;
     for (const { config, boat } of tourBoats) {
       const t2 = elapsed * config.omega + config.phase;
-      const px = config.cx + Math.cos(t2) * config.radius;
+      const px2 = config.cx + Math.cos(t2) * config.radius;
       const pz = config.cz + Math.sin(t2) * config.radius * 0.7;
       const heading = Math.atan2(Math.cos(t2) * config.radius * 0.7, -Math.sin(t2) * config.radius);
       const bob = Math.sin(elapsed * 1.6 + config.phase) * 0.06;
       const roll = Math.sin(elapsed * 1.2 + config.phase) * 0.05;
       boat.position.set(
-        px,
+        px2,
         WATER_Y + 0.18 + bob,
         pz
       );
@@ -15828,6 +16133,17 @@ function createCampusDiorama(textures) {
       airPetals.setMatrixAt(i, dummy.matrix);
     }
     airPetals.instanceMatrix.needsUpdate = true;
+    const bAttr = bokehGeo.attributes.position;
+    for (let i = 0; i < bokehCount; i++) {
+      const s = bokehSeeds[i];
+      bAttr.setXYZ(
+        i,
+        s.x + Math.sin(elapsed * s.spd + s.ph) * s.amp,
+        s.y + Math.sin(elapsed * s.spd * 0.7 + s.ph * 1.3) * (s.amp * 0.55),
+        s.z + Math.cos(elapsed * s.spd * 0.85 + s.ph) * s.amp
+      );
+    }
+    bAttr.needsUpdate = true;
   }
   return {
     group,
@@ -15835,6 +16151,9 @@ function createCampusDiorama(textures) {
     updateCampus,
     updateWaterReflection,
     setReflectionSize,
+    setWaterLinearOutput: (enabled) => {
+      waterUniforms.uLinearOutput.value = enabled ? 1 : 0;
+    },
     syncShadowLight
   };
 }
@@ -15842,58 +16161,58 @@ function createCampusDiorama(textures) {
 // src/lighting.js
 function createLightingSystem(scene, renderer) {
   const MOODS = {
-    spring: {
-      zenith: "#1866bb",
-      upperMid: "#4da6ed",
-      lowerMid: "#9cd2fa",
-      horizon: "#cfe3f2",
-      sunHalo: "#fff6e4",
-      cloudLit: "#ffffff",
-      cloudShadow: "#a7c6e4",
-      fogColor: "#c6dced",
-      fogDensity: 58e-4,
-      keyColor: "#fff2d8",
-      keyIntensity: 2.9,
-      keyPos: [28, 22, 19],
-      hemiSky: "#8cc4f5",
-      hemiGround: "#5f7285",
-      hemiIntensity: 0.64,
-      rimColor: "#ffd9e6",
-      rimIntensity: 0.34,
-      envIntensity: 0.58,
-      beamColor: "#fff4fa",
-      beamOpacity: 0.045,
-      pointColor: "#ffd4e6",
-      pointIntensity: 3.5
+    amber: {
+      zenith: "#2a5a8e",
+      upperMid: "#6893bd",
+      lowerMid: "#d4b89c",
+      horizon: "#eed0aa",
+      sunHalo: "#ffe4ad",
+      cloudLit: "#fff4df",
+      cloudShadow: "#8ba0b8",
+      fogColor: "#e0c5a6",
+      fogDensity: 46e-4,
+      keyColor: "#ffc87d",
+      keyIntensity: 3.15,
+      keyPos: [30, 16, 18],
+      hemiSky: "#82b6e0",
+      hemiGround: "#2f4659",
+      hemiIntensity: 0.68,
+      rimColor: "#ffd4b8",
+      rimIntensity: 0.42,
+      envIntensity: 0.5,
+      beamColor: "#ffd999",
+      beamOpacity: 0.1,
+      pointColor: "#ffad4d",
+      pointIntensity: 0
     },
-    sunset: {
-      zenith: "#283f7c",
-      upperMid: "#6b67ab",
-      lowerMid: "#db93b7",
-      horizon: "#ffd2c5",
-      sunHalo: "#ffe2bf",
-      cloudLit: "#fff0f3",
-      cloudShadow: "#9b8bb8",
-      fogColor: "#efc4d8",
-      fogDensity: 7e-3,
-      keyColor: "#ffbe92",
-      keyIntensity: 2.65,
-      keyPos: [-24, 17, 16],
-      hemiSky: "#9ea2dc",
-      hemiGround: "#6b5a74",
-      hemiIntensity: 0.62,
-      rimColor: "#ff9ec4",
-      rimIntensity: 0.52,
-      envIntensity: 0.52,
-      beamColor: "#ffc6de",
-      beamOpacity: 0.065,
-      pointColor: "#ffb870",
-      pointIntensity: 14
+    night: {
+      zenith: "#050a18",
+      upperMid: "#0c1836",
+      lowerMid: "#162850",
+      horizon: "#1c3158",
+      sunHalo: "#7fa8e8",
+      cloudLit: "#2c426e",
+      cloudShadow: "#0d1730",
+      fogColor: "#0f1c36",
+      fogDensity: 68e-4,
+      keyColor: "#8eb4eb",
+      keyIntensity: 1.15,
+      keyPos: [-24, 22, 16],
+      hemiSky: "#2e487a",
+      hemiGround: "#0d1629",
+      hemiIntensity: 0.52,
+      rimColor: "#6d8fd0",
+      rimIntensity: 0.38,
+      envIntensity: 0.28,
+      beamColor: "#8eb8ff",
+      beamOpacity: 0.045,
+      pointColor: "#ffad4d",
+      pointIntensity: 24
     }
   };
   function resolveMoodKey(name) {
-    if (name === "sunset" || name === "convergence") return "sunset";
-    return "spring";
+    if (name === "night" || name === "sunset" || name === "convergence") return "night";
+    return "amber";
   }
   const pmremGen = new Na(renderer);
   pmremGen.compileEquirectangularShader();
@@ -15955,11 +16274,11 @@ function createLightingSystem(scene, renderer) {
       return s - Math.floor(s);
     };
     const pNoise = (u2, v, period, seed) => {
-      const px = u2 * period;
+      const px2 = u2 * period;
       const py = v * period;
-      const ix = Math.floor(px);
+      const ix = Math.floor(px2);
       const iy = Math.floor(py);
-      const fx = px - ix;
+      const fx = px2 - ix;
       const fy = py - iy;
       const ux = fx * fx * (3 - 2 * fx);
       const uy = fy * fy * (3 - 2 * fy);
@@ -16004,14 +16323,14 @@ function createLightingSystem(scene, renderer) {
   }
   const cloudNoiseTex = buildCloudNoiseTexture(256);
   const skyUniforms = {
-    uZenith: { value: new Kr(MOODS.spring.zenith) },
-    uUpperMid: { value: new Kr(MOODS.spring.upperMid) },
-    uLowerMid: { value: new Kr(MOODS.spring.lowerMid) },
-    uHorizon: { value: new Kr(MOODS.spring.horizon) },
-    uSunHalo: { value: new Kr(MOODS.spring.sunHalo) },
-    uCloudLit: { value: new Kr(MOODS.spring.cloudLit) },
-    uCloudShadow: { value: new Kr(MOODS.spring.cloudShadow) },
-    uSunDir: { value: new Ci(...MOODS.spring.keyPos).normalize() },
+    uZenith: { value: new Kr(MOODS.amber.zenith) },
+    uUpperMid: { value: new Kr(MOODS.amber.upperMid) },
+    uLowerMid: { value: new Kr(MOODS.amber.lowerMid) },
+    uHorizon: { value: new Kr(MOODS.amber.horizon) },
+    uSunHalo: { value: new Kr(MOODS.amber.sunHalo) },
+    uCloudLit: { value: new Kr(MOODS.amber.cloudLit) },
+    uCloudShadow: { value: new Kr(MOODS.amber.cloudShadow) },
+    uSunDir: { value: new Ci(...MOODS.amber.keyPos).normalize() },
     uCloudNoise: { value: cloudNoiseTex },
     uTime: { value: 0 },
     uLinearOutput: { value: 0 }
@@ -16102,8 +16421,8 @@ function createLightingSystem(scene, renderer) {
     side: p,
     blending: g,
     uniforms: {
-      uColor: { value: new Kr(MOODS.spring.beamColor) },
-      uOpacity: { value: MOODS.spring.beamOpacity }
+      uColor: { value: new Kr(MOODS.amber.beamColor) },
+      uOpacity: { value: MOODS.amber.beamOpacity }
     },
     vertexShader: `
       varying vec2 vUv;
@@ -16126,22 +16445,24 @@ function createLightingSystem(scene, renderer) {
   const beamGroup = new jl();
   const beamConfigs = [
     { pos: [-1.4, 5.4, 15.8], rot: [-0.28, 0.25, -0.36], scale: [3.2, 6.2, 1] },
-    { pos: [0.8, 5.6, 15.7], rot: [-0.28, 0.25, -0.34], scale: [3.6, 6.5, 1] }
+    { pos: [0.8, 5.6, 15.7], rot: [-0.28, 0.25, -0.34], scale: [3.6, 6.5, 1] },
+    { pos: [-1.2, 5, 6.8], rot: [-0.28, 0.25, -0.36], scale: [3.8, 6.8, 1] },
+    { pos: [1.8, 9.2, -5.2], rot: [-0.28, 0.25, -0.34], scale: [4.2, 7.2, 1] }
   ];
   const beamGeo = new ha(1, 1);
-  beamConfigs.forEach((bc) => {
+  beamConfigs.forEach((bc2) => {
     const m = new Bs(beamGeo, beamMat);
-    m.position.set(...bc.pos);
-    m.rotation.set(...bc.rot);
-    m.scale.set(...bc.scale);
+    m.position.set(...bc2.pos);
+    m.rotation.set(...bc2.rot);
+    m.scale.set(...bc2.scale);
     m.matrixAutoUpdate = false;
     m.updateMatrix();
     beamGroup.add(m);
   });
   scene.add(beamGroup);
-  scene.fog = new nc(MOODS.spring.fogColor, MOODS.spring.fogDensity);
-  const keyLight = new mp(MOODS.spring.keyColor, MOODS.spring.keyIntensity);
-  keyLight.position.set(...MOODS.spring.keyPos);
+  scene.fog = new nc(MOODS.amber.fogColor, MOODS.amber.fogDensity);
+  const keyLight = new mp(MOODS.amber.keyColor, MOODS.amber.keyIntensity);
+  keyLight.position.set(...MOODS.amber.keyPos);
   keyLight.target.position.set(2, 0, 1);
   keyLight.castShadow = true;
   keyLight.shadow.mapSize.set(2048, 2048);
@@ -16157,12 +16478,12 @@ function createLightingSystem(scene, renderer) {
   scene.add(keyLight.target);
   keyLight.target.updateMatrixWorld();
   const hemiLight = new ep(
-    MOODS.spring.hemiSky,
-    MOODS.spring.hemiGround,
-    MOODS.spring.hemiIntensity
+    MOODS.amber.hemiSky,
+    MOODS.amber.hemiGround,
+    MOODS.amber.hemiIntensity
   );
   scene.add(hemiLight);
-  const rimLight = new mp(MOODS.spring.rimColor, MOODS.spring.rimIntensity);
+  const rimLight = new mp(MOODS.amber.rimColor, MOODS.amber.rimIntensity);
   rimLight.position.set(-20, 14, -24);
   scene.add(rimLight);
   const localLightCoords = [
@@ -16172,7 +16493,7 @@ function createLightingSystem(scene, renderer) {
     [13.5, 2.4, -7.8]
   ];
   const pointLights = localLightCoords.map(([x, y2, z2]) => {
-    const pl2 = new dp(MOODS.spring.pointColor, MOODS.spring.pointIntensity, 18, 1.6);
+    const pl2 = new dp(MOODS.night.pointColor, MOODS.night.pointIntensity, 24, 1.45);
     pl2.position.set(x, y2, z2);
     pl2.castShadow = false;
     return pl2;
@@ -16180,7 +16501,7 @@ function createLightingSystem(scene, renderer) {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = l;
   renderer.shadowMap.autoUpdate = false;
-  let currentMood = "spring";
+  let currentMood = "amber";
   let rebakeCount = 0;
   function bakeStaticShadows() {
     renderer.shadowMap.needsUpdate = true;
@@ -16211,7 +16532,7 @@ function createLightingSystem(scene, renderer) {
     beamMat.uniforms.uColor.value.set(cfg.beamColor);
     beamMat.uniforms.uOpacity.value = cfg.beamOpacity;
     pointLights.forEach((pl2) => {
-      if (key === "sunset") {
+      if (key === "night") {
         if (!pl2.parent) scene.add(pl2);
         pl2.color.set(cfg.pointColor);
         pl2.intensity = cfg.pointIntensity;
@@ -16247,9 +16568,9 @@ function createLightingSystem(scene, renderer) {
 }
 
 // src/camera.js
-var OVERVIEW_POS = new Ci(21.2, 15.8, 26.2);
-var OVERVIEW_TARGET = new Ci(0, 3.5, 0.8);
-var CINEMA_FOV = 42;
+var OVERVIEW_POS = new Ci(42, 31, 44);
+var OVERVIEW_TARGET = new Ci(1.5, 2.8, 2);
+var CINEMA_FOV = 24;
 function easeInOutCubic(t2) {
   return t2 < 0.5 ? 4 * t2 * t2 * t2 : 1 - Math.pow(-2 * t2 + 2, 3) / 2;
 }
@@ -16258,20 +16579,15 @@ function smooth01(e0, e1, x) {
   return t2 * t2 * (3 - 2 * t2);
 }
 var KF = [
-  { pos: [0, 2.7, 36.5], att: [0, 4.8, 15.5], stop: { id: "archway", index: 0, label: "01/04 \xB7 \u56FD\u7ACB\u6B66\u6C49\u5927\u5B66\u724C\u574A" } },
-  { pos: [0, 2.25, 24], att: [0, 4, 12] },
-  { pos: [0, 2.05, 14.5], att: [0, 3.6, 2] },
-  { pos: [0, 3.1, 8.2], att: [0, 5, -1.8], stop: { id: "sakura", index: 1, label: "02/04 \xB7 \u8001\u658B\u820D & \u6A31\u82B1\u5927\u9053" } },
-  { pos: [0, 6.8, 2.6], att: [0, 8, -8.5] },
-  { pos: [0.6, 10.6, -1.6], att: [0.8, 9.2, -9.8], stop: { id: "library", index: 2, label: "03/04 \xB7 \u6A31\u9876\u8001\u56FE\u4E66\u9986" } },
-  { pos: [6.8, 11.2, -4.4], att: [14, 8.2, -8.8] },
-  { pos: [13.6, 7.2, -9.6], att: [19, 4.8, -7.2] },
-  { pos: [20.6, 3.8, -13.4], att: [17.8, 2.8, -5.2], stop: { id: "lingbo", index: 3, label: "04/04 \xB7 \u4E1C\u6E56\u51CC\u6CE2\u95E8" } },
-  { pos: [26.2, 3.3, -9.2], att: [14.5, 2.7, -3.5] },
-  { pos: [28.6, 4.4, -2], att: [10.5, 3, -0.6] },
-  { pos: [29.8, 8.2, 7.2], att: [5.5, 3.8, 3.6] },
-  { pos: [28.6, 12.6, 16.8], att: [2, 4, 3.8], stop: { id: "overview", index: -1, label: "\u4FEF\u77B0\u5168\u666F \xB7 \u73DE\u73C8\u6821\u56ED" } },
-  { pos: [25.6, 15, 23.4], att: [0.6, 3.7, 1.8] },
+  { pos: [25.5, 17.5, 39.5], att: [0.5, 4, 17], stop: { id: "archway", index: 0, label: "01/04 \xB7 \u56FD\u7ACB\u6B66\u6C49\u5927\u5B66\u724C\u574A" } },
+  { pos: [21.5, 16, 34], att: [0.5, 3.8, 17] },
+  { pos: [19.5, 16, 21], att: [0, 3.6, 2.5], stop: { id: "sakura", index: 1, label: "02/04 \xB7 \u8001\u658B\u820D & \u6A31\u82B1\u5927\u9053" } },
+  { pos: [18.5, 16.5, 12], att: [0, 3.6, 2.5] },
+  { pos: [20.5, 22, 6], att: [0.5, 7.6, -8.5], stop: { id: "library", index: 2, label: "03/04 \xB7 \u6A31\u9876\u8001\u56FE\u4E66\u9986" } },
+  { pos: [22.5, 22.5, -2.5], att: [0.5, 7.6, -8.5] },
+  { pos: [32, 15.5, 3], att: [13.8, 1.4, -7.2], stop: { id: "lingbo", index: 3, label: "04/04 \xB7 \u4E1C\u6E56\u51CC\u6CE2\u95E8" } },
+  { pos: [31.5, 14, 9.5], att: [13.8, 1.4, -7.2] },
+  { pos: [38, 24, 28], att: [1.5, 2.8, 2], stop: { id: "overview", index: -1, label: "\u5FAE\u7F29\u5168\u666F \xB7 \u73DE\u73C8\u6C99\u76D8" } },
   { pos: OVERVIEW_POS.toArray(), att: OVERVIEW_TARGET.toArray() }
 ];
 function createCameraController(camera, domElement, { onStageChange, onPortalProgress, onAutoplayProgress, onAutoplayInterrupt }) {
@@ -16281,7 +16597,7 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
   const FLY_DURATION = 3.2;
   let autoplayElapsed = 0;
   let autoplayPaused = false;
-  const AUTOPLAY_DURATION = 42;
+  const AUTOPLAY_DURATION = 38;
   const pointer = { x: 0, y: 0 };
   const smoothPointer = { x: 0, y: 0 };
   const posCurve = new Jh([
@@ -16480,29 +16796,28 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
   function getPortalBasePos() {
     const aspect = camera.aspect || 1.6;
     if (aspect < 0.85) {
-      if (camera.fov !== 58) {
-        camera.fov = 58;
+      if (camera.fov !== 32) {
+        camera.fov = 32;
         camera.updateProjectionMatrix();
       }
-      return new Ci(0, 3.9, 44.5);
+      return new Ci(24, 18, 42);
     }
     if (camera.fov !== CINEMA_FOV) {
       camera.fov = CINEMA_FOV;
       camera.updateProjectionMatrix();
     }
-    return new Ci(0, 3.25, 31.2);
+    return new Ci(22, 16, 36);
   }
   function applyPortalCamera(dt2) {
     smoothPointer.x += (pointer.x - smoothPointer.x) * Math.min(1, dt2 * 4.5);
     smoothPointer.y += (pointer.y - smoothPointer.y) * Math.min(1, dt2 * 4.5);
     const base = getPortalBasePos();
     camera.position.set(
-      base.x + smoothPointer.x * 0.65,
-      base.y + smoothPointer.y * 0.25,
+      base.x + smoothPointer.x * 0.9,
+      base.y + smoothPointer.y * 0.4,
       base.z
     );
-    const lookY = (camera.aspect || 1.6) < 0.85 ? 3.55 : 4.15;
-    camera.lookAt(0, lookY, 15.5);
+    camera.lookAt(0.5, 3, 17);
   }
   function startAutoplay() {
     stage = "autoplay";
@@ -16547,11 +16862,11 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
   function interruptAutoplayToExplore() {
     if (stage !== "autoplay") return;
     const forward = new Ci(0, 0, -1).applyQuaternion(camera.quaternion);
-    const fallbackTarget = camera.position.clone().addScaledVector(forward, 15);
-    fallbackTarget.y = Math.max(0.6, Math.min(fallbackTarget.y, camera.position.y - 1.2));
-    if (fallbackTarget.distanceTo(camera.position) < 13.5) {
-      fallbackTarget.copy(camera.position).addScaledVector(forward, 15);
-      fallbackTarget.y = Math.max(0.4, fallbackTarget.y);
+    const fallbackTarget = camera.position.clone().addScaledVector(forward, 26);
+    fallbackTarget.y = Math.max(0.8, Math.min(fallbackTarget.y, camera.position.y - 2));
+    if (fallbackTarget.distanceTo(camera.position) < 22) {
+      fallbackTarget.copy(camera.position).addScaledVector(forward, 26);
+      fallbackTarget.y = Math.max(0.6, fallbackTarget.y);
     }
     stage = "explore";
     autoplayPaused = false;
@@ -16563,8 +16878,8 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
     target.copy(fallbackTarget);
     desiredTarget.copy(fallbackTarget);
     syncSphericalFromPos(camera.position, fallbackTarget);
-    desiredSpherical.phi = Zn.clamp(desiredSpherical.phi, 0.34, 1.22);
-    desiredSpherical.radius = Zn.clamp(desiredSpherical.radius, 13, 46);
+    desiredSpherical.phi = Zn.clamp(desiredSpherical.phi, 0.42, 1.16);
+    desiredSpherical.radius = Zn.clamp(desiredSpherical.radius, 22, 82);
     onPortalProgress?.(1);
     onStageChange?.("explore");
     onAutoplayInterrupt?.();
@@ -16720,7 +17035,7 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
       const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
       if (lastPinchDist !== null) {
         const delta = lastPinchDist - dist;
-        desiredSpherical.radius = Zn.clamp(desiredSpherical.radius + delta * 0.06, 13, 46);
+        desiredSpherical.radius = Zn.clamp(desiredSpherical.radius + delta * 0.09, 22, 82);
       }
       lastPinchDist = dist;
       tweenActive = false;
@@ -16731,7 +17046,7 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
       const dy = e.clientY - prevDrag.y;
       prevDrag = { x: e.clientX, y: e.clientY };
       desiredSpherical.theta -= dx * 65e-4;
-      desiredSpherical.phi = Zn.clamp(desiredSpherical.phi - dy * 55e-4, 0.34, 1.22);
+      desiredSpherical.phi = Zn.clamp(desiredSpherical.phi - dy * 55e-4, 0.42, 1.16);
       tweenActive = false;
     }
   }
@@ -16754,7 +17069,7 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
   }
   function zoomBy(deltaY) {
     if (stage !== "explore") return;
-    desiredSpherical.radius = Zn.clamp(desiredSpherical.radius + deltaY * 0.022, 13, 46);
+    desiredSpherical.radius = Zn.clamp(desiredSpherical.radius + deltaY * 0.036, 22, 82);
     tweenActive = false;
   }
   domElement.addEventListener("pointermove", onPointerMove);
@@ -16865,6 +17180,296 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
   };
 }
 
+// src/protagonist.js
+var ANCHORS = {
+  archway: [1.5, 0.14, 20.6],
+  sakura: [1.8, 0.15, 6.2],
+  library: [4.2, 4.64, -3.6],
+  lingbo: [14.6, 0.66, -7.8],
+  overview: [1.5, 0.14, 20.6]
+};
+function createProtagonist(textures) {
+  const group = new jl();
+  group.name = "oursongs-protagonist";
+  const frame0 = textures.protagonistFrame(0);
+  const frame1 = textures.protagonistFrame(1);
+  const spriteGeo = new ha(1.15, 1.53);
+  spriteGeo.translate(0, 0.765, 0);
+  const spriteMat = new _d({
+    map: frame0,
+    emissive: new Kr("#ffffff"),
+    emissiveMap: frame0,
+    emissiveIntensity: 0.14,
+    alphaTest: 0.5,
+    side: p
+  });
+  const depthMat = new Ol({
+    depthPacking: We,
+    map: frame0,
+    alphaTest: 0.5
+  });
+  const spriteMesh = new Bs(spriteGeo, spriteMat);
+  spriteMesh.castShadow = true;
+  spriteMesh.receiveShadow = false;
+  spriteMesh.customDepthMaterial = depthMat;
+  group.add(spriteMesh);
+  const contactGeo = new du(0.42, 16);
+  contactGeo.rotateX(-Math.PI / 2);
+  const contactMat = new es({
+    color: new Kr("#141d30"),
+    transparent: true,
+    opacity: 0.34,
+    depthWrite: false
+  });
+  const contactDisc = new Bs(contactGeo, contactMat);
+  contactDisc.position.y = 0.015;
+  group.add(contactDisc);
+  const beaconGeo = new ha(0.06, 0.06);
+  const beaconMat = new es({
+    color: new Kr("#ff3b3b"),
+    transparent: true,
+    opacity: 0.9,
+    side: p,
+    depthWrite: false
+  });
+  const beacon = new Bs(beaconGeo, beaconMat);
+  beacon.position.set(0.06, 0.65, 0.02);
+  spriteMesh.add(beacon);
+  const targetPos = new Ci(...ANCHORS.archway);
+  group.position.copy(targetPos);
+  let currentFrame = 0;
+  function setAnchor(stopId = "archway", snap = false) {
+    const coords = ANCHORS[stopId] || ANCHORS.archway;
+    targetPos.set(coords[0], coords[1], coords[2]);
+    if (snap || group.position.distanceTo(targetPos) > 10) {
+      group.position.copy(targetPos);
+    }
+  }
+  function setMood(mood) {
+    const isNight = mood === "night" || mood === "sunset" || mood === "convergence";
+    spriteMat.emissiveIntensity = isNight ? 0.42 : 0.14;
+    contactMat.opacity = isNight ? 0.42 : 0.34;
+    beaconMat.opacity = isNight ? 1 : 0.82;
+  }
+  function update(dt2, elapsed, camera) {
+    if (group.position.distanceToSquared(targetPos) > 4e-4) {
+      const alpha = Math.min(1, dt2 * 6);
+      group.position.lerp(targetPos, alpha);
+    }
+    if (camera) {
+      const dx = camera.position.x - group.position.x;
+      const dz = camera.position.z - group.position.z;
+      spriteMesh.rotation.y = Math.atan2(dx, dz);
+    }
+    const nextFrame = Math.floor(elapsed * 2.6) % 2;
+    if (nextFrame !== currentFrame) {
+      currentFrame = nextFrame;
+      const tex = currentFrame === 0 ? frame0 : frame1;
+      spriteMat.map = tex;
+      spriteMat.emissiveMap = tex;
+      depthMat.map = tex;
+    }
+    spriteMesh.position.y = Math.sin(elapsed * 2.6) * 0.018;
+    beacon.visible = Math.floor(elapsed * 1.8) % 5 !== 0;
+  }
+  return {
+    group,
+    setAnchor,
+    setMood,
+    update
+  };
+}
+
+// src/postfx.js
+function createHD2DPostFX(renderer, width, height, dpr = 1) {
+  const isWebGL2 = renderer.capabilities.isWebGL2;
+  const maxSamples = isWebGL2 ? Math.min(4, renderer.capabilities.maxSamples || 0) : 0;
+  const rtType = renderer.capabilities.isWebGL2 ? Ut : Et;
+  let curW = Math.max(1, Math.round(width * dpr));
+  let curH = Math.max(1, Math.round(height * dpr));
+  const sceneRT = new bi(curW, curH, {
+    type: rtType,
+    minFilter: Mt,
+    magFilter: Mt,
+    generateMipmaps: false,
+    samples: maxSamples
+  });
+  const blurW = Math.max(64, Math.round(curW / 3));
+  const blurH = Math.max(64, Math.round(curH / 3));
+  const blurA = new bi(blurW, blurH, {
+    type: rtType,
+    minFilter: Mt,
+    magFilter: Mt,
+    generateMipmaps: false,
+    depthBuffer: false,
+    stencilBuffer: false,
+    samples: 0
+  });
+  const blurB = new bi(blurW, blurH, {
+    type: rtType,
+    minFilter: Mt,
+    magFilter: Mt,
+    generateMipmaps: false,
+    depthBuffer: false,
+    stencilBuffer: false,
+    samples: 0
+  });
+  const orthoCam = new ba(-1, 1, 1, -1, 0, 1);
+  const quadGeo = new ha(2, 2);
+  const blurMat = new Xs({
+    depthTest: false,
+    depthWrite: false,
+    uniforms: {
+      tInput: { value: sceneRT.texture },
+      uDir: { value: new Jn(1 / blurW, 0) }
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = vec4(position.xy, 0.0, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform sampler2D tInput;
+      uniform vec2 uDir;
+      varying vec2 vUv;
+      void main() {
+        vec3 sum = texture2D(tInput, vUv).rgb * 0.227027;
+        sum += texture2D(tInput, vUv + uDir * 1.3846).rgb * 0.316216;
+        sum += texture2D(tInput, vUv - uDir * 1.3846).rgb * 0.316216;
+        sum += texture2D(tInput, vUv + uDir * 3.2308).rgb * 0.070270;
+        sum += texture2D(tInput, vUv - uDir * 3.2308).rgb * 0.070270;
+        gl_FragColor = vec4(sum, 1.0);
+      }
+    `
+  });
+  const compositeMat = new Xs({
+    depthTest: false,
+    depthWrite: false,
+    uniforms: {
+      tScene: { value: sceneRT.texture },
+      tBlur: { value: blurB.texture },
+      uBloomThreshold: { value: 0.78 },
+      uBloomStrength: { value: 0.26 },
+      uBloomTint: { value: new Ci(1.05, 0.96, 0.84) },
+      uVignetteTint: { value: new Ci(0.08, 0.11, 0.2) }
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = vec4(position.xy, 0.0, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform sampler2D tScene;
+      uniform sampler2D tBlur;
+      uniform float uBloomThreshold;
+      uniform float uBloomStrength;
+      uniform vec3 uBloomTint;
+      uniform vec3 uVignetteTint;
+      varying vec2 vUv;
+
+      void main() {
+        vec3 sharp = texture2D(tScene, vUv).rgb;
+        vec3 blurCol = texture2D(tBlur, vUv).rgb;
+
+        // Tilt-shift miniature focal band centered slightly below mid-screen
+        float coc = smoothstep(0.18, 0.50, abs(vUv.y - 0.50));
+        vec3 col = mix(sharp, blurCol, coc * 0.76);
+
+        // Warm highlight bloom in linear HDR space
+        vec3 hi = max(blurCol - vec3(uBloomThreshold), vec3(0.0));
+        col += hi * uBloomTint * uBloomStrength;
+
+        // Soft indigo miniature diorama vignette
+        float rDist = length((vUv - 0.5) * vec2(1.22, 1.0));
+        float vig = smoothstep(0.44, 0.98, rDist);
+        col = mix(col, mix(col * 0.62, uVignetteTint * 0.45, 0.35), vig * 0.34);
+
+        gl_FragColor = vec4(col, 1.0);
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+      }
+    `
+  });
+  const fsScene = new rc();
+  const fsMesh = new Bs(quadGeo, blurMat);
+  fsMesh.frustumCulled = false;
+  fsScene.add(fsMesh);
+  function setSize(w2, h, nextDpr = 1) {
+    const nw = Math.max(1, Math.round(w2 * nextDpr));
+    const nh2 = Math.max(1, Math.round(h * nextDpr));
+    if (nw === curW && nh2 === curH) return;
+    curW = nw;
+    curH = nh2;
+    sceneRT.setSize(curW, curH);
+    const nbw = Math.max(64, Math.round(curW / 3));
+    const nbh = Math.max(64, Math.round(curH / 3));
+    blurA.setSize(nbw, nbh);
+    blurB.setSize(nbw, nbh);
+  }
+  function setMood(mood) {
+    const isNight = mood === "night" || mood === "sunset" || mood === "convergence";
+    if (isNight) {
+      compositeMat.uniforms.uBloomThreshold.value = 0.56;
+      compositeMat.uniforms.uBloomStrength.value = 0.44;
+      compositeMat.uniforms.uBloomTint.value.set(1.1, 0.92, 0.72);
+      compositeMat.uniforms.uVignetteTint.value.set(0.04, 0.07, 0.16);
+    } else {
+      compositeMat.uniforms.uBloomThreshold.value = 0.78;
+      compositeMat.uniforms.uBloomStrength.value = 0.26;
+      compositeMat.uniforms.uBloomTint.value.set(1.05, 0.96, 0.84);
+      compositeMat.uniforms.uVignetteTint.value.set(0.1, 0.12, 0.2);
+    }
+  }
+  const lastSceneStats = { calls: 0, triangles: 0 };
+  function render(scene, camera) {
+    const prevTarget = renderer.getRenderTarget();
+    const prevToneMapping = renderer.toneMapping;
+    const prevXr = renderer.xr.enabled;
+    renderer.toneMapping = K;
+    renderer.xr.enabled = false;
+    renderer.setRenderTarget(sceneRT);
+    renderer.clear();
+    renderer.render(scene, camera);
+    lastSceneStats.calls = renderer.info.render.calls;
+    lastSceneStats.triangles = renderer.info.render.triangles;
+    const bw = blurA.width;
+    const bh = blurA.height;
+    fsMesh.material = blurMat;
+    blurMat.uniforms.tInput.value = sceneRT.texture;
+    blurMat.uniforms.uDir.value.set(1.4 / bw, 0);
+    renderer.setRenderTarget(blurA);
+    renderer.render(fsScene, orthoCam);
+    blurMat.uniforms.tInput.value = blurA.texture;
+    blurMat.uniforms.uDir.value.set(0, 1.4 / bh);
+    renderer.setRenderTarget(blurB);
+    renderer.render(fsScene, orthoCam);
+    renderer.toneMapping = prevToneMapping;
+    fsMesh.material = compositeMat;
+    renderer.setRenderTarget(prevTarget);
+    renderer.render(fsScene, orthoCam);
+    renderer.xr.enabled = prevXr;
+  }
+  function dispose() {
+    sceneRT.dispose();
+    blurA.dispose();
+    blurB.dispose();
+    quadGeo.dispose();
+    blurMat.dispose();
+    compositeMat.dispose();
+  }
+  return {
+    render,
+    setSize,
+    setMood,
+    getSceneStats: () => lastSceneStats,
+    dispose
+  };
+}
+
 // src/audio.js
 function createAudioEngine() {
   let ctx = null;
@@ -16963,8 +17568,10 @@ function createAudioEngine() {
 
 // src/ui.js
 var MOOD_LABELS = {
-  spring: "\u6674\u7A7A\u6A31\u96EA",
-  sunset: "\u6A31\u971E\u66AE\u8272"
+  amber: "\u5348\u540E\u7425\u73C0",
+  spring: "\u5348\u540E\u7425\u73C0",
+  night: "\u6536\u655B\u591C\u706F",
+  sunset: "\u6536\u655B\u591C\u706F"
 };
 function createUIController({
   profile,
@@ -17234,7 +17841,8 @@ function createUIController({
   }
   function syncMood(mood) {
     document.body.dataset.mood = mood;
-    const label = MOOD_LABELS[mood] || (mood === "sunset" ? "\u6A31\u971E\u66AE\u8272" : "\u6674\u7A7A\u6A31\u96EA");
+    const isNight = mood === "night" || mood === "sunset" || mood === "convergence";
+    const label = MOOD_LABELS[mood] || (isNight ? "\u6536\u655B\u591C\u706F" : "\u5348\u540E\u7425\u73C0");
     moodBtns.forEach((btn) => {
       btn.textContent = `\u5149\u5F71 \xB7 ${label}`;
     });
@@ -17414,17 +18022,22 @@ function init() {
   renderer.toneMapping = et;
   renderer.toneMappingExposure = 0.92;
   const scene = new rc();
-  const camera = new Js(42, window.innerWidth / window.innerHeight, 0.25, 280);
+  const camera = new Js(24, window.innerWidth / window.innerHeight, 0.5, 320);
   const textures = createTextureFactory(renderer);
   const lighting = createLightingSystem(scene, renderer);
   const archway = createArchway(textures);
   const campus = createCampusDiorama(textures);
+  const protagonist = createProtagonist(textures);
+  const postfx = createHD2DPostFX(renderer, window.innerWidth, window.innerHeight, currentDpr);
   scene.add(campus.group);
   scene.add(archway.group);
-  let currentMood = "spring";
+  scene.add(protagonist.group);
+  let currentMood = "amber";
   lighting.setMood(currentMood);
   archway.setMood(currentMood);
   campus.setMood(currentMood);
+  protagonist.setMood(currentMood);
+  postfx.setMood(currentMood);
   lighting.bakeStaticShadows();
   const audio = createAudioEngine();
   let fps = 60;
@@ -17439,18 +18052,23 @@ function init() {
   let scrollTourEnabled = true;
   function renderWithReflection() {
     campus.updateWaterReflection(renderer, scene, camera, lighting.getKeyLight(), lighting.setSkyLinearOutput);
-    renderer.render(scene, camera);
+    lighting.setSkyLinearOutput(true);
+    campus.setWaterLinearOutput(true);
+    postfx.render(scene, camera);
+    lighting.setSkyLinearOutput(false);
+    campus.setWaterLinearOutput(false);
   }
   function getMetrics() {
     const texStats = textures.getStats();
     const lightStats = lighting.getStats();
-    const tris = renderer.info.render.triangles;
+    const sceneStats = postfx.getSceneStats();
+    const tris = sceneStats.triangles || renderer.info.render.triangles;
     const shadowBytes = 2048 * 2048 * 4;
-    const reflectBytes = 960 * 600 * 8;
+    const reflectBytes = 512 * 320 * 4;
     const geoBytes = tris * 3 * 32;
     const vramMB = +((texStats.totalBytes + shadowBytes + reflectBytes + geoBytes) / (1024 * 1024)).toFixed(1);
     return {
-      drawCalls: renderer.info.render.calls,
+      drawCalls: sceneStats.calls || renderer.info.render.calls,
       triangles: tris,
       geometries: renderer.info.memory.geometries,
       textures: renderer.info.memory.textures,
@@ -17484,6 +18102,9 @@ function init() {
     },
     onAutoplayProgress(info) {
       ui2?.updateAutoplay(info);
+      if (info?.stopId) {
+        protagonist.setAnchor(info.stopId);
+      }
     },
     onAutoplayInterrupt() {
       ui2?.syncDockActive(null);
@@ -17570,10 +18191,12 @@ function init() {
       }
     },
     onToggleMood() {
-      currentMood = currentMood === "spring" ? "sunset" : "spring";
+      currentMood = currentMood === "amber" ? "night" : "amber";
       lighting.setMood(currentMood);
       archway.setMood(currentMood);
       campus.setMood(currentMood);
+      protagonist.setMood(currentMood);
+      postfx.setMood(currentMood);
       ui2.syncMood(currentMood);
     },
     onToggleMute() {
@@ -17583,11 +18206,13 @@ function init() {
     onSelectChapter(ch2, idx) {
       tourIndex = idx + 1;
       audio.playLandmarkSelect();
+      protagonist.setAnchor(ch2.id);
       cameraRig.focusLandmark(ch2.camPos, ch2.camTarget);
     },
     onResetOverview() {
       tourIndex = 0;
       ui2.syncDockActive(-1);
+      protagonist.setAnchor("overview");
       cameraRig.resetOverview();
     },
     onToggleScrollMode() {
@@ -17676,6 +18301,7 @@ function init() {
   cameraRig.update(0);
   campus.updateCampus(0, 0, camera.position);
   lighting.update(0);
+  protagonist.update(0, 0, camera);
   if (cameraRig.getStage() === "portal") {
     archway.updatePortal(0, 0);
   }
@@ -17693,6 +18319,7 @@ function init() {
     camera.updateProjectionMatrix();
     renderer.setPixelRatio(currentDpr);
     renderer.setSize(w2, h);
+    postfx.setSize(w2, h, currentDpr);
   }
   window.addEventListener("resize", onResize);
   let lastTime = null;
@@ -17729,6 +18356,7 @@ function init() {
           currentDpr = Math.max(0.85, +(currentDpr - 0.2).toFixed(2));
           renderer.setPixelRatio(currentDpr);
           renderer.setSize(window.innerWidth, window.innerHeight);
+          postfx.setSize(window.innerWidth, window.innerHeight, currentDpr);
         }
         if (avgMs > 24 && currentDpr <= 1 && !reflReduced) {
           reflReduced = true;
@@ -17741,6 +18369,7 @@ function init() {
     cameraRig.update(dt2);
     campus.updateCampus(dt2, elapsed, camera.position);
     lighting.update(elapsed);
+    protagonist.update(dt2, elapsed, camera);
     if (cameraRig.getStage() === "portal") {
       archway.updatePortal(0, elapsed);
     }
@@ -17794,11 +18423,12 @@ function init() {
       ui2.updateTelemetry();
     },
     setCamera(posArr, targetArr, opts = {}) {
-      const { fov = 42, stage = "explore", hideUi = false, closeDrawer = true, portalOpen = 1 } = opts;
+      const { fov = 24, stage = "explore", hideUi = false, closeDrawer = true, portalOpen = 1 } = opts;
       if (closeDrawer) ui2.closeDrawer();
       ui2.closeCvModal();
       document.body.dataset.hideUi = hideUi ? "true" : "false";
       cameraRig.setCameraDirect(posArr, targetArr, { fov, stage, portalOpen });
+      protagonist.update(0, performance.now() * 1e-3, camera);
       renderWithReflection();
       ui2.updatePins(camera, window.innerWidth, window.innerHeight, cameraRig.getStage() === "explore");
       ui2.updateTelemetry();
@@ -17808,6 +18438,8 @@ function init() {
       ui2.closeDrawer();
       document.body.dataset.hideUi = "false";
       const st = cameraRig.seekAutoplay(progress01);
+      protagonist.setAnchor(st.stopId, true);
+      protagonist.update(0, performance.now() * 1e-3, camera);
       renderWithReflection();
       ui2.updatePins(camera, window.innerWidth, window.innerHeight, false);
       ui2.updateTelemetry();
@@ -17826,6 +18458,7 @@ function init() {
       const prevState = cameraRig.getAutoplayState();
       const prevHideUi = document.body.dataset.hideUi || "false";
       const raycaster = new pm();
+      raycaster.camera = camera;
       raycaster.near = 0.05;
       const dirs = [
         { name: "forward", local: new Ci(0, 0, -1), far: 3 },
@@ -17891,10 +18524,12 @@ function init() {
       };
     },
     setMood(mood) {
-      currentMood = mood === "sunset" || mood === "convergence" ? "sunset" : "spring";
+      currentMood = mood === "night" || mood === "sunset" || mood === "convergence" ? "night" : "amber";
       lighting.setMood(currentMood);
       archway.setMood(currentMood);
       campus.setMood(currentMood);
+      protagonist.setMood(currentMood);
+      postfx.setMood(currentMood);
       ui2.syncMood(currentMood);
       renderWithReflection();
       ui2.updateTelemetry();

@@ -1,8 +1,10 @@
 import * as THREE from 'three';
 
 const MOOD_LABELS = {
-  spring: '晴空樱雪',
-  sunset: '樱霞暮色',
+  amber: '午后琥珀',
+  spring: '午后琥珀',
+  night: '收敛夜灯',
+  sunset: '收敛夜灯',
 };
 
 /**
@@ -322,7 +324,8 @@ export function createUIController({
 
   function syncMood(mood) {
     document.body.dataset.mood = mood;
-    const label = MOOD_LABELS[mood] || (mood === 'sunset' ? '樱霞暮色' : '晴空樱雪');
+    const isNight = mood === 'night' || mood === 'sunset' || mood === 'convergence';
+    const label = MOOD_LABELS[mood] || (isNight ? '收敛夜灯' : '午后琥珀');
     moodBtns.forEach((btn) => {
       btn.textContent = `光影 · ${label}`;
     });

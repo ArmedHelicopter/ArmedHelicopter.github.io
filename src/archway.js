@@ -511,14 +511,14 @@ export function createArchway(textures) {
   rightVeil.matrixAutoUpdate = true;
 
   function setMood(mood) {
-    if (mood === 'sunset' || mood === 'convergence') {
-      veilUniforms.uColorA.value.set('#b9d4ff');
-      veilUniforms.uColorB.value.set('#ff9ec4');
-      glazedTileMat.color.set('#2694a4');
-      glazedTileMat.emissiveIntensity = 0.12;
+    if (mood === 'night' || mood === 'sunset' || mood === 'convergence') {
+      veilUniforms.uColorA.value.set('#89a8de');
+      veilUniforms.uColorB.value.set('#ffb85c');
+      glazedTileMat.color.set('#1f687a');
+      glazedTileMat.emissiveIntensity = 0.08;
     } else {
-      veilUniforms.uColorA.value.set('#dff2ff');
-      veilUniforms.uColorB.value.set('#ffc2da');
+      veilUniforms.uColorA.value.set('#ffe2a8');
+      veilUniforms.uColorB.value.set('#ffcad9');
       glazedTileMat.color.set('#2ba6b4');
       glazedTileMat.emissiveIntensity = 0.06;
     }

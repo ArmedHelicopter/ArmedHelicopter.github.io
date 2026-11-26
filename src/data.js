@@ -33,8 +33,8 @@ export const CHAPTERS = [
     sectionTitle: '01 牌坊 · 序',
     subtitle: '珞珈序章 · Identity & Engineering Ethos',
     anchor: [0, 7.2, 15.5],
-    camPos: [8.4, 7.6, 28.5],
-    camTarget: [0, 4.4, 15.5],
+    camPos: [21.0, 15.2, 33.5],
+    camTarget: [0.5, 3.2, 16.5],
     accentColor: '#1976a8',
     summary:
       '穿过四柱三间冲天式国立武汉大学石坊，在晴空流云与夹道樱雪间步入珞珈山立体校园。以系统级工程思维审视人工智能、科学计算与人机交互的底层耦合。',
@@ -68,8 +68,8 @@ export const CHAPTERS = [
     sectionTitle: '02 老斋舍 · 工',
     subtitle: '数值信号与系统工程 · Signal & Systems',
     anchor: [0, 7.6, -0.8],
-    camPos: [0, 2.1, 13.4],
-    camTarget: [0, 2.4, -0.8],
+    camPos: [18.5, 16.2, 15.5],
+    camTarget: [0.0, 3.6, 2.2],
     accentColor: '#e67aa3',
     summary:
       '沿百步梯与樱花大道拾级而上，老斋舍三座罗马拱门与孔雀蓝歇山顶千字号亭映照着硬核工程交付：零拷贝 Hankel 音频降噪矩阵、Fail-Closed 隔离协议与 Agent 基础设施工具链。',
@@ -116,8 +116,8 @@ export const CHAPTERS = [
     sectionTitle: '03 老图 · 研',
     subtitle: '科研协议与 AI4S · Research & Protocols',
     anchor: [0, 13.9, -9.8],
-    camPos: [8.8, 11.6, 1.6],
-    camTarget: [0, 7.8, -9.2],
+    camPos: [21.5, 22.2, 2.5],
+    camTarget: [0.5, 7.6, -8.8],
     accentColor: '#1a96ad',
     summary:
       '狮子山巅孔雀蓝重檐歇山顶与五重轮宝顶之下，是关于科研智能体“分权制衡”与科学计算前置确定性约束的两项核心开源探索。',
@@ -153,8 +153,8 @@ export const CHAPTERS = [
     sectionTitle: '04 凌波 · 行',
     subtitle: '叙事、审美与未来同行 · Vision & Connect',
     anchor: [14.4, 2.2, -7.8],
-    camPos: [23.8, 6.4, 2.2],
-    camTarget: [12.4, 1.3, -7.2],
+    camPos: [31.5, 14.5, 7.5],
+    camTarget: [13.5, 1.4, -7.2],
     accentColor: '#2585b8',
     summary:
       '栈桥向澄澈东湖深处延伸。技术之外，以高工艺三维校园沙盘与交互式网页叙事，寻找愿意一起把狂想落地成可触碰作品的同路人。',

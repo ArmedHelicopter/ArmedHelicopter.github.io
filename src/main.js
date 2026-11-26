@@ -5,6 +5,8 @@ import { createArchway } from './archway.js';
 import { createCampusDiorama } from './campus.js';
 import { createLightingSystem } from './lighting.js';
 import { createCameraController } from './camera.js';
+import { createProtagonist } from './protagonist.js';
+import { createHD2DPostFX } from './postfx.js';
 import { createAudioEngine } from './audio.js';
 import { createUIController } from './ui.js';
 
@@ -54,20 +56,25 @@ function init() {
   renderer.toneMappingExposure = 0.92;
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.25, 280);
+  const camera = new THREE.PerspectiveCamera(24, window.innerWidth / window.innerHeight, 0.5, 320);
 
   const textures = createTextureFactory(renderer);
   const lighting = createLightingSystem(scene, renderer);
   const archway = createArchway(textures);
   const campus = createCampusDiorama(textures);
+  const protagonist = createProtagonist(textures);
+  const postfx = createHD2DPostFX(renderer, window.innerWidth, window.innerHeight, currentDpr);
 
   scene.add(campus.group);
   scene.add(archway.group);
+  scene.add(protagonist.group);
 
-  let currentMood = 'spring';
+  let currentMood = 'amber';
   lighting.setMood(currentMood);
   archway.setMood(currentMood);
   campus.setMood(currentMood);
+  protagonist.setMood(currentMood);
+  postfx.setMood(currentMood);
 
   // Bake static shadows once after initial world placement
   lighting.bakeStaticShadows();
@@ -89,20 +96,25 @@ function init() {
 
   function renderWithReflection() {
     campus.updateWaterReflection(renderer, scene, camera, lighting.getKeyLight(), lighting.setSkyLinearOutput);
-    renderer.render(scene, camera);
+    lighting.setSkyLinearOutput(true);
+    campus.setWaterLinearOutput(true);
+    postfx.render(scene, camera);
+    lighting.setSkyLinearOutput(false);
+    campus.setWaterLinearOutput(false);
   }
 
   function getMetrics() {
     const texStats = textures.getStats();
     const lightStats = lighting.getStats();
-    const tris = renderer.info.render.triangles;
+    const sceneStats = postfx.getSceneStats();
+    const tris = sceneStats.triangles || renderer.info.render.triangles;
     const shadowBytes = 2048 * 2048 * 4;
-    const reflectBytes = 960 * 600 * 8;
+    const reflectBytes = 512 * 320 * 4;
     const geoBytes = tris * 3 * 32;
     const vramMB = +((texStats.totalBytes + shadowBytes + reflectBytes + geoBytes) / (1024 * 1024)).toFixed(1);
 
     return {
-      drawCalls: renderer.info.render.calls,
+      drawCalls: sceneStats.calls || renderer.info.render.calls,
       triangles: tris,
       geometries: renderer.info.memory.geometries,
       textures: renderer.info.memory.textures,
@@ -138,6 +150,9 @@ function init() {
     },
     onAutoplayProgress(info) {
       ui?.updateAutoplay(info);
+      if (info?.stopId) {
+        protagonist.setAnchor(info.stopId);
+      }
     },
     onAutoplayInterrupt() {
       ui?.syncDockActive(null);
@@ -228,10 +243,12 @@ function init() {
       }
     },
     onToggleMood() {
-      currentMood = currentMood === 'spring' ? 'sunset' : 'spring';
+      currentMood = currentMood === 'amber' ? 'night' : 'amber';
       lighting.setMood(currentMood);
       archway.setMood(currentMood);
       campus.setMood(currentMood);
+      protagonist.setMood(currentMood);
+      postfx.setMood(currentMood);
       ui.syncMood(currentMood);
     },
     onToggleMute() {
@@ -241,11 +258,13 @@ function init() {
     onSelectChapter(ch, idx) {
       tourIndex = idx + 1;
       audio.playLandmarkSelect();
+      protagonist.setAnchor(ch.id);
       cameraRig.focusLandmark(ch.camPos, ch.camTarget);
     },
     onResetOverview() {
       tourIndex = 0;
       ui.syncDockActive(-1);
+      protagonist.setAnchor('overview');
       cameraRig.resetOverview();
     },
     onToggleScrollMode() {
@@ -350,6 +369,7 @@ function init() {
   cameraRig.update(0);
   campus.updateCampus(0, 0, camera.position);
   lighting.update(0);
+  protagonist.update(0, 0, camera);
   if (cameraRig.getStage() === 'portal') {
     archway.updatePortal(0, 0);
   }
@@ -369,6 +389,7 @@ function init() {
     camera.updateProjectionMatrix();
     renderer.setPixelRatio(currentDpr);
     renderer.setSize(w, h);
+    postfx.setSize(w, h, currentDpr);
   }
   window.addEventListener('resize', onResize);
 
@@ -410,6 +431,7 @@ function init() {
           currentDpr = Math.max(0.85, +(currentDpr - 0.2).toFixed(2));
           renderer.setPixelRatio(currentDpr);
           renderer.setSize(window.innerWidth, window.innerHeight);
+          postfx.setSize(window.innerWidth, window.innerHeight, currentDpr);
         }
         if (avgMs > 24 && currentDpr <= 1.0 && !reflReduced) {
           reflReduced = true;
@@ -424,6 +446,7 @@ function init() {
     cameraRig.update(dt);
     campus.updateCampus(dt, elapsed, camera.position);
     lighting.update(elapsed);
+    protagonist.update(dt, elapsed, camera);
     if (cameraRig.getStage() === 'portal') {
       archway.updatePortal(0, elapsed);
     }
@@ -483,11 +506,12 @@ function init() {
       ui.updateTelemetry();
     },
     setCamera(posArr, targetArr, opts = {}) {
-      const { fov = 42, stage = 'explore', hideUi = false, closeDrawer = true, portalOpen = 1 } = opts;
+      const { fov = 24, stage = 'explore', hideUi = false, closeDrawer = true, portalOpen = 1 } = opts;
       if (closeDrawer) ui.closeDrawer();
       ui.closeCvModal();
       document.body.dataset.hideUi = hideUi ? 'true' : 'false';
       cameraRig.setCameraDirect(posArr, targetArr, { fov, stage, portalOpen });
+      protagonist.update(0, performance.now() * 0.001, camera);
       renderWithReflection();
       ui.updatePins(camera, window.innerWidth, window.innerHeight, cameraRig.getStage() === 'explore');
       ui.updateTelemetry();
@@ -497,6 +521,8 @@ function init() {
       ui.closeDrawer();
       document.body.dataset.hideUi = 'false';
       const st = cameraRig.seekAutoplay(progress01);
+      protagonist.setAnchor(st.stopId, true);
+      protagonist.update(0, performance.now() * 0.001, camera);
       renderWithReflection();
       ui.updatePins(camera, window.innerWidth, window.innerHeight, false);
       ui.updateTelemetry();
@@ -515,6 +541,7 @@ function init() {
       const prevState = cameraRig.getAutoplayState();
       const prevHideUi = document.body.dataset.hideUi || 'false';
       const raycaster = new THREE.Raycaster();
+      raycaster.camera = camera;
       raycaster.near = 0.05;
 
       const dirs = [
@@ -584,10 +611,12 @@ function init() {
       };
     },
     setMood(mood) {
-      currentMood = mood === 'sunset' || mood === 'convergence' ? 'sunset' : 'spring';
+      currentMood = mood === 'night' || mood === 'sunset' || mood === 'convergence' ? 'night' : 'amber';
       lighting.setMood(currentMood);
       archway.setMood(currentMood);
       campus.setMood(currentMood);
+      protagonist.setMood(currentMood);
+      postfx.setMood(currentMood);
       ui.syncMood(currentMood);
       renderWithReflection();
       ui.updateTelemetry();
