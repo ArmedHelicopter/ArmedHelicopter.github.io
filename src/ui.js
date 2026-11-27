@@ -424,7 +424,7 @@ export function createUIController({
   }
   cvBtn.addEventListener('click', () => {
     onOpenCv?.();
-    openCvModal();
+    window.location.href = 'https://armedhelicopter.github.io/gothic-cathedral/';
   });
   cvCloseBtn.addEventListener('click', closeCvModal);
   cvModal.addEventListener('click', (e) => {
