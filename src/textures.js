@@ -559,48 +559,55 @@ export function createTextureFactory(renderer) {
   }
 
   /**
-   * Authentic Guardian Tales (坎公骑冠剑) compact chibi pixel-art character sprite
-   * inspired by gtlibrary Spine rigs (knight_demon_queen hair silhouette + knight_female_sport_uniform
-   * tracksuit proportions) and the user's silver-haired sky-blue tracksuit character design.
-   * Uses colored selvedge outlines, plump cheeks, tall 4x5 jewel blue eyes, sculpted 5-ramp hair
-   * clusters, and zero internal black lines across the waist or neck.
+   * Guardian Tales (坎公骑冠剑) compact chibi pixel-art heroine sprite ("Sora")
+   * designed with slender feminine silhouette, lashed jewel eyes, tapered chin contour,
+   * side bangs with a coral hair clip, long layered silver-white hair with front locks,
+   * white-zipped powder sky-blue tracksuit, and compact navy sneakers.
    */
-  const GT_KANADE_PAL = {
+  const GT_GIRL_PAL = {
     '.': null,
-    // Hair & unified colored selvedge outlines (consistent slate-indigo outline clarity on all tips)
-    O: '#3c4c6e', // upper dome cool slate-indigo selvedge
-    o: '#46587c', // matching outer hair-tip selvedge so lower tips pop against bright tiles
-    W: '#ffffff', // pure halo zig-zag crown sheen
-    H: '#f4f8ff', // luminous icy silver-white light
-    S: '#dde7f7', // cool silver-white base hair
-    M: '#b8c9e4', // cool periwinkle-silver mid shadow
-    D: '#8a9ec0', // deep periwinkle hair crease
-    // Plump cheeks, warm skin & balanced rose-umber selvedge
-    k: '#6b4c52', // crisp warm plum-umber chin/hand selvedge
-    f: '#fff2ea', // warm porcelain-cream face/hand highlight
-    s: '#fadbc9', // soft peach cheek warmth
-    c: '#ecc0aa', // gentle chin/palm shadow bevel
-    b: '#f6adb0', // cute small cheek blush dots
-    m: '#c26b6e', // tiny delicate rose mouth
-    // Guardian Tales tall jewel eyes & calm silver-blue brows
-    L: '#2c263b', // dark espresso-plum upper eyelash
-    e: '#284584', // deep sapphire upper iris
-    i: '#4e96e2', // vivid cerulean mid-iris
-    g: '#96e0ff', // luminous ice-cyan lower iris crescent
-    w: '#ffffff', // crisp sclera & directional eye sparkle
-    r: '#7d8fb2', // calm silver-blue eyebrow
-    // Powder sky-blue tracksuit & navy sneakers (unified navy selvedge, soft internal seams)
-    u: '#3c5174', // unified cool navy garment/shoe outer selvedge
-    B: '#bfe5f8', // sky-blue jacket highlight & pocket piping
-    T: '#90c5e0', // powder sky-blue main fabric
-    t: '#6799b5', // soft sky-blue internal fold/seam shadow
-    d: '#4b7690', // collar/hem shadow
-    Z: '#f8fcff', // crisp white center zipper, outer leg stripes & sneaker sole
-    N: '#344970', // dark navy sneaker upper
-    n: '#273858', // subtle sneaker toe shadow (no near-black blocks)
+    // Silver-white lavender hair ramp & stronger slate-indigo outline for plaza contrast
+    O: '#536294',
+    o: '#6e7eb2',
+    W: '#ffffff',
+    H: '#f4f7ff',
+    S: '#dfe6f8',
+    P: '#d4cff2',
+    M: '#b4c0e6',
+    D: '#8f9ecc',
+    // Coral hair clip accent
+    K: '#ff9eb8',
+    k: '#e56f92',
+    // Soft peach skin & chin contour (warm translucent shadow, no harsh black chin line)
+    f: '#fff4ee',
+    s: '#fde2d2',
+    c: '#f2c3ae',
+    x: '#d99682',
+    b: '#f89eb2',
+    q: '#fcc9d0',
+    m: '#db6f85',
+    // Guardian Tales lashed sapphire eyes & calm silver-slate brows
+    L: '#34274c',
+    l: '#6d5c94',
+    e: '#1f449e',
+    i: '#3e8ae8',
+    a: '#7ed9f8',
+    w: '#ffffff',
+    r: '#7c8cb0',
+    // Vibrant powder sky-blue tracksuit & white raglan stripes (clear chroma in amber sunlight)
+    u: '#335382',
+    B: '#c4ecff',
+    T: '#76c4f2',
+    t: '#4b96cf',
+    d: '#3370a3',
+    Z: '#ffffff',
+    // Compact navy white-soled sneakers
+    N: '#2c4170',
+    n: '#46629e',
+    E: '#ffffff',
   };
 
-  function drawSpriteGrid(rows, pal = GT_KANADE_PAL, mirrorX = false) {
+  function drawSpriteGrid(rows, pal = GT_GIRL_PAL, mirrorX = false) {
     const h = rows.length;
     const w = rows[0].length;
     const c = makeCanvas(w, h);
@@ -619,124 +626,177 @@ export function createTextureFactory(renderer) {
     return c;
   }
 
+  function buildBackHairRows() {
+    const W = 30;
+    const H = 32;
+    const leftEdge = [
+      7, 6, 5, 4, 4, 3, 3, 3, 3, 3,
+      3, 3, 2, 2, 2, 1, 1, 1, 1, 1,
+      2, 2, 2, 3, 3, 4, 5, 6, 7, 8,
+      9, 11,
+    ];
+    const bottom = [
+      19, 25, 29, 31, 30, 31, 29, 27, 25,
+      24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
+      25, 27, 29, 31, 30, 31, 29, 25, 19,
+    ];
+    const filled = (x, y) => {
+      if (x < 0 || x >= W || y < 0 || y >= H) return false;
+      const lx = leftEdge[y];
+      const rx = W - 1 - lx;
+      if (x < lx || x > rx) return false;
+      return y <= bottom[x];
+    };
+    const shade = (x, y) => {
+      if (x === 2 || x === 5 || x === 24 || x === 27) return 'P';
+      if (x === 4 || x === 7 || x === 22 || x === 25) return 'M';
+      if (x >= 8 && x <= 21) return y < 18 ? 'M' : 'D';
+      return 'S';
+    };
+    const rows = [];
+    for (let y = 0; y < H; y++) {
+      let row = '';
+      for (let x = 0; x < W; x++) {
+        if (!filled(x, y)) {
+          row += '.';
+          continue;
+        }
+        const edge = y === 0 || !filled(x - 1, y) || !filled(x + 1, y) || !filled(x, y - 1);
+        if ((y >= 3 && y === bottom[x]) || edge) row += 'o';
+        else if (y >= 3 && y === bottom[x] - 1) row += 'D';
+        else if (y >= 3 && y === bottom[x] - 2 && 'SP'.includes(shade(x, y))) row += 'M';
+        else row += shade(x, y);
+      }
+      rows.push(row);
+    }
+    return rows;
+  }
+
+  function makeHeadBlinkRows(openRows) {
+    const rows = openRows.map((r) => r.split(''));
+    const eyeCols = [7, 8, 9, 10, 11, 12, 19, 20, 21, 22, 23, 24];
+    for (let y = 12; y <= 17; y++) {
+      for (const x of eyeCols) {
+        if ('Lleiaw'.includes(rows[y][x])) rows[y][x] = 'f';
+      }
+    }
+    rows[14][7] = 'l';
+    rows[14][24] = 'l';
+    'LLLLl'.split('').forEach((ch, idx) => { rows[15][8 + idx] = ch; });
+    'lLLLL'.split('').forEach((ch, idx) => { rows[15][19 + idx] = ch; });
+    rows[16][9] = 'c';
+    rows[16][10] = 'c';
+    rows[16][21] = 'c';
+    rows[16][22] = 'c';
+    return rows.map((r) => r.join(''));
+  }
+
   function protagonistParts() {
     if (cache.has('protagonist-parts')) return cache.get('protagonist-parts');
 
-    // 1. Graceful sculpted bell-shaped silver back hair closed with crisp 'o' selvedge (30x25)
-    const BACK_HAIR_ROWS = [
-      '..............................',
-      '........oooooooooooooo........',
-      '......ooSSSSSSSSSSSSSSoo......',
-      '.....oSSSSSSMMMMMMSSSSSSo.....',
-      '....oSSSSSMMMMDDDDMMMMSSSo....',
-      '....oSSSSMMMDDDDDDDDMMMSSo....',
-      '...oSSSSMMMDDDDDDDDDDMMMSSo...',
-      '...oSSSMMMDDDDDDDDDDDDMMMSo...',
-      '..oSSSMMMDDDDDDDDDDDDDDMMMSo..',
-      '..oSSSMMMDDDDDDDDDDDDDDMMMSo..',
-      '.oSSSMMMMDDDDDDDDDDDDDDMMMMSo.',
-      '.oSSSMMMDDDDDDDDDDDDDDDDMMMSo.',
-      '.oSSMMMMDDDDDDDDDDDDDDDDMMMMSo',
-      'oSSSMMMMDDDDDDMDDDDDMDDDDMMMSo',
-      'oSSSMMMDDDDDDDMDDDDDMDDDDDMMSo',
-      'oSSSMMMDDDDDDDMDDDDDMDDDDDMMSo',
-      'oSSMMMDDDDDDDDMDDDDDMDDDDDDMSo',
-      '.oSMMMDDDDDMDDMDMMMMDMDDDDMMSo',
-      '.oSMMDDDDDoDMDDMMMMMMDMDDoMMSo',
-      '..oSMDDDo..oDMDDMMMMDDMDo.oMSo',
-      '..oSDDDo....oDDDoMMoDDDo...oo.',
-      '...oDDo......oDo.oo.oDo.......',
-      '....oo........o......o........',
-      '..............................',
-      '..............................',
-    ];
+    const BACK_HAIR_ROWS = buildBackHairRows();
 
-    // 2. Stubby powder-blue tracksuit leg + dark navy white-soled sneaker (7x9, soft internal seam)
     const LEFT_LEG_ROWS = [
-      '.......',
-      '.uZTTt.',
-      '.uZTTt.',
-      '.uZTtt.',
-      '.udtdt.',
-      'uNNNNt.',
-      'uNnnNu.',
-      'uZZZZu.',
-      '.uuuu..',
+      'uTTTu',
+      'uZTTu',
+      'uZTtu',
+      'uZTtu',
+      'uZTtu',
+      '.uZTu',
+      '.uZtu',
+      '.uBBu',
+      'uNNNu',
+      'uNNnu',
+      'uEEEu',
+      '.uuu.',
     ];
 
-    // 3. Compact Guardian Tales zip-up tracksuit jacket: vertical zipper only (NO '+' cross) & soft internal cuffs (15x11)
     const TORSO_ROWS = [
-      '...............',
-      '....udTZTdu....',
-      '...uBBTZTBBu...',
-      '..BBBBTZTBTTt..',
-      '..BTTTZTTTTtt..',
-      '..TTTTZTTTTtt..',
-      '..TBTTZTTTtBt..',
-      '..uTTTZTTTttu..',
-      '..utttZtttttu..',
-      '...udddZdddu...',
-      '...utTTdTTtu...',
+      '....uBBZBu....',
+      '..uBTdBZBdTBu.',
+      '.uBBTTTZTTTTtu',
+      '.uBTTTTZTTTttu',
+      '..uTTTTZTTTtu.',
+      '..uTTTTZTTTtu.',
+      '..uBTTTZTTTtu.',
+      '..uBTTTZTTTtu.',
+      '..uBTTTZTTTtu.',
+      '..uTTttZttTtu.',
+      '..uddddZddddu.',
+      '...uuuuZuuuu..',
     ];
 
-    // 4. Outstretched A-pose stubby tracksuit sleeve + chunky peach hand w/ crisp closed outline (9x10)
     const LEFT_ARM_ROWS = [
-      '.........',
-      '.....tB..',
-      '....uZBT.',
-      '...uZBTT.',
-      '..uZBTtd.',
-      '.uZBTtdu.',
-      '.ukffkdu.',
-      '.kfffck..',
-      '.kfscck..',
-      '..kkkk...',
+      '..uu.',
+      '.uBTu',
+      '.uZTu',
+      'uZBTu',
+      'uZTtu',
+      'uZTtu',
+      'uZTtu',
+      'uBTtu',
+      '.uTtu',
+      '.udtu',
+      '.xfsx',
+      '..xx.',
     ];
 
-    // 5. Rounded Guardian Tales Kanade chibi head: zero jaw specks, full bottom tip selvedge (30x26)
+    const FRONT_LOCK_L_ROWS = [
+      '.oSo',
+      '.oHo',
+      '.oHo',
+      '.oSo',
+      'oHSo',
+      'oSMo',
+      'oSMo',
+      '.oMo',
+      '.oMo',
+      '.oDo',
+      '..o.',
+      '....',
+    ];
+
     const HEAD_OPEN_ROWS = [
-      '..............................',
-      '...........OOOOOOOO...........',
-      '........OOOHHHHHHHHOOO........',
-      '......OOHHHHHHHHHHHHHHOO......',
-      '.....OHHHHWWWWWWWWWWHHHHO.....',
-      '....OHHWWWWWHHHHHHWWWWWHHO....',
-      '...OHHWWWHHHHHMMHHHHHWWWHHO...',
-      '..OHHHHHHHHHHMMHMHHHHHHHHHHO..',
-      '..OSHSSHHHHMMMMMMMMHHHHSSSHO..',
-      '.oOSSSSSHHMHHHMMHHHMMHHSSSSOo.',
-      '.oOSSHSHHMffHHHHHHffHMHSHSSOo.',
-      '.oOSHSHHMfrrffHHffrrfMHSHSSOo.',
-      '.oOSHSHkffffffMSffffffkSHSSOo.',
-      'oOSSHSkfLLLLffMSffLLLLfkSHSSOo',
-      'oOSSHMkfwwweffffffweeeffkMSSOo',
-      'oOSSHSkfwwiiffffffwiiiffkMSSOo',
-      'oOSSHMkfwggiffssffwggiffkMSSOo',
-      '.oSSHMkfbbfssffffssfbbbbfMSSo.',
-      '.oSSHMMsffffscmmcffffffsMMSSo.',
-      '.oSSHMMssssssccccssssssMMSSSo.',
-      '..oSHMoooookkkkkkkkoooooMHSo..',
-      '..oSHo..................oHSo..',
-      '...oHo..................oHo...',
-      '...oMo..................oMo...',
-      '....o....................o....',
-      '..............................',
+      '...........OOOOOOOOOO...........',
+      '........OOOHHHHHHHHHHOOO........',
+      '......OOHHWWWWHHHHHHHHHHOO......',
+      '.....OHHWWHHHHHHHHHHHHHHWHO.....',
+      '....OHWHHHHHHHHHHHHHHHHHHWHO....',
+      '...OSHHWWWWHHHHHHHHMHWWWHHHSO...',
+      '..OSSHHHHHWWHHHHHHMDMHHWHHHSSO..',
+      '..OSSHSHHHHHMHHHHMDDMHKSKHHSSO..',
+      '.OSSMSHHHHHMHHHHMDDDMHKkKHSMSSO.',
+      '.OSMSHSSSHHMMHHSSMMDMSHSSSHSMSO.',
+      '.OSMSHMSSSMMSHSHSMffMMMSSMHSMSO.',
+      '.OSMSHMMMrrMSMSHSffffrrMMSHSMSO.',
+      '.OSMSHMlffffMfMSMffffffflMHSMSO.',
+      '.OSMSHMfLLLLlffMffflLLLLfMHSMSO.',
+      '.OSMSHMfLeweeffffffeweeLfMHSMSO.',
+      '.OSMSHMfliwieffffffewiilfMHSMSO.',
+      '.OSMSHMffiiiiffffffiiiiffMHSMSO.',
+      '.OSMSMMffaaaiffffffiaaaffMHSMSO.',
+      '.OSMSMMsbbbsffffcfffsbbbsMHSMSO.',
+      '.OSMSMSssqssfffffffsssqssMHSMSO.',
+      '.OSMSMScsssssssmqssssssscMHSMSO.',
+      '..OSMMo.xcsssssssssssscx.oMHSO..',
+      '...oSo...xxcsssssssscxx...oSo...',
+      '....o.......xccccccx.......o....',
+      '..............xxxx..............',
+      '................................',
+      '................................',
+      '................................',
     ];
 
-    const HEAD_BLINK_ROWS = HEAD_OPEN_ROWS.map((row, idx) => {
-      if (idx === 13) return 'oOSSHSkfffffffMSfffffffkSHSSOo';
-      if (idx === 14) return 'oOSSHMkfcLLffffffffLLcfkMSSOo.';
-      if (idx === 15) return 'oOSSHSkfLLLLffffffLLLLfkMSSOo.';
-      if (idx === 16) return 'oOSSHMkfffffffssfffffffkMSSOo.';
-      return row;
-    });
+    const HEAD_BLINK_ROWS = makeHeadBlinkRows(HEAD_OPEN_ROWS);
 
     const bhCanvas = drawSpriteGrid(BACK_HAIR_ROWS);
-    const llCanvas = drawSpriteGrid(LEFT_LEG_ROWS, GT_KANADE_PAL, false);
-    const rlCanvas = drawSpriteGrid(LEFT_LEG_ROWS, GT_KANADE_PAL, true);
+    const llCanvas = drawSpriteGrid(LEFT_LEG_ROWS, GT_GIRL_PAL, false);
+    const rlCanvas = drawSpriteGrid(LEFT_LEG_ROWS, GT_GIRL_PAL, true);
     const trCanvas = drawSpriteGrid(TORSO_ROWS);
-    const laCanvas = drawSpriteGrid(LEFT_ARM_ROWS, GT_KANADE_PAL, false);
-    const raCanvas = drawSpriteGrid(LEFT_ARM_ROWS, GT_KANADE_PAL, true);
+    const laCanvas = drawSpriteGrid(LEFT_ARM_ROWS, GT_GIRL_PAL, false);
+    const raCanvas = drawSpriteGrid(LEFT_ARM_ROWS, GT_GIRL_PAL, true);
+    const flCanvas = drawSpriteGrid(FRONT_LOCK_L_ROWS, GT_GIRL_PAL, false);
+    const frCanvas = drawSpriteGrid(FRONT_LOCK_L_ROWS, GT_GIRL_PAL, true);
     const hoCanvas = drawSpriteGrid(HEAD_OPEN_ROWS);
     const hbCanvas = drawSpriteGrid(HEAD_BLINK_ROWS);
 
@@ -749,6 +809,8 @@ export function createTextureFactory(renderer) {
       arm: register('protagonist-arm', laCanvas, { wrap: false, pixel: true, mip: false }),
       leftArm: register('protagonist-left-arm', laCanvas, { wrap: false, pixel: true, mip: false }),
       rightArm: register('protagonist-right-arm', raCanvas, { wrap: false, pixel: true, mip: false }),
+      frontLockL: register('protagonist-front-lock-l', flCanvas, { wrap: false, pixel: true, mip: false }),
+      frontLockR: register('protagonist-front-lock-r', frCanvas, { wrap: false, pixel: true, mip: false }),
       headOpen: register('protagonist-head-open', hoCanvas, { wrap: false, pixel: true, mip: false }),
       headBlink: register('protagonist-head-blink', hbCanvas, { wrap: false, pixel: true, mip: false }),
     };
@@ -760,15 +822,17 @@ export function createTextureFactory(renderer) {
     const label = `protagonist-frame-${frameIdx}`;
     if (cache.has(label)) return cache.get(label);
     const parts = protagonistParts();
-    const c = makeCanvas(36, 40);
+    const c = makeCanvas(36, 48);
     const ctx = c.getContext('2d');
-    ctx.drawImage(parts.backHair.image, 3, 13);
-    ctx.drawImage(parts.leftLeg.image, 11, 30);
-    ctx.drawImage(parts.rightLeg.image, 18, 30);
-    ctx.drawImage(parts.torso.image, 10, 21);
-    ctx.drawImage(parts.leftArm.image, 5, 22);
-    ctx.drawImage(parts.rightArm.image, 22, 22);
-    ctx.drawImage(frameIdx === 1 ? parts.headBlink.image : parts.headOpen.image, 3, 2);
+    ctx.drawImage(parts.backHair.image, 3, 7);
+    ctx.drawImage(parts.leftLeg.image, 13, 35);
+    ctx.drawImage(parts.rightLeg.image, 18, 35);
+    ctx.drawImage(parts.torso.image, 11, 24);
+    ctx.drawImage(parts.leftArm.image, 8, 25);
+    ctx.drawImage(parts.rightArm.image, 23, 25);
+    ctx.drawImage(parts.frontLockL.image, 10, 21);
+    ctx.drawImage(parts.frontLockR.image, 22, 21);
+    ctx.drawImage(frameIdx === 1 ? parts.headBlink.image : parts.headOpen.image, 2, 0);
     return register(label, c, { wrap: false, pixel: true, mip: false });
   }
 

@@ -77,51 +77,62 @@ export function createProtagonist(textures) {
   const rigFlip = new THREE.Group();
   rigBillboard.add(rigFlip);
 
-  const PIXEL_UNIT = 0.035; // ~1.34m compact Guardian Tales chibi (~58% head-to-body ratio)
+  const PIXEL_UNIT = 0.030; // ~1.41m Guardian Tales chibi heroine (36x48 canvas)
 
-  // Lush silver back-hair bell curtain anchored behind shoulders (extends cleanly to ankle/knee level)
+  // Tapered teardrop silver back-hair behind shoulders & torso (no boxy vertical curtain)
   const backHairPivot = new THREE.Group();
-  backHairPivot.position.set(0, 0.74, -0.024);
-  const backHairMesh = makeSlot('backHair', 30 * PIXEL_UNIT, 25 * PIXEL_UNIT, 0, -0.25, 0, parts.backHair);
+  backHairPivot.position.set(0, 0.74, -0.028);
+  const backHairMesh = makeSlot('backHair', 30 * PIXEL_UNIT, 32 * PIXEL_UNIT, 0, 0, 0, parts.backHair);
   backHairPivot.add(backHairMesh);
   rigFlip.add(backHairPivot);
 
-  // Stubby Guardian Tales legs + white-soled navy sneakers (soles land cleanly on y=0.02)
+  // Slender close-set Guardian Tales legs + navy white-soled sneakers (soles grounded on y=0.02)
   const leftLegPivot = new THREE.Group();
-  leftLegPivot.position.set(-0.10, 0.29, -0.008);
-  leftLegPivot.add(makeSlot('leftLeg', 7 * PIXEL_UNIT, 9 * PIXEL_UNIT, 0, -0.125, 0, parts.leftLeg || parts.leg));
+  leftLegPivot.position.set(-0.075, 0.35, -0.012);
+  leftLegPivot.add(makeSlot('leftLeg', 5 * PIXEL_UNIT, 12 * PIXEL_UNIT, 0, -0.15, 0, parts.leftLeg || parts.leg));
   rigFlip.add(leftLegPivot);
 
   const rightLegPivot = new THREE.Group();
-  rightLegPivot.position.set(0.10, 0.29, -0.004);
-  rightLegPivot.add(makeSlot('rightLeg', 7 * PIXEL_UNIT, 9 * PIXEL_UNIT, 0, -0.125, 0, parts.rightLeg || parts.leg));
+  rightLegPivot.position.set(0.075, 0.35, -0.006);
+  rightLegPivot.add(makeSlot('rightLeg', 5 * PIXEL_UNIT, 12 * PIXEL_UNIT, 0, -0.15, 0, parts.rightLeg || parts.leg));
   rigFlip.add(rightLegPivot);
 
-  // Compact white-zipped powder sky-blue tracksuit torso (waist pivot y=0.26)
+  // Tapered powder sky-blue tracksuit jacket with crisp white vertical zipper (hip pivot y=0.35)
   const torsoPivot = new THREE.Group();
-  torsoPivot.position.set(0, 0.26, 0.004);
-  torsoPivot.add(makeSlot('torso', 15 * PIXEL_UNIT, 11 * PIXEL_UNIT, 0, 0.17, 0, parts.torso));
+  torsoPivot.position.set(0, 0.35, 0.002);
+  torsoPivot.add(makeSlot('torso', 14 * PIXEL_UNIT, 12 * PIXEL_UNIT, 0, 0.18, 0, parts.torso));
   rigFlip.add(torsoPivot);
 
-  // Outstretched A-pose stubby sleeves mounted at OUTER jacket shoulders (zero chest overlap!)
+  // Clean outer sleeves with white tracksuit stripe clearly silhouetted beside the waist
   const leftArmPivot = new THREE.Group();
-  leftArmPivot.position.set(-0.20, 0.29, 0.008);
-  leftArmPivot.add(makeSlot('leftArm', 9 * PIXEL_UNIT, 10 * PIXEL_UNIT, -0.09, -0.11, 0, parts.leftArm || parts.arm));
+  leftArmPivot.position.set(-0.225, 0.31, 0.006);
+  leftArmPivot.add(makeSlot('leftArm', 5 * PIXEL_UNIT, 12 * PIXEL_UNIT, 0, -0.16, 0, parts.leftArm || parts.arm));
   torsoPivot.add(leftArmPivot);
 
   const rightArmPivot = new THREE.Group();
-  rightArmPivot.position.set(0.20, 0.29, 0.010);
-  rightArmPivot.add(makeSlot('rightArm', 9 * PIXEL_UNIT, 10 * PIXEL_UNIT, 0.09, -0.11, 0, parts.rightArm || parts.arm));
+  rightArmPivot.position.set(0.225, 0.31, 0.008);
+  rightArmPivot.add(makeSlot('rightArm', 5 * PIXEL_UNIT, 12 * PIXEL_UNIT, 0, -0.16, 0, parts.rightArm || parts.arm));
   torsoPivot.add(rightArmPivot);
 
-  // Iconic plump-cheeked Guardian Tales head with sculpted halo hair + front chest hair locks
+  // Delicate slender front hair locks draped over collarbones onto upper jacket (leaving arms & waist free)
+  const frontLockLPivot = new THREE.Group();
+  frontLockLPivot.position.set(-0.180, 0.45, 0.012);
+  frontLockLPivot.add(makeSlot('frontLockL', 4 * PIXEL_UNIT, 12 * PIXEL_UNIT, 0, -0.18, 0, parts.frontLockL));
+  torsoPivot.add(frontLockLPivot);
+
+  const frontLockRPivot = new THREE.Group();
+  frontLockRPivot.position.set(0.180, 0.45, 0.014);
+  frontLockRPivot.add(makeSlot('frontLockR', 4 * PIXEL_UNIT, 12 * PIXEL_UNIT, 0, -0.18, 0, parts.frontLockR));
+  torsoPivot.add(frontLockRPivot);
+
+  // Feminine Guardian Tales chibi head: lashed jewel eyes, tapered oval chin, parted bangs & coral clip
   const headPivot = new THREE.Group();
-  headPivot.position.set(0, 0.32, 0.018);
-  const headMesh = makeSlot('head', 30 * PIXEL_UNIT, 26 * PIXEL_UNIT, 0, 0.32, 0, parts.headOpen);
+  headPivot.position.set(0, 0.36, 0.018);
+  const headMesh = makeSlot('head', 32 * PIXEL_UNIT, 28 * PIXEL_UNIT, 0, 0.30, 0, parts.headOpen);
   headPivot.add(headMesh);
   torsoPivot.add(headPivot);
 
-  // Soft radial elliptical contact AO grounding sneakers onto stone/planks
+  // Soft radial elliptical contact AO matched to narrower feminine stance
   const aoCanvas = document.createElement('canvas');
   aoCanvas.width = 48;
   aoCanvas.height = 48;
@@ -133,7 +144,7 @@ export function createProtagonist(textures) {
   aoCtx.fillStyle = aoGrad;
   aoCtx.fillRect(0, 0, 48, 48);
   const contactAoTex = new THREE.CanvasTexture(aoCanvas);
-  const contactAoGeo = new THREE.PlaneGeometry(0.84, 0.50);
+  const contactAoGeo = new THREE.PlaneGeometry(0.56, 0.40);
   contactAoGeo.rotateX(-Math.PI / 2);
   const contactAoMat = new THREE.MeshBasicMaterial({
     map: contactAoTex,
@@ -148,7 +159,7 @@ export function createProtagonist(textures) {
   group.add(contactAoMesh);
 
   // Unified directional silhouette shadow matching exact key-light ~2 o'clock cast direction
-  const dirShadowGeo = new THREE.PlaneGeometry(0.86, 1.58);
+  const dirShadowGeo = new THREE.PlaneGeometry(0.68, 1.48);
   dirShadowGeo.rotateX(-Math.PI / 2);
   dirShadowGeo.translate(0, 0, 0.62);
   const dirShadowMat = new THREE.MeshBasicMaterial({
@@ -170,6 +181,7 @@ export function createProtagonist(textures) {
   let currentStopId = 'archway';
   let currentMoodName = 'amber';
   let walkPhase = 0;
+  let poseOverride = null;
 
   function refreshShadowState() {
     const isNight = currentMoodName === 'night' || currentMoodName === 'sunset' || currentMoodName === 'convergence';
@@ -213,7 +225,7 @@ export function createProtagonist(textures) {
     refreshShadowState();
   }
 
-  function applyPose({ walking, elapsed, speedFrac, facingX }) {
+  function applyPose({ walking, elapsed = 0, speedFrac = 1, facingX = 1, walkPhase: walkPhaseArg = walkPhase }) {
     rigFlip.scale.x = facingX < -0.02 ? -1 : 1;
     // Keep strictly orthogonal pixel alignment (zero rotation.z tilt) to prevent mixel aliasing
     rigFlip.position.y = 0;
@@ -226,41 +238,47 @@ export function createProtagonist(textures) {
     leftArmPivot.rotation.z = 0;
     rightArmPivot.rotation.z = 0;
 
-    const snapPx = (v) => Math.round(v / 0.00875) * 0.00875;
+    const snapPx = (v) => Math.round(v / 0.0075) * 0.0075;
 
     if (walking) {
-      const s = Math.sin(walkPhase);
+      const s = Math.sin(walkPhaseArg);
       const absS = Math.abs(s);
-      // Alternating grounded foot-step cycle with crisp orthogonal X-stride & foot lift
-      const stepL = Math.max(0, s) * 0.056 * speedFrac;
-      const stepR = Math.max(0, -s) * 0.056 * speedFrac;
-      leftLegPivot.position.set(-0.10 - s * 0.026 * speedFrac, 0.29 + snapPx(stepL), -0.008);
-      rightLegPivot.position.set(0.10 + s * 0.026 * speedFrac, 0.29 + snapPx(stepR), -0.004);
+      // Unmistakable Guardian Tales bouncy foot-lift + horizontal leg stride + connected opposite arm swing
+      const stepL = Math.max(0, s) * 0.060 * speedFrac;
+      const stepR = Math.max(0, -s) * 0.060 * speedFrac;
+      leftLegPivot.position.set(-0.075 - snapPx(s * 0.022 * speedFrac), 0.35 + snapPx(stepL), -0.012);
+      rightLegPivot.position.set(0.075 + snapPx(s * 0.022 * speedFrac), 0.35 + snapPx(stepR), -0.006);
 
-      torsoPivot.position.y = 0.26 + snapPx(absS * 0.022 * speedFrac);
+      torsoPivot.position.y = 0.35 + snapPx(absS * 0.030 * speedFrac);
       torsoPivot.scale.set(1, 1, 1);
-      headPivot.position.y = 0.32 + snapPx(absS * 0.026 * speedFrac);
-      leftArmPivot.position.y = 0.29 - snapPx(s * 0.024 * speedFrac);
-      rightArmPivot.position.y = 0.29 + snapPx(s * 0.024 * speedFrac);
-      backHairPivot.position.y = 0.74 + snapPx(absS * 0.026 * speedFrac);
+      headPivot.position.y = 0.36 + snapPx(absS * 0.030 * speedFrac);
+      leftArmPivot.position.set(-0.225 - snapPx(s * 0.015 * speedFrac), 0.31 + snapPx(s * 0.045 * speedFrac), 0.006);
+      rightArmPivot.position.set(0.225 + snapPx(s * 0.015 * speedFrac), 0.31 - snapPx(s * 0.045 * speedFrac), 0.008);
+      frontLockLPivot.position.set(-0.180 - snapPx(s * 0.015 * speedFrac), 0.45 + snapPx(absS * 0.022 * speedFrac), 0.012);
+      frontLockRPivot.position.set(0.180 - snapPx(s * 0.015 * speedFrac), 0.45 + snapPx(absS * 0.022 * speedFrac), 0.014);
+      backHairPivot.position.y = 0.74 + snapPx(absS * 0.030 * speedFrac);
       backHairPivot.scale.set(1, 1, 1);
       headMesh.material.map = parts.headOpen;
       headMesh.material.emissiveMap = parts.headOpen;
       return;
     }
 
-    // Crisp orthogonal Guardian Tales Spine breathing bounce & eye blink
-    const b = Math.sin(elapsed * 3.4);
-    const bLag = Math.sin(elapsed * 3.4 - 0.65);
-    leftLegPivot.position.set(-0.10, 0.29, -0.008);
-    rightLegPivot.position.set(0.10, 0.29, -0.004);
+    // Crisp orthogonal Guardian Tales Spine breathing bounce, front hair sway & eye blink
+    const b = Math.sin(elapsed * 2.6);
+    const bLag = Math.sin(elapsed * 2.6 - 0.65);
+    const swayL = Math.sin(elapsed * 1.4);
+    const swayR = Math.sin(elapsed * 1.4 - 0.8);
+    leftLegPivot.position.set(-0.075, 0.35, -0.012);
+    rightLegPivot.position.set(0.075, 0.35, -0.006);
 
-    torsoPivot.position.y = 0.26 + snapPx(b * 0.014);
+    torsoPivot.position.y = 0.35 + snapPx(b * 0.015);
     torsoPivot.scale.set(1, 1, 1);
-    headPivot.position.y = 0.32 + snapPx(bLag * 0.018);
-    leftArmPivot.position.y = 0.29 + snapPx(bLag * 0.014);
-    rightArmPivot.position.y = 0.29 + snapPx(bLag * 0.014);
-    backHairPivot.position.y = 0.74 + snapPx(bLag * 0.014);
+    headPivot.position.y = 0.36 + snapPx(bLag * 0.018);
+    leftArmPivot.position.set(-0.225, 0.31 + snapPx(bLag * 0.015), 0.006);
+    rightArmPivot.position.set(0.225, 0.31 + snapPx(bLag * 0.015), 0.008);
+    frontLockLPivot.position.set(-0.180 + snapPx(swayL * 0.0075), 0.45 + snapPx(bLag * 0.015), 0.012);
+    frontLockRPivot.position.set(0.180 + snapPx(swayR * 0.0075), 0.45 + snapPx(bLag * 0.015), 0.014);
+    backHairPivot.position.y = 0.74 + snapPx(bLag * 0.015);
     backHairPivot.scale.set(1, 1, 1);
 
     const blinkCycle = elapsed % 3.9;
@@ -279,17 +297,22 @@ export function createProtagonist(textures) {
       rigBillboard.rotation.y = Math.atan2(dx, dz);
     }
 
+    if (poseOverride) {
+      applyPose(poseOverride);
+      return;
+    }
+
     if (dt <= 0) {
       applyPose({ walking: false, elapsed: 0, speedFrac: 0, facingX: 1 });
       return;
     }
 
-    // Gentle autonomous stroll within +/- 0.85m around the current campus stop in idle live viewing
+    // Calm pause at anchor (0..2.2s) before gentle autonomous patrol around the current stop
     const strollSlot = Math.floor(elapsed / 8.0);
     const localTime = elapsed % 8.0;
     const activeTransition = group.position.distanceTo(baseAnchorPos) > 1.25;
     if (!activeTransition) {
-      const patOffset = localTime < 5.5 ? ((strollSlot % 2) * 2 - 1) * 0.68 : 0;
+      const patOffset = localTime > 2.2 && localTime < 6.0 ? (strollSlot % 2 === 0 ? 0.68 : -0.68) : 0;
       targetPos.set(baseAnchorPos.x + patOffset, baseAnchorPos.y, baseAnchorPos.z);
     }
 
@@ -316,6 +339,10 @@ export function createProtagonist(textures) {
     group,
     setAnchor,
     setMood,
+    setPoseOverride: (pose) => {
+      poseOverride = pose || null;
+      if (poseOverride) applyPose(poseOverride);
+    },
     update,
   };
 }

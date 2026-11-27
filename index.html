@@ -12767,68 +12767,49 @@ function createTextureFactory(renderer) {
     }
     return register(label, c2, { pixel: true, mip: true });
   }
-  const GT_KANADE_PAL = {
+  const GT_GIRL_PAL = {
     ".": null,
-    // Hair & unified colored selvedge outlines (consistent slate-indigo outline clarity on all tips)
-    O: "#3c4c6e",
-    // upper dome cool slate-indigo selvedge
-    o: "#46587c",
-    // matching outer hair-tip selvedge so lower tips pop against bright tiles
+    // Silver-white lavender hair ramp & stronger slate-indigo outline for plaza contrast
+    O: "#536294",
+    o: "#6e7eb2",
     W: "#ffffff",
-    // pure halo zig-zag crown sheen
-    H: "#f4f8ff",
-    // luminous icy silver-white light
-    S: "#dde7f7",
-    // cool silver-white base hair
-    M: "#b8c9e4",
-    // cool periwinkle-silver mid shadow
-    D: "#8a9ec0",
-    // deep periwinkle hair crease
-    // Plump cheeks, warm skin & balanced rose-umber selvedge
-    k: "#6b4c52",
-    // crisp warm plum-umber chin/hand selvedge
-    f: "#fff2ea",
-    // warm porcelain-cream face/hand highlight
-    s: "#fadbc9",
-    // soft peach cheek warmth
-    c: "#ecc0aa",
-    // gentle chin/palm shadow bevel
-    b: "#f6adb0",
-    // cute small cheek blush dots
-    m: "#c26b6e",
-    // tiny delicate rose mouth
-    // Guardian Tales tall jewel eyes & calm silver-blue brows
-    L: "#2c263b",
-    // dark espresso-plum upper eyelash
-    e: "#284584",
-    // deep sapphire upper iris
-    i: "#4e96e2",
-    // vivid cerulean mid-iris
-    g: "#96e0ff",
-    // luminous ice-cyan lower iris crescent
+    H: "#f4f7ff",
+    S: "#dfe6f8",
+    P: "#d4cff2",
+    M: "#b4c0e6",
+    D: "#8f9ecc",
+    // Coral hair clip accent
+    K: "#ff9eb8",
+    k: "#e56f92",
+    // Soft peach skin & chin contour (warm translucent shadow, no harsh black chin line)
+    f: "#fff4ee",
+    s: "#fde2d2",
+    c: "#f2c3ae",
+    x: "#d99682",
+    b: "#f89eb2",
+    q: "#fcc9d0",
+    m: "#db6f85",
+    // Guardian Tales lashed sapphire eyes & calm silver-slate brows
+    L: "#34274c",
+    l: "#6d5c94",
+    e: "#1f449e",
+    i: "#3e8ae8",
+    a: "#7ed9f8",
     w: "#ffffff",
-    // crisp sclera & directional eye sparkle
-    r: "#7d8fb2",
-    // calm silver-blue eyebrow
-    // Powder sky-blue tracksuit & navy sneakers (unified navy selvedge, soft internal seams)
-    u: "#3c5174",
-    // unified cool navy garment/shoe outer selvedge
-    B: "#bfe5f8",
-    // sky-blue jacket highlight & pocket piping
-    T: "#90c5e0",
-    // powder sky-blue main fabric
-    t: "#6799b5",
-    // soft sky-blue internal fold/seam shadow
-    d: "#4b7690",
-    // collar/hem shadow
-    Z: "#f8fcff",
-    // crisp white center zipper, outer leg stripes & sneaker sole
-    N: "#344970",
-    // dark navy sneaker upper
-    n: "#273858"
-    // subtle sneaker toe shadow (no near-black blocks)
+    r: "#7c8cb0",
+    // Vibrant powder sky-blue tracksuit & white raglan stripes (clear chroma in amber sunlight)
+    u: "#335382",
+    B: "#c4ecff",
+    T: "#76c4f2",
+    t: "#4b96cf",
+    d: "#3370a3",
+    Z: "#ffffff",
+    // Compact navy white-soled sneakers
+    N: "#2c4170",
+    n: "#46629e",
+    E: "#ffffff"
   };
-  function drawSpriteGrid(rows, pal = GT_KANADE_PAL, mirrorX = false) {
+  function drawSpriteGrid(rows, pal = GT_GIRL_PAL, mirrorX = false) {
     const h = rows.length;
     const w2 = rows[0].length;
     const c2 = makeCanvas(w2, h);
@@ -12846,112 +12827,226 @@ function createTextureFactory(renderer) {
     }
     return c2;
   }
+  function buildBackHairRows() {
+    const W2 = 30;
+    const H2 = 32;
+    const leftEdge = [
+      7,
+      6,
+      5,
+      4,
+      4,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      2,
+      2,
+      2,
+      1,
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      3,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      11
+    ];
+    const bottom = [
+      19,
+      25,
+      29,
+      31,
+      30,
+      31,
+      29,
+      27,
+      25,
+      24,
+      24,
+      24,
+      24,
+      24,
+      24,
+      24,
+      24,
+      24,
+      24,
+      24,
+      24,
+      25,
+      27,
+      29,
+      31,
+      30,
+      31,
+      29,
+      25,
+      19
+    ];
+    const filled = (x, y2) => {
+      if (x < 0 || x >= W2 || y2 < 0 || y2 >= H2) return false;
+      const lx = leftEdge[y2];
+      const rx = W2 - 1 - lx;
+      if (x < lx || x > rx) return false;
+      return y2 <= bottom[x];
+    };
+    const shade = (x, y2) => {
+      if (x === 2 || x === 5 || x === 24 || x === 27) return "P";
+      if (x === 4 || x === 7 || x === 22 || x === 25) return "M";
+      if (x >= 8 && x <= 21) return y2 < 18 ? "M" : "D";
+      return "S";
+    };
+    const rows = [];
+    for (let y2 = 0; y2 < H2; y2++) {
+      let row = "";
+      for (let x = 0; x < W2; x++) {
+        if (!filled(x, y2)) {
+          row += ".";
+          continue;
+        }
+        const edge = y2 === 0 || !filled(x - 1, y2) || !filled(x + 1, y2) || !filled(x, y2 - 1);
+        if (y2 >= 3 && y2 === bottom[x] || edge) row += "o";
+        else if (y2 >= 3 && y2 === bottom[x] - 1) row += "D";
+        else if (y2 >= 3 && y2 === bottom[x] - 2 && "SP".includes(shade(x, y2))) row += "M";
+        else row += shade(x, y2);
+      }
+      rows.push(row);
+    }
+    return rows;
+  }
+  function makeHeadBlinkRows(openRows) {
+    const rows = openRows.map((r) => r.split(""));
+    const eyeCols = [7, 8, 9, 10, 11, 12, 19, 20, 21, 22, 23, 24];
+    for (let y2 = 12; y2 <= 17; y2++) {
+      for (const x of eyeCols) {
+        if ("Lleiaw".includes(rows[y2][x])) rows[y2][x] = "f";
+      }
+    }
+    rows[14][7] = "l";
+    rows[14][24] = "l";
+    "LLLLl".split("").forEach((ch2, idx) => {
+      rows[15][8 + idx] = ch2;
+    });
+    "lLLLL".split("").forEach((ch2, idx) => {
+      rows[15][19 + idx] = ch2;
+    });
+    rows[16][9] = "c";
+    rows[16][10] = "c";
+    rows[16][21] = "c";
+    rows[16][22] = "c";
+    return rows.map((r) => r.join(""));
+  }
   function protagonistParts() {
     if (cache.has("protagonist-parts")) return cache.get("protagonist-parts");
-    const BACK_HAIR_ROWS = [
-      "..............................",
-      "........oooooooooooooo........",
-      "......ooSSSSSSSSSSSSSSoo......",
-      ".....oSSSSSSMMMMMMSSSSSSo.....",
-      "....oSSSSSMMMMDDDDMMMMSSSo....",
-      "....oSSSSMMMDDDDDDDDMMMSSo....",
-      "...oSSSSMMMDDDDDDDDDDMMMSSo...",
-      "...oSSSMMMDDDDDDDDDDDDMMMSo...",
-      "..oSSSMMMDDDDDDDDDDDDDDMMMSo..",
-      "..oSSSMMMDDDDDDDDDDDDDDMMMSo..",
-      ".oSSSMMMMDDDDDDDDDDDDDDMMMMSo.",
-      ".oSSSMMMDDDDDDDDDDDDDDDDMMMSo.",
-      ".oSSMMMMDDDDDDDDDDDDDDDDMMMMSo",
-      "oSSSMMMMDDDDDDMDDDDDMDDDDMMMSo",
-      "oSSSMMMDDDDDDDMDDDDDMDDDDDMMSo",
-      "oSSSMMMDDDDDDDMDDDDDMDDDDDMMSo",
-      "oSSMMMDDDDDDDDMDDDDDMDDDDDDMSo",
-      ".oSMMMDDDDDMDDMDMMMMDMDDDDMMSo",
-      ".oSMMDDDDDoDMDDMMMMMMDMDDoMMSo",
-      "..oSMDDDo..oDMDDMMMMDDMDo.oMSo",
-      "..oSDDDo....oDDDoMMoDDDo...oo.",
-      "...oDDo......oDo.oo.oDo.......",
-      "....oo........o......o........",
-      "..............................",
-      ".............................."
-    ];
+    const BACK_HAIR_ROWS = buildBackHairRows();
     const LEFT_LEG_ROWS = [
-      ".......",
-      ".uZTTt.",
-      ".uZTTt.",
-      ".uZTtt.",
-      ".udtdt.",
-      "uNNNNt.",
-      "uNnnNu.",
-      "uZZZZu.",
-      ".uuuu.."
+      "uTTTu",
+      "uZTTu",
+      "uZTtu",
+      "uZTtu",
+      "uZTtu",
+      ".uZTu",
+      ".uZtu",
+      ".uBBu",
+      "uNNNu",
+      "uNNnu",
+      "uEEEu",
+      ".uuu."
     ];
     const TORSO_ROWS = [
-      "...............",
-      "....udTZTdu....",
-      "...uBBTZTBBu...",
-      "..BBBBTZTBTTt..",
-      "..BTTTZTTTTtt..",
-      "..TTTTZTTTTtt..",
-      "..TBTTZTTTtBt..",
-      "..uTTTZTTTttu..",
-      "..utttZtttttu..",
-      "...udddZdddu...",
-      "...utTTdTTtu..."
+      "....uBBZBu....",
+      "..uBTdBZBdTBu.",
+      ".uBBTTTZTTTTtu",
+      ".uBTTTTZTTTttu",
+      "..uTTTTZTTTtu.",
+      "..uTTTTZTTTtu.",
+      "..uBTTTZTTTtu.",
+      "..uBTTTZTTTtu.",
+      "..uBTTTZTTTtu.",
+      "..uTTttZttTtu.",
+      "..uddddZddddu.",
+      "...uuuuZuuuu.."
     ];
     const LEFT_ARM_ROWS = [
-      ".........",
-      ".....tB..",
-      "....uZBT.",
-      "...uZBTT.",
-      "..uZBTtd.",
-      ".uZBTtdu.",
-      ".ukffkdu.",
-      ".kfffck..",
-      ".kfscck..",
-      "..kkkk..."
+      "..uu.",
+      ".uBTu",
+      ".uZTu",
+      "uZBTu",
+      "uZTtu",
+      "uZTtu",
+      "uZTtu",
+      "uBTtu",
+      ".uTtu",
+      ".udtu",
+      ".xfsx",
+      "..xx."
+    ];
+    const FRONT_LOCK_L_ROWS = [
+      ".oSo",
+      ".oHo",
+      ".oHo",
+      ".oSo",
+      "oHSo",
+      "oSMo",
+      "oSMo",
+      ".oMo",
+      ".oMo",
+      ".oDo",
+      "..o.",
+      "...."
     ];
     const HEAD_OPEN_ROWS = [
-      "..............................",
-      "...........OOOOOOOO...........",
-      "........OOOHHHHHHHHOOO........",
-      "......OOHHHHHHHHHHHHHHOO......",
-      ".....OHHHHWWWWWWWWWWHHHHO.....",
-      "....OHHWWWWWHHHHHHWWWWWHHO....",
-      "...OHHWWWHHHHHMMHHHHHWWWHHO...",
-      "..OHHHHHHHHHHMMHMHHHHHHHHHHO..",
-      "..OSHSSHHHHMMMMMMMMHHHHSSSHO..",
-      ".oOSSSSSHHMHHHMMHHHMMHHSSSSOo.",
-      ".oOSSHSHHMffHHHHHHffHMHSHSSOo.",
-      ".oOSHSHHMfrrffHHffrrfMHSHSSOo.",
-      ".oOSHSHkffffffMSffffffkSHSSOo.",
-      "oOSSHSkfLLLLffMSffLLLLfkSHSSOo",
-      "oOSSHMkfwwweffffffweeeffkMSSOo",
-      "oOSSHSkfwwiiffffffwiiiffkMSSOo",
-      "oOSSHMkfwggiffssffwggiffkMSSOo",
-      ".oSSHMkfbbfssffffssfbbbbfMSSo.",
-      ".oSSHMMsffffscmmcffffffsMMSSo.",
-      ".oSSHMMssssssccccssssssMMSSSo.",
-      "..oSHMoooookkkkkkkkoooooMHSo..",
-      "..oSHo..................oHSo..",
-      "...oHo..................oHo...",
-      "...oMo..................oMo...",
-      "....o....................o....",
-      ".............................."
+      "...........OOOOOOOOOO...........",
+      "........OOOHHHHHHHHHHOOO........",
+      "......OOHHWWWWHHHHHHHHHHOO......",
+      ".....OHHWWHHHHHHHHHHHHHHWHO.....",
+      "....OHWHHHHHHHHHHHHHHHHHHWHO....",
+      "...OSHHWWWWHHHHHHHHMHWWWHHHSO...",
+      "..OSSHHHHHWWHHHHHHMDMHHWHHHSSO..",
+      "..OSSHSHHHHHMHHHHMDDMHKSKHHSSO..",
+      ".OSSMSHHHHHMHHHHMDDDMHKkKHSMSSO.",
+      ".OSMSHSSSHHMMHHSSMMDMSHSSSHSMSO.",
+      ".OSMSHMSSSMMSHSHSMffMMMSSMHSMSO.",
+      ".OSMSHMMMrrMSMSHSffffrrMMSHSMSO.",
+      ".OSMSHMlffffMfMSMffffffflMHSMSO.",
+      ".OSMSHMfLLLLlffMffflLLLLfMHSMSO.",
+      ".OSMSHMfLeweeffffffeweeLfMHSMSO.",
+      ".OSMSHMfliwieffffffewiilfMHSMSO.",
+      ".OSMSHMffiiiiffffffiiiiffMHSMSO.",
+      ".OSMSMMffaaaiffffffiaaaffMHSMSO.",
+      ".OSMSMMsbbbsffffcfffsbbbsMHSMSO.",
+      ".OSMSMSssqssfffffffsssqssMHSMSO.",
+      ".OSMSMScsssssssmqssssssscMHSMSO.",
+      "..OSMMo.xcsssssssssssscx.oMHSO..",
+      "...oSo...xxcsssssssscxx...oSo...",
+      "....o.......xccccccx.......o....",
+      "..............xxxx..............",
+      "................................",
+      "................................",
+      "................................"
     ];
-    const HEAD_BLINK_ROWS = HEAD_OPEN_ROWS.map((row, idx) => {
-      if (idx === 13) return "oOSSHSkfffffffMSfffffffkSHSSOo";
-      if (idx === 14) return "oOSSHMkfcLLffffffffLLcfkMSSOo.";
-      if (idx === 15) return "oOSSHSkfLLLLffffffLLLLfkMSSOo.";
-      if (idx === 16) return "oOSSHMkfffffffssfffffffkMSSOo.";
-      return row;
-    });
+    const HEAD_BLINK_ROWS = makeHeadBlinkRows(HEAD_OPEN_ROWS);
     const bhCanvas = drawSpriteGrid(BACK_HAIR_ROWS);
-    const llCanvas = drawSpriteGrid(LEFT_LEG_ROWS, GT_KANADE_PAL, false);
-    const rlCanvas = drawSpriteGrid(LEFT_LEG_ROWS, GT_KANADE_PAL, true);
+    const llCanvas = drawSpriteGrid(LEFT_LEG_ROWS, GT_GIRL_PAL, false);
+    const rlCanvas = drawSpriteGrid(LEFT_LEG_ROWS, GT_GIRL_PAL, true);
     const trCanvas = drawSpriteGrid(TORSO_ROWS);
-    const laCanvas = drawSpriteGrid(LEFT_ARM_ROWS, GT_KANADE_PAL, false);
-    const raCanvas = drawSpriteGrid(LEFT_ARM_ROWS, GT_KANADE_PAL, true);
+    const laCanvas = drawSpriteGrid(LEFT_ARM_ROWS, GT_GIRL_PAL, false);
+    const raCanvas = drawSpriteGrid(LEFT_ARM_ROWS, GT_GIRL_PAL, true);
+    const flCanvas = drawSpriteGrid(FRONT_LOCK_L_ROWS, GT_GIRL_PAL, false);
+    const frCanvas = drawSpriteGrid(FRONT_LOCK_L_ROWS, GT_GIRL_PAL, true);
     const hoCanvas = drawSpriteGrid(HEAD_OPEN_ROWS);
     const hbCanvas = drawSpriteGrid(HEAD_BLINK_ROWS);
     const parts = {
@@ -12963,6 +13058,8 @@ function createTextureFactory(renderer) {
       arm: register("protagonist-arm", laCanvas, { wrap: false, pixel: true, mip: false }),
       leftArm: register("protagonist-left-arm", laCanvas, { wrap: false, pixel: true, mip: false }),
       rightArm: register("protagonist-right-arm", raCanvas, { wrap: false, pixel: true, mip: false }),
+      frontLockL: register("protagonist-front-lock-l", flCanvas, { wrap: false, pixel: true, mip: false }),
+      frontLockR: register("protagonist-front-lock-r", frCanvas, { wrap: false, pixel: true, mip: false }),
       headOpen: register("protagonist-head-open", hoCanvas, { wrap: false, pixel: true, mip: false }),
       headBlink: register("protagonist-head-blink", hbCanvas, { wrap: false, pixel: true, mip: false })
     };
@@ -12973,15 +13070,17 @@ function createTextureFactory(renderer) {
     const label = `protagonist-frame-${frameIdx}`;
     if (cache.has(label)) return cache.get(label);
     const parts = protagonistParts();
-    const c2 = makeCanvas(36, 40);
+    const c2 = makeCanvas(36, 48);
     const ctx = c2.getContext("2d");
-    ctx.drawImage(parts.backHair.image, 3, 13);
-    ctx.drawImage(parts.leftLeg.image, 11, 30);
-    ctx.drawImage(parts.rightLeg.image, 18, 30);
-    ctx.drawImage(parts.torso.image, 10, 21);
-    ctx.drawImage(parts.leftArm.image, 5, 22);
-    ctx.drawImage(parts.rightArm.image, 22, 22);
-    ctx.drawImage(frameIdx === 1 ? parts.headBlink.image : parts.headOpen.image, 3, 2);
+    ctx.drawImage(parts.backHair.image, 3, 7);
+    ctx.drawImage(parts.leftLeg.image, 13, 35);
+    ctx.drawImage(parts.rightLeg.image, 18, 35);
+    ctx.drawImage(parts.torso.image, 11, 24);
+    ctx.drawImage(parts.leftArm.image, 8, 25);
+    ctx.drawImage(parts.rightArm.image, 23, 25);
+    ctx.drawImage(parts.frontLockL.image, 10, 21);
+    ctx.drawImage(parts.frontLockR.image, 22, 21);
+    ctx.drawImage(frameIdx === 1 ? parts.headBlink.image : parts.headOpen.image, 2, 0);
     return register(label, c2, { wrap: false, pixel: true, mip: false });
   }
   function chibiShadowMap(label = "chibi-shadow-map") {
@@ -19547,35 +19646,43 @@ function createProtagonist(textures) {
   group.add(rigBillboard);
   const rigFlip = new jl();
   rigBillboard.add(rigFlip);
-  const PIXEL_UNIT = 0.035;
+  const PIXEL_UNIT = 0.03;
   const backHairPivot = new jl();
-  backHairPivot.position.set(0, 0.74, -0.024);
-  const backHairMesh = makeSlot("backHair", 30 * PIXEL_UNIT, 25 * PIXEL_UNIT, 0, -0.25, 0, parts.backHair);
+  backHairPivot.position.set(0, 0.74, -0.028);
+  const backHairMesh = makeSlot("backHair", 30 * PIXEL_UNIT, 32 * PIXEL_UNIT, 0, 0, 0, parts.backHair);
   backHairPivot.add(backHairMesh);
   rigFlip.add(backHairPivot);
   const leftLegPivot = new jl();
-  leftLegPivot.position.set(-0.1, 0.29, -8e-3);
-  leftLegPivot.add(makeSlot("leftLeg", 7 * PIXEL_UNIT, 9 * PIXEL_UNIT, 0, -0.125, 0, parts.leftLeg || parts.leg));
+  leftLegPivot.position.set(-0.075, 0.35, -0.012);
+  leftLegPivot.add(makeSlot("leftLeg", 5 * PIXEL_UNIT, 12 * PIXEL_UNIT, 0, -0.15, 0, parts.leftLeg || parts.leg));
   rigFlip.add(leftLegPivot);
   const rightLegPivot = new jl();
-  rightLegPivot.position.set(0.1, 0.29, -4e-3);
-  rightLegPivot.add(makeSlot("rightLeg", 7 * PIXEL_UNIT, 9 * PIXEL_UNIT, 0, -0.125, 0, parts.rightLeg || parts.leg));
+  rightLegPivot.position.set(0.075, 0.35, -6e-3);
+  rightLegPivot.add(makeSlot("rightLeg", 5 * PIXEL_UNIT, 12 * PIXEL_UNIT, 0, -0.15, 0, parts.rightLeg || parts.leg));
   rigFlip.add(rightLegPivot);
   const torsoPivot = new jl();
-  torsoPivot.position.set(0, 0.26, 4e-3);
-  torsoPivot.add(makeSlot("torso", 15 * PIXEL_UNIT, 11 * PIXEL_UNIT, 0, 0.17, 0, parts.torso));
+  torsoPivot.position.set(0, 0.35, 2e-3);
+  torsoPivot.add(makeSlot("torso", 14 * PIXEL_UNIT, 12 * PIXEL_UNIT, 0, 0.18, 0, parts.torso));
   rigFlip.add(torsoPivot);
   const leftArmPivot = new jl();
-  leftArmPivot.position.set(-0.2, 0.29, 8e-3);
-  leftArmPivot.add(makeSlot("leftArm", 9 * PIXEL_UNIT, 10 * PIXEL_UNIT, -0.09, -0.11, 0, parts.leftArm || parts.arm));
+  leftArmPivot.position.set(-0.225, 0.31, 6e-3);
+  leftArmPivot.add(makeSlot("leftArm", 5 * PIXEL_UNIT, 12 * PIXEL_UNIT, 0, -0.16, 0, parts.leftArm || parts.arm));
   torsoPivot.add(leftArmPivot);
   const rightArmPivot = new jl();
-  rightArmPivot.position.set(0.2, 0.29, 0.01);
-  rightArmPivot.add(makeSlot("rightArm", 9 * PIXEL_UNIT, 10 * PIXEL_UNIT, 0.09, -0.11, 0, parts.rightArm || parts.arm));
+  rightArmPivot.position.set(0.225, 0.31, 8e-3);
+  rightArmPivot.add(makeSlot("rightArm", 5 * PIXEL_UNIT, 12 * PIXEL_UNIT, 0, -0.16, 0, parts.rightArm || parts.arm));
   torsoPivot.add(rightArmPivot);
+  const frontLockLPivot = new jl();
+  frontLockLPivot.position.set(-0.18, 0.45, 0.012);
+  frontLockLPivot.add(makeSlot("frontLockL", 4 * PIXEL_UNIT, 12 * PIXEL_UNIT, 0, -0.18, 0, parts.frontLockL));
+  torsoPivot.add(frontLockLPivot);
+  const frontLockRPivot = new jl();
+  frontLockRPivot.position.set(0.18, 0.45, 0.014);
+  frontLockRPivot.add(makeSlot("frontLockR", 4 * PIXEL_UNIT, 12 * PIXEL_UNIT, 0, -0.18, 0, parts.frontLockR));
+  torsoPivot.add(frontLockRPivot);
   const headPivot = new jl();
-  headPivot.position.set(0, 0.32, 0.018);
-  const headMesh = makeSlot("head", 30 * PIXEL_UNIT, 26 * PIXEL_UNIT, 0, 0.32, 0, parts.headOpen);
+  headPivot.position.set(0, 0.36, 0.018);
+  const headMesh = makeSlot("head", 32 * PIXEL_UNIT, 28 * PIXEL_UNIT, 0, 0.3, 0, parts.headOpen);
   headPivot.add(headMesh);
   torsoPivot.add(headPivot);
   const aoCanvas = document.createElement("canvas");
@@ -19589,7 +19696,7 @@ function createProtagonist(textures) {
   aoCtx.fillStyle = aoGrad;
   aoCtx.fillRect(0, 0, 48, 48);
   const contactAoTex = new Vh(aoCanvas);
-  const contactAoGeo = new ha(0.84, 0.5);
+  const contactAoGeo = new ha(0.56, 0.4);
   contactAoGeo.rotateX(-Math.PI / 2);
   const contactAoMat = new es({
     map: contactAoTex,
@@ -19602,7 +19709,7 @@ function createProtagonist(textures) {
   const contactAoMesh = new Bs(contactAoGeo, contactAoMat);
   contactAoMesh.position.y = 0.02;
   group.add(contactAoMesh);
-  const dirShadowGeo = new ha(0.86, 1.58);
+  const dirShadowGeo = new ha(0.68, 1.48);
   dirShadowGeo.rotateX(-Math.PI / 2);
   dirShadowGeo.translate(0, 0, 0.62);
   const dirShadowMat = new es({
@@ -19622,6 +19729,7 @@ function createProtagonist(textures) {
   let currentStopId = "archway";
   let currentMoodName = "amber";
   let walkPhase = 0;
+  let poseOverride = null;
   function refreshShadowState() {
     const isNight = currentMoodName === "night" || currentMoodName === "sunset" || currentMoodName === "convergence";
     const inPorchShade = currentStopId === "library";
@@ -19661,7 +19769,7 @@ function createProtagonist(textures) {
     }
     refreshShadowState();
   }
-  function applyPose({ walking, elapsed, speedFrac, facingX }) {
+  function applyPose({ walking, elapsed = 0, speedFrac = 1, facingX = 1, walkPhase: walkPhaseArg = walkPhase }) {
     rigFlip.scale.x = facingX < -0.02 ? -1 : 1;
     rigFlip.position.y = 0;
     rigFlip.rotation.z = 0;
@@ -19672,35 +19780,41 @@ function createProtagonist(textures) {
     rightLegPivot.rotation.z = 0;
     leftArmPivot.rotation.z = 0;
     rightArmPivot.rotation.z = 0;
-    const snapPx = (v) => Math.round(v / 875e-5) * 875e-5;
+    const snapPx = (v) => Math.round(v / 75e-4) * 75e-4;
     if (walking) {
-      const s = Math.sin(walkPhase);
+      const s = Math.sin(walkPhaseArg);
       const absS = Math.abs(s);
-      const stepL = Math.max(0, s) * 0.056 * speedFrac;
-      const stepR = Math.max(0, -s) * 0.056 * speedFrac;
-      leftLegPivot.position.set(-0.1 - s * 0.026 * speedFrac, 0.29 + snapPx(stepL), -8e-3);
-      rightLegPivot.position.set(0.1 + s * 0.026 * speedFrac, 0.29 + snapPx(stepR), -4e-3);
-      torsoPivot.position.y = 0.26 + snapPx(absS * 0.022 * speedFrac);
+      const stepL = Math.max(0, s) * 0.06 * speedFrac;
+      const stepR = Math.max(0, -s) * 0.06 * speedFrac;
+      leftLegPivot.position.set(-0.075 - snapPx(s * 0.022 * speedFrac), 0.35 + snapPx(stepL), -0.012);
+      rightLegPivot.position.set(0.075 + snapPx(s * 0.022 * speedFrac), 0.35 + snapPx(stepR), -6e-3);
+      torsoPivot.position.y = 0.35 + snapPx(absS * 0.03 * speedFrac);
       torsoPivot.scale.set(1, 1, 1);
-      headPivot.position.y = 0.32 + snapPx(absS * 0.026 * speedFrac);
-      leftArmPivot.position.y = 0.29 - snapPx(s * 0.024 * speedFrac);
-      rightArmPivot.position.y = 0.29 + snapPx(s * 0.024 * speedFrac);
-      backHairPivot.position.y = 0.74 + snapPx(absS * 0.026 * speedFrac);
+      headPivot.position.y = 0.36 + snapPx(absS * 0.03 * speedFrac);
+      leftArmPivot.position.set(-0.225 - snapPx(s * 0.015 * speedFrac), 0.31 + snapPx(s * 0.045 * speedFrac), 6e-3);
+      rightArmPivot.position.set(0.225 + snapPx(s * 0.015 * speedFrac), 0.31 - snapPx(s * 0.045 * speedFrac), 8e-3);
+      frontLockLPivot.position.set(-0.18 - snapPx(s * 0.015 * speedFrac), 0.45 + snapPx(absS * 0.022 * speedFrac), 0.012);
+      frontLockRPivot.position.set(0.18 - snapPx(s * 0.015 * speedFrac), 0.45 + snapPx(absS * 0.022 * speedFrac), 0.014);
+      backHairPivot.position.y = 0.74 + snapPx(absS * 0.03 * speedFrac);
       backHairPivot.scale.set(1, 1, 1);
       headMesh.material.map = parts.headOpen;
       headMesh.material.emissiveMap = parts.headOpen;
       return;
     }
-    const b = Math.sin(elapsed * 3.4);
-    const bLag = Math.sin(elapsed * 3.4 - 0.65);
-    leftLegPivot.position.set(-0.1, 0.29, -8e-3);
-    rightLegPivot.position.set(0.1, 0.29, -4e-3);
-    torsoPivot.position.y = 0.26 + snapPx(b * 0.014);
+    const b = Math.sin(elapsed * 2.6);
+    const bLag = Math.sin(elapsed * 2.6 - 0.65);
+    const swayL = Math.sin(elapsed * 1.4);
+    const swayR = Math.sin(elapsed * 1.4 - 0.8);
+    leftLegPivot.position.set(-0.075, 0.35, -0.012);
+    rightLegPivot.position.set(0.075, 0.35, -6e-3);
+    torsoPivot.position.y = 0.35 + snapPx(b * 0.015);
     torsoPivot.scale.set(1, 1, 1);
-    headPivot.position.y = 0.32 + snapPx(bLag * 0.018);
-    leftArmPivot.position.y = 0.29 + snapPx(bLag * 0.014);
-    rightArmPivot.position.y = 0.29 + snapPx(bLag * 0.014);
-    backHairPivot.position.y = 0.74 + snapPx(bLag * 0.014);
+    headPivot.position.y = 0.36 + snapPx(bLag * 0.018);
+    leftArmPivot.position.set(-0.225, 0.31 + snapPx(bLag * 0.015), 6e-3);
+    rightArmPivot.position.set(0.225, 0.31 + snapPx(bLag * 0.015), 8e-3);
+    frontLockLPivot.position.set(-0.18 + snapPx(swayL * 75e-4), 0.45 + snapPx(bLag * 0.015), 0.012);
+    frontLockRPivot.position.set(0.18 + snapPx(swayR * 75e-4), 0.45 + snapPx(bLag * 0.015), 0.014);
+    backHairPivot.position.y = 0.74 + snapPx(bLag * 0.015);
     backHairPivot.scale.set(1, 1, 1);
     const blinkCycle = elapsed % 3.9;
     const isBlink = elapsed > 0.25 && blinkCycle > 3.74;
@@ -19716,6 +19830,10 @@ function createProtagonist(textures) {
       const dz = camera.position.z - group.position.z;
       rigBillboard.rotation.y = Math.atan2(dx, dz);
     }
+    if (poseOverride) {
+      applyPose(poseOverride);
+      return;
+    }
     if (dt2 <= 0) {
       applyPose({ walking: false, elapsed: 0, speedFrac: 0, facingX: 1 });
       return;
@@ -19724,7 +19842,7 @@ function createProtagonist(textures) {
     const localTime = elapsed % 8;
     const activeTransition = group.position.distanceTo(baseAnchorPos) > 1.25;
     if (!activeTransition) {
-      const patOffset = localTime < 5.5 ? (strollSlot % 2 * 2 - 1) * 0.68 : 0;
+      const patOffset = localTime > 2.2 && localTime < 6 ? strollSlot % 2 === 0 ? 0.68 : -0.68 : 0;
       targetPos.set(baseAnchorPos.x + patOffset, baseAnchorPos.y, baseAnchorPos.z);
     }
     const dxMove = targetPos.x - group.position.x;
@@ -19749,6 +19867,10 @@ function createProtagonist(textures) {
     group,
     setAnchor,
     setMood,
+    setPoseOverride: (pose) => {
+      poseOverride = pose || null;
+      if (poseOverride) applyPose(poseOverride);
+    },
     update
   };
 }
