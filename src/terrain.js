@@ -137,14 +137,24 @@ export function createTerrainComponent(textures, palette) {
       xform(planterOuter, [xCenter, 0.17, pzCenter]);
       graniteGeos.push(planterOuter);
 
-      const planterLawn = new THREE.BoxGeometry(pw - 0.5, 0.38, pd - 0.5);
-      xform(planterLawn, [xCenter, 0.19, pzCenter]);
+      const planterLawn = new THREE.BoxGeometry(pw - 0.5, 0.39, pd - 0.5);
+      xform(planterLawn, [xCenter, 0.195, pzCenter]);
       grassGeos.push(planterLawn);
-
-      const planterMulch = new THREE.BoxGeometry(pw - 1.55, 0.40, pd - 1.65);
-      xform(planterMulch, [xCenter, 0.20, pzCenter]);
-      soilGeos.push(planterMulch);
     }
+  }
+  // Stone-curbed individual mulch rings around foreground avenue planters' sakura trees (no bare strips)
+  for (const [tx, tz] of [
+    [-10.0, 22.8], [-11.0, 19.2], [-10.8, 15.8], [-9.8, 30.0],
+    [12.2, 22.8], [12.6, 19.2], [12.4, 15.8], [11.4, 30.0],
+  ]) {
+    const tCurb = new THREE.BoxGeometry(1.22, 0.14, 1.22);
+    xform(tCurb, [tx, 0.38, tz]);
+    graniteGeos.push(tCurb);
+    const tSoil = new THREE.BoxGeometry(0.92, 0.16, 0.92);
+    xform(tSoil, [tx, 0.385, tz]);
+    soilGeos.push(tSoil);
+  }
+  for (const sx of [-1, 1]) {
 
     const curb = new THREE.BoxGeometry(0.32, 0.42, 16.0);
     xform(curb, [sx * 6.0, 0.21, 7.2]);
@@ -215,6 +225,75 @@ export function createTerrainComponent(textures, palette) {
       group.add(halo);
     }
   }
+
+  // 4 Hero South Paifang Promenade Lamps + Additive Night Warm Light Pools (MAJOR #6)
+  const groundPoolMat = new THREE.MeshBasicMaterial({
+    map: textures.bokehDot('terrain-lamp-pool'),
+    color: new THREE.Color('#ffba5e'),
+    transparent: true,
+    opacity: 0.0,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  });
+
+  const southLampGeos = [];
+  const southLampHeadGeos = [];
+  for (const sx of [-1, 1]) {
+    for (const lz of [19.8, 26.8]) {
+      const lx = sx * 7.2;
+      const plinth = new THREE.BoxGeometry(0.42, 0.36, 0.42);
+      xform(plinth, [lx, 0.28, lz]);
+      graniteGeos.push(plinth);
+      const shaft = new THREE.CylinderGeometry(0.06, 0.08, 1.85, 8);
+      xform(shaft, [lx, 1.38, lz]);
+      southLampGeos.push(shaft);
+      const collar = new THREE.BoxGeometry(0.30, 0.05, 0.30);
+      xform(collar, [lx, 2.26, lz]);
+      southLampGeos.push(collar);
+      const head = new THREE.BoxGeometry(0.26, 0.32, 0.26);
+      xform(head, [lx, 2.44, lz]);
+      southLampHeadGeos.push(head);
+      const cap = new THREE.ConeGeometry(0.24, 0.16, 4);
+      xform(cap, [lx, 2.66, lz], [0, Math.PI * 0.25, 0]);
+      southLampGeos.push(cap);
+
+      const halo = new THREE.Sprite(palette.lampHaloMat);
+      halo.position.set(lx, 2.46, lz);
+      halo.scale.set(1.35, 1.35, 1);
+      group.add(halo);
+
+      const pool = new THREE.Mesh(new THREE.PlaneGeometry(5.2, 5.2), groundPoolMat);
+      pool.rotation.x = -Math.PI / 2;
+      pool.position.set(lx, 0.165, lz);
+      group.add(pool);
+    }
+  }
+  for (const sx of [-1, 1]) {
+    for (const lz of [11.0, 8.0, 5.0]) {
+      const pool = new THREE.Mesh(new THREE.PlaneGeometry(4.4, 4.4), groundPoolMat);
+      pool.rotation.x = -Math.PI / 2;
+      pool.position.set(sx * 6.0, 0.165, lz);
+      group.add(pool);
+    }
+  }
+  for (const px of [-4.2, 0, 4.2]) {
+    const gatePool = new THREE.Mesh(new THREE.PlaneGeometry(5.8, 5.4), groundPoolMat);
+    gatePool.rotation.x = -Math.PI / 2;
+    gatePool.position.set(px, 0.17, 16.0);
+    group.add(gatePool);
+  }
+
+  const southLampMesh = new THREE.Mesh(mergeSafe(southLampGeos), palette.darkTimberMat);
+  southLampMesh.castShadow = true;
+  southLampMesh.receiveShadow = true;
+  group.add(southLampMesh);
+  const southLampHeadMesh = new THREE.Mesh(mergeSafe(southLampHeadGeos), palette.lampGlowMat);
+  group.add(southLampHeadMesh);
+
+  // Granite southern lakefront embankment curb framing East Lake perimeter cleanly (MINOR #4)
+  const seLakeCurb = new THREE.BoxGeometry(16.8, 0.36, 0.44);
+  xform(seLakeCurb, [16.8, 0.28, 9.28]);
+  graniteGeos.push(seLakeCurb);
 
   // Tier 1 Terrace (Old Dormitory level) retaining walls & balustrades
   const tier1Body = new THREE.BoxGeometry(23.6, 2.02, 15.2);
@@ -507,12 +586,12 @@ export function createTerrainComponent(textures, palette) {
     }
   });
 
-  // Perimeter sloped hillside ridges
+  // Perimeter sloped hillside ridges along west & north retaining walls
   const slopeConfigs = [
-    { pos: [-17.5, 0.95, -5.0], rx: 6.2, rz: 10.5, h: 2.3 },
+    { pos: [-17.5, 0.95, -5.0], rx: 5.4, rz: 9.8, h: 2.1 },
     { pos: [-11.5, 1.9, -15.6], rx: 8.5, rz: 5.2, h: 4.1 },
     { pos: [-1.0, 1.6, -18.4], rx: 12.6, rz: 5.8, h: 3.6 },
-    { pos: [-17.2, 0.7, 6.8], rx: 5.2, rz: 6.8, h: 1.7 },
+    { pos: [-17.2, 0.7, 6.8], rx: 4.8, rz: 6.4, h: 1.6 },
   ];
   const hillGeos = slopeConfigs.map((b) => {
     const g = new THREE.SphereGeometry(1.0, 20, 14);
@@ -568,6 +647,9 @@ export function createTerrainComponent(textures, palette) {
 
   return {
     group,
-    setMood() {},
+    setMood(mood) {
+      const isNight = mood === 'night' || mood === 'sunset' || mood === 'convergence';
+      groundPoolMat.opacity = isNight ? 0.26 : 0.0;
+    },
   };
 }

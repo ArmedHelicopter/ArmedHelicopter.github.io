@@ -339,13 +339,14 @@ export function createLightingSystem(scene, renderer) {
   keyLight.castShadow = true;
   keyLight.shadow.mapSize.set(2048, 2048);
   keyLight.shadow.camera.near = 4;
-  keyLight.shadow.camera.far = 115;
+  keyLight.shadow.camera.far = 84;
   keyLight.shadow.camera.left = -28;
   keyLight.shadow.camera.right = 28;
   keyLight.shadow.camera.top = 26;
   keyLight.shadow.camera.bottom = -26;
   keyLight.shadow.bias = -0.00022;
-  keyLight.shadow.normalBias = 0.014;
+  keyLight.shadow.normalBias = 0.018;
+  keyLight.shadow.radius = 2.0;
   scene.add(keyLight);
   scene.add(keyLight.target);
   keyLight.target.updateMatrixWorld();
@@ -416,7 +417,7 @@ export function createLightingSystem(scene, renderer) {
   });
 
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFShadowMap;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.shadowMap.autoUpdate = false;
 
   let currentMood = 'amber';

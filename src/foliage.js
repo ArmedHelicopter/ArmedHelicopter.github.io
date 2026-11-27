@@ -163,6 +163,11 @@ export function createFoliageComponent(textures, palette) {
     { pos: [3.2, 4.55, -17.8], scale: 0.96 },
     { pos: [-4.6, 4.55, -6.4], scale: 0.96 },
     { pos: [-3.2, 4.55, -7.2], scale: 0.90 },
+    // Mountain-edge sakura accents weaving campus into Luojia western woods
+    { pos: [-19.4, 0.95, 1.2], scale: 1.02 },
+    { pos: [-21.8, 1.55, -5.4], scale: 1.04 },
+    { pos: [-25.6, 2.15, -14.2], scale: 1.06 },
+    { pos: [-32.4, 2.95, -9.8], scale: 1.08 },
   ];
 
   const trunkGeos = [];
@@ -171,6 +176,9 @@ export function createFoliageComponent(textures, palette) {
   const innerSprayMatrices = [];
   const sakuraRimMatrices = [];
   const sakuraRimColors = [];
+  const camphorSprayMatrices = [];
+  const camphorRimMatrices = [];
+  const camphorRimColors = [];
   const _sShadeBot = new THREE.Color('#cf7d9e');
   const _sShadeMid = new THREE.Color('#f7c4d8');
   const _sShadeTop = new THREE.Color('#ffffff');
@@ -189,13 +197,16 @@ export function createFoliageComponent(textures, palette) {
 
   sakuraTreeCoords.forEach((tree, idx) => {
     const s = tree.scale;
+    const basePos = tree.pos[0] < -16.5
+      ? [tree.pos[0], luojiaHeight(tree.pos[0], tree.pos[2]) - 0.04, tree.pos[2]]
+      : tree.pos;
     const rotY = (idx * 1.73) % (Math.PI * 2);
     const { trunkGeo, twigTips } = buildBranchingTreeGeo(300 + idx, 1.0);
-    xform(trunkGeo, tree.pos, [0, rotY, 0], [s, s, s]);
+    xform(trunkGeo, basePos, [0, rotY, 0], [s, s, s]);
     trunkGeos.push(trunkGeo);
 
     const mound = new THREE.CylinderGeometry(0.28 * s, 0.56 * s, 0.11, 10);
-    xform(mound, [tree.pos[0], tree.pos[1] + 0.03, tree.pos[2]]);
+    xform(mound, [basePos[0], basePos[1] + 0.03, basePos[2]]);
     soilMoundGeos.push(mound);
 
     const cos = Math.cos(rotY);
@@ -209,9 +220,9 @@ export function createFoliageComponent(textures, palette) {
       const ly = pt[1] + (tr() - 0.35) * 0.26;
       const lz = pt[2] + (tr() - 0.5) * 0.34;
 
-      const wx = tree.pos[0] + (lx * cos - lz * sin) * s;
-      const wy = tree.pos[1] + ly * s;
-      const wz = tree.pos[2] + (lx * sin + lz * cos) * s;
+      const wx = basePos[0] + (lx * cos - lz * sin) * s;
+      const wy = basePos[1] + ly * s;
+      const wz = basePos[2] + (lx * sin + lz * cos) * s;
 
       // Subtle inner depth puff recessed strictly inside forks + dense feathery alpha-tested exterior sprays
       if (pIdx % 4 === 0) {
@@ -263,6 +274,23 @@ export function createFoliageComponent(textures, palette) {
         sakuraRimColors.push(gradCrownColor(_sShadeBot, _sShadeMid, _sShadeTop, sH02 + 0.08));
       }
     });
+
+    // Mossy root-base grass/clover sprays grounding trunks inside stone tree pits (MAJOR #5)
+    for (let gIdx = 0; gIdx < 3; gIdx++) {
+      const ga = rotY + (gIdx / 3) * Math.PI * 2;
+      const gr = 0.26 * s;
+      dummy.position.set(
+        basePos[0] + Math.cos(ga) * gr,
+        basePos[1] + 0.14,
+        basePos[2] + Math.sin(ga) * gr
+      );
+      dummy.rotation.set(0, ga, 0);
+      const gSc = (0.28 + (gIdx % 2) * 0.08) * s;
+      dummy.scale.set(gSc * 1.15, gSc * 0.52, gSc * 1.15);
+      dummy.updateMatrix();
+      camphorRimMatrices.push(dummy.matrix.clone());
+      camphorRimColors.push(gradCrownColor(_gShadeBot, _gShadeMid, _gShadeTop, 0.28 + gIdx * 0.15));
+    }
   });
 
   const greenTreeCoords = [
@@ -325,11 +353,85 @@ export function createFoliageComponent(textures, palette) {
     [30.0, 0, 24.0, 1.3],
     [40.0, 0, 20.0, 1.32],
     [48.0, 0, 16.0, 1.34],
+    // Dense perimeter woodland grove framing NW, N & NE camera backdrops
+    [-20.5, 0, 29.0, 1.36],
+    [-28.5, 0, 26.5, 1.44],
+    [-33.0, 0, 17.5, 1.48],
+    [-27.0, 0, 11.5, 1.38],
+    [-37.5, 0, 4.0, 1.52],
+    [-29.5, 0, -5.5, 1.46],
+    [-36.5, 0, -13.0, 1.50],
+    [-26.5, 0, -18.5, 1.44],
+    [-19.5, 0, -25.5, 1.46],
+    [-8.5, 0, -26.5, 1.42],
+    [1.5, 0, -27.0, 1.40],
+    [10.5, 0, -27.5, 1.36],
+    [18.5, 0, -27.5, 1.34],
+    [-33.0, 0, -26.0, 1.52],
+    [-21.0, 0, -31.5, 1.48],
+    [-7.5, 0, -32.5, 1.44],
+    [4.5, 0, -32.0, 1.42],
+    [15.5, 0, -32.5, 1.38],
+    [-40.5, 0, -21.0, 1.54],
+    [-41.0, 0, 13.5, 1.50],
+    // Rich continuous hillside grove across SW/W/NW/N overview quadrant (camera at [+42,+31,+44] -> top-left = SW/W!)
+    [-19.0, 0, 19.5, 1.28],
+    [-20.5, 0, 34.5, 1.38],
+    [-25.5, 0, 38.0, 1.44],
+    [-29.5, 0, 31.5, 1.46],
+    [-33.5, 0, 24.5, 1.48],
+    [-37.0, 0, 30.5, 1.54],
+    [-39.0, 0, 21.5, 1.52],
+    [-44.5, 0, 18.0, 1.58],
+    [-46.5, 0, 25.5, 1.62],
+    [-43.5, 0, 36.5, 1.56],
+    [-51.0, 0, 31.0, 1.64],
+    [-54.0, 0, 21.5, 1.62],
+    [-52.0, 0, 9.5, 1.60],
+    [-49.5, 0, 1.0, 1.58],
+    [-54.5, 0, -7.5, 1.62],
+    [-46.0, 0, -16.5, 1.56],
+    [-36.5, 0, -20.5, 1.50],
+    [-30.0, 0, -29.5, 1.48],
+    [-24.5, 0, -37.0, 1.50],
+    [-16.0, 0, -31.5, 1.44],
+    [-9.5, 0, -38.5, 1.46],
+    [1.0, 0, -39.0, 1.44],
+    [11.5, 0, -37.5, 1.40],
+    [19.5, 0, -33.5, 1.36],
+    // Dense continuous Luojia woodland directly filling top-left overview quadrant ([-45..-18] x [-26..+8])
+    [-18.6, 0, 5.2, 1.26],
+    [-20.8, 0, -1.6, 1.34],
+    [-19.2, 0, -11.4, 1.36],
+    [-18.8, 0, -17.2, 1.38],
+    [-24.2, 0, 3.8, 1.38],
+    [-25.6, 0, -3.4, 1.42],
+    [-28.8, 0, 2.2, 1.44],
+    [-31.8, 0, -1.2, 1.48],
+    [-29.2, 0, -12.6, 1.46],
+    [-34.2, 0, -6.4, 1.52],
+    [-34.6, 0, 4.2, 1.50],
+    [-36.2, 0, -15.8, 1.54],
+    [-38.4, 0, -2.8, 1.56],
+    [-39.2, 0, -9.6, 1.58],
+    [-41.5, 0, -16.8, 1.60],
+    [-42.2, 0, -6.2, 1.60],
+    [-43.5, 0, -1.8, 1.58],
+    [-44.5, 0, -13.4, 1.62],
+    [-45.2, 0, -22.5, 1.64],
+    [-38.8, 0, -23.2, 1.58],
+    [-33.0, 0, -21.8, 1.52],
+    [-26.5, 0, -23.5, 1.48],
+    [-22.5, 0, 12.8, 1.34],
+    [-27.8, 0, 14.2, 1.40],
+    [-33.4, 0, 9.5, 1.46],
+    [-39.8, 0, 7.6, 1.52],
+    [-46.2, 0, -8.5, 1.62],
+    [-47.5, 0, -17.5, 1.64],
+    [-40.8, 0, -27.2, 1.58],
+    [-34.2, 0, -27.8, 1.54],
   ];
 
-  const camphorSprayMatrices = [];
-  const camphorRimMatrices = [];
-  const camphorRimColors = [];
   greenTreeCoords.forEach(([gx, gy, gz, gs], idx) => {
     if (gx > shoreX(gz) - 3.4 || (gz > -19.2 && gz < 13.2 && gx > 5.5)) return;
     // Prevent green camphor crowns from intersecting into nearby sakura blossom crowns
@@ -425,6 +527,10 @@ export function createFoliageComponent(textures, palette) {
     [27.4, 0.36, 9.6, 0.95],
     [24.2, 0.36, 9.8, 0.88],
     [32.2, 0.36, 11.2, 1.08],
+    [13.4, 0.32, 9.8, 0.95],
+    [16.2, 0.32, 9.9, 1.04],
+    [19.4, 0.32, 9.8, 0.98],
+    [21.8, 0.32, 10.2, 1.06],
   ];
   shrubCoords.forEach(([sx, sy, sz, ss], idx) => {
     const sr = mulberry32(1400 + idx * 29);
@@ -446,21 +552,21 @@ export function createFoliageComponent(textures, palette) {
     }
   });
 
-  // Undergrowth hillside fern beds scattered across both NW and NE/E lakeside hillsides (MINOR #1)
-  for (let i = 0; i < 95; i++) {
-    const eastSide = i >= 65;
-    const ux = eastSide ? 9.5 + rand() * 19.0 : -18.0 - rand() * 44.0;
-    const uz = eastSide ? -36.0 + rand() * 20.0 : -46.0 + rand() * 76.0;
+  // Undergrowth hillside fern beds & multi-tier woodland shrubs across NW/W/N hillsides (MAJOR #2)
+  for (let i = 0; i < 240; i++) {
+    const eastSide = i >= 195;
+    const ux = eastSide ? 9.5 + rand() * 19.0 : -17.2 - rand() * 34.0;
+    const uz = eastSide ? -36.0 + rand() * 20.0 : -34.0 + rand() * 52.0;
     if (ux > shoreX(uz) - 3.0) continue;
     const uh = luojiaHeight(ux, uz);
-    if (uh < 0.38) continue;
-    dummy.position.set(ux, uh + 0.20, uz);
+    if (uh < 0.25) continue;
+    dummy.position.set(ux, uh + 0.24 + (i % 3) * 0.14, uz);
     dummy.rotation.set((rand() - 0.5) * 0.3, rand() * Math.PI * 2, (rand() - 0.5) * 0.3);
-    const uSc = 0.62 + rand() * 0.44;
-    dummy.scale.set(uSc * 1.25, uSc * 0.65, uSc * 1.25);
+    const uSc = 0.78 + rand() * 0.62;
+    dummy.scale.set(uSc * 1.35, uSc * 0.76, uSc * 1.35);
     dummy.updateMatrix();
     camphorRimMatrices.push(dummy.matrix.clone());
-    camphorRimColors.push(gradCrownColor(_gShadeBot, _gShadeMid, _gShadeTop, 0.25 + (i % 3) * 0.25));
+    camphorRimColors.push(gradCrownColor(_gShadeBot, _gShadeMid, _gShadeTop, 0.22 + (i % 3) * 0.26));
   }
 
   const allTrunksMesh = new THREE.Mesh(mergeSafe(trunkGeos), palette.barkMat);
@@ -555,37 +661,34 @@ export function createFoliageComponent(textures, palette) {
   const farForestColors = [];
   const farSakuraMatrices = [];
   const forestRand = mulberry32(20261125);
-  for (let gx = -112; gx <= 56; gx += 3.5) {
-    for (let gz = -96; gz <= 92; gz += 3.5) {
-      if (farForestMatrices.length >= 2600) break;
-      const fx = gx + (forestRand() - 0.5) * 2.2;
-      const fz = gz + (forestRand() - 0.5) * 2.2;
-      if (fx >= -19.5 && fx <= 15.5 && fz >= -19.5 && fz <= 40.5) continue;
-      if (fx >= shoreX(fz) - 3.2) continue;
+  for (let gx = -96; gx <= 48; gx += 2.35) {
+    for (let gz = -88; gz <= 84; gz += 2.35) {
+      if (farForestMatrices.length >= 6200) break;
+      const fx = gx + (forestRand() - 0.5) * 1.9;
+      const fz = gz + (forestRand() - 0.5) * 1.9;
+      if (fx >= -18.2 && fx <= 15.2 && fz >= -18.2 && fz <= 39.6) continue;
+      if (fx >= shoreX(fz) - 2.4) continue;
       const h = luojiaHeight(fx, fz);
-      if (h <= 0.65) continue;
-      const clearing =
-        Math.sin(fx * 0.08 + 1.3) * Math.cos(fz * 0.07 - 0.7) + 0.3 * Math.sin((fx + fz) * 0.17);
-      if (clearing <= -0.88) continue;
+      if (h <= 0.22) continue;
 
-      const isInner = Math.abs(fx) < 58 && Math.abs(fz) < 58;
-      const isCherryAccent = isInner && fx < -16 && fz < 28 && forestRand() < 0.085 && farSakuraMatrices.length < 180;
-      const clusterCount = isInner ? 3 + (forestRand() > 0.5 ? 1 : 0) : 3;
-      for (let c = 0; c < clusterCount && farForestMatrices.length < 2600; c++) {
-        const px = fx + (forestRand() - 0.5) * 1.6;
-        const pz = fz + (forestRand() - 0.5) * 1.6;
+      const isInner = Math.abs(fx) < 62 && Math.abs(fz) < 62;
+      const isCherryAccent = isInner && fx < -16 && fz < 28 && forestRand() < 0.08 && farSakuraMatrices.length < 240;
+      const clusterCount = isInner ? 4 : 3;
+      for (let c = 0; c < clusterCount && farForestMatrices.length < 6200; c++) {
+        const px = fx + (forestRand() - 0.5) * 1.75;
+        const pz = fz + (forestRand() - 0.5) * 1.75;
         if (pz > -18.0 && pz < 12.0 && px > 6.5) continue;
         const ph = luojiaHeight(px, pz);
-        if (ph <= 0.58 || px >= shoreX(pz) - 2.6) continue;
-        const py = ph + 0.36 + forestRand() * 0.72;
+        if (ph <= 0.18 || px >= shoreX(pz) - 2.2) continue;
+        const py = ph + 0.55 + forestRand() * 1.45;
         dummy.position.set(px, py, pz);
         dummy.rotation.set(
-          (forestRand() - 0.5) * 0.24,
+          (forestRand() - 0.5) * 0.26,
           forestRand() * Math.PI * 2,
-          (forestRand() - 0.5) * 0.24
+          (forestRand() - 0.5) * 0.26
         );
-        const sc = (isInner ? 1.24 : 1.65) + forestRand() * 0.62;
-        dummy.scale.set(sc * 1.28, sc * 0.78, sc * 1.28);
+        const sc = (isInner ? 1.55 : 1.95) + forestRand() * 0.85;
+        dummy.scale.set(sc * 1.35, sc * 0.92, sc * 1.35);
         dummy.updateMatrix();
         if (isCherryAccent) {
           farSakuraMatrices.push(dummy.matrix.clone());

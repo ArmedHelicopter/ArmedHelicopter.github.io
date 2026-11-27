@@ -64,15 +64,14 @@ export function luojiaHeight(x, z) {
 
   let h = baseBank;
   if (dCore > 0.001) {
-    const tEnv = smooth01(0, 42, dCore);
-    const hillEnv = tEnv * tEnv;
+    const hillEnv = smooth01(0.0, 14.0, dCore);
     const ridgeWave =
-      2.6 +
-      5.2 * hillEnv +
-      2.1 * Math.sin(x * 0.055 + z * 0.032) +
-      1.45 * Math.cos(x * 0.088 - z * 0.062) +
-      0.85 * Math.sin(z * 0.135 - x * 0.042);
-    const rawHill = THREE.MathUtils.lerp(baseBank, Math.max(1.2, ridgeWave), hillEnv);
+      3.1 +
+      6.2 * hillEnv +
+      2.5 * Math.sin(x * 0.062 + z * 0.040) +
+      1.75 * Math.cos(x * 0.095 - z * 0.068) +
+      1.05 * Math.sin(z * 0.14 - x * 0.052);
+    const rawHill = THREE.MathUtils.lerp(baseBank, Math.max(2.0, ridgeWave), hillEnv);
 
     if (z < -15.2 || z > 9.05) {
       const distToShore = shoreX(z) - x;
@@ -106,6 +105,7 @@ export function createCampusPalette(textures) {
   const ashlarMap = textures.ashlarStone('campus-ashlar', '#ded2be', 79);
   const pierConcreteMap = textures.concretePier('pier-concrete', 83);
   const barkMap = textures.bark('cherry-bark');
+  barkMap.repeat.set(2, 4);
   const tileMaps = textures.glazedTiles('campus-glazed');
   const sakuraCanopyTex = textures.sakuraCanopy('sakura-canopy-vol', '#ffe8f0', '#ffc4d9', 88).map;
   const leafCanopyTex = textures.leafCanopy('leaf-canopy-vol', 91);
@@ -421,7 +421,7 @@ export function createCampusPalette(textures) {
 
   const barkMat = new THREE.MeshLambertMaterial({
     map: barkMap,
-    color: new THREE.Color('#8f7268'),
+    color: new THREE.Color('#c29f92'),
   });
 
   const sakuraOuterMat = new THREE.MeshLambertMaterial({
@@ -531,14 +531,14 @@ export function createCampusPalette(textures) {
       soilMat.color.set('#182034');
       dormWallMat.emissiveIntensity = 1.35;
       libWallMat.emissiveIntensity = 1.45;
-      glazedTileMat.color.set('#cce6f8');
-      glazedTileMat.roughness = 0.24;
-      glazedTileMat.envMapIntensity = 1.48;
-      glazedTileMat.emissive.set('#133858');
-      glazedTileMat.emissiveIntensity = 0.24;
-      glazedRidgeMat.color.set('#38869c');
-      glazedRidgeMat.emissive.set('#1d4e74');
-      glazedRidgeMat.emissiveIntensity = 0.36;
+      glazedTileMat.color.set('#5ca89e');
+      glazedTileMat.roughness = 0.26;
+      glazedTileMat.envMapIntensity = 1.25;
+      glazedTileMat.emissive.set('#0b3b39');
+      glazedTileMat.emissiveIntensity = 0.26;
+      glazedRidgeMat.color.set('#347874');
+      glazedRidgeMat.emissive.set('#0c3836');
+      glazedRidgeMat.emissiveIntensity = 0.28;
       // Warm dusty-rose neutral tint cancels blue night sky excess -> moonlit silvery-lavender sakura
       sakuraOuterMat.color.set('#c49eb2');
       sakuraInnerMat.color.set('#96788e');

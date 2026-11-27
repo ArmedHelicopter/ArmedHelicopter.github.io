@@ -52,6 +52,7 @@ export function createLakeComponent(textures, palette) {
       uShadowBias: { value: -0.00024 },
       uBoatPos: { value: new THREE.Vector2(16.8, -3.2) },
       uBoatCs: { value: new THREE.Vector2(1.0, 0.0) },
+      uFoamScale: { value: 1.0 },
       uLinearOutput: { value: 0.0 },
     },
   ]);
@@ -98,6 +99,7 @@ export function createLakeComponent(textures, palette) {
       uniform float uShadowBias;
       uniform vec2 uBoatPos;
       uniform vec2 uBoatCs;
+      uniform float uFoamScale;
       uniform float uLinearOutput;
       varying vec3 vWorldPos;
       varying vec4 vReflectCoord;
@@ -348,8 +350,8 @@ export function createLakeComponent(textures, palette) {
         float meniscusWave = 0.55 + 0.45 * sin((p.x * 3.4 + p.y * 2.6) + uTime * 2.1);
         float meniscus = smoothstep(0.18, 0.0, wallEdgeDist) * meniscusWave;
         float pilingMeniscus = smoothstep(0.28, 0.0, dPilings) * (0.55 + 0.45 * cos(dPilings * 28.0 - uTime * 2.2));
-        float boatRing = smoothstep(0.62, 0.02, max(0.0, dBoat)) * (0.52 + 0.48 * cos(max(0.0, dBoat) * 22.0 - uTime * 2.4));
-        col += mix(uShallowColor, vec3(0.96, 0.98, 1.0), 0.82) * (meniscus * 0.16 + pilingMeniscus * 0.22 + boatRing * 0.34) * mix(0.62, 1.0, shadowFactor);
+        float boatRing = smoothstep(0.38, 0.02, max(0.0, dBoat)) * (0.52 + 0.48 * cos(max(0.0, dBoat) * 24.0 - uTime * 2.4));
+        col += mix(uShallowColor, vec3(0.88, 0.94, 0.98), 0.72) * (meniscus * 0.14 + pilingMeniscus * 0.20 + boatRing * 0.22) * uFoamScale * mix(0.62, 1.0, shadowFactor);
 
         float horizonHaze = smoothstep(68.0, 148.0, camDist);
         col = mix(col, uHorizonColor, horizonHaze);
@@ -622,11 +624,11 @@ export function createLakeComponent(textures, palette) {
   applyWorldPlanarUVs(causewayBridge, 0.28, 0.28, true);
   pierGeos.push(causewayBridge);
 
-  const pavNorthStep1 = new THREE.BoxGeometry(1.20, 0.14, 0.40);
-  xform(pavNorthStep1, [10.72, 0.57, -4.55]);
+  const pavNorthStep1 = new THREE.BoxGeometry(1.36, 0.15, 0.44);
+  xform(pavNorthStep1, [10.72, 0.565, -4.52]);
   graniteGeos.push(pavNorthStep1);
-  const pavNorthStep2 = new THREE.BoxGeometry(1.20, 0.14, 0.36);
-  xform(pavNorthStep2, [10.72, 0.61, -4.35]);
+  const pavNorthStep2 = new THREE.BoxGeometry(1.36, 0.16, 0.42);
+  xform(pavNorthStep2, [10.72, 0.59, -4.32]);
   graniteGeos.push(pavNorthStep2);
 
   for (const cz of [-5.2, -6.4]) {
@@ -682,8 +684,9 @@ export function createLakeComponent(textures, palette) {
 
   // East Lake sightseeing tour boats (smooth painted timber hull & warm glowing cabin glass)
   const boatHullMat = new THREE.MeshStandardMaterial({
+    map: palette.pierMat.map,
     color: new THREE.Color('#f4efe6'),
-    roughness: 0.42,
+    roughness: 0.48,
     metalness: 0.04,
   });
   const boatDeckMat = new THREE.MeshStandardMaterial({
@@ -989,6 +992,7 @@ export function createLakeComponent(textures, palette) {
   function setMood(mood) {
     const isNight = mood === 'night' || mood === 'sunset' || mood === 'convergence';
     waterUniforms.uSunDir.value.copy(palette.sunDirUniform.value);
+    waterUniforms.uFoamScale.value = isNight ? 0.22 : 0.85;
     if (isNight) {
       boatWindowMat.color.set('#08080a');
       boatWindowMat.roughness = 0.92;

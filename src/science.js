@@ -192,62 +192,69 @@ export function createScienceComponent(textures, palette) {
   oculusGlass.position.set(sciX, domeBaseY + 1.36 * 0.88 + 0.01, sciZ);
   group.add(oculusGlass);
 
-  // 6. Semi-Circular Mini-Domed Side Apse (小穹顶耳室) + Glazed Breezeway (连廊) on East/NE Flank
-  const apseX = 8.05;
-  const apseZ = -10.25;
+  // 6. Semi-Circular Mini-Domed Side Apse (小穹顶耳室) + Glazed Breezeway (连廊) cleanly clear of roofs
+  const apseX = 8.28;
+  const apseZ = -10.12;
   const apseBody = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.54, 0.56, 1.72, 16),
+    new THREE.CylinderGeometry(0.44, 0.46, 1.66, 16),
     palette.libWallMat
   );
-  apseBody.position.set(apseX, sciY + 0.86, apseZ);
+  apseBody.position.set(apseX, sciY + 0.83, apseZ);
   apseBody.castShadow = true;
   apseBody.receiveShadow = true;
   group.add(apseBody);
 
-  const apseCollar = new THREE.CylinderGeometry(0.60, 0.58, 0.12, 16);
-  xform(apseCollar, [apseX, sciY + 1.76, apseZ]);
+  const apseCollar = new THREE.CylinderGeometry(0.50, 0.48, 0.12, 16);
+  xform(apseCollar, [apseX, sciY + 1.70, apseZ]);
   warmStoneGeos.push(apseCollar);
 
   const apseDome = new THREE.Mesh(
-    new THREE.SphereGeometry(0.54, 18, 10, 0, Math.PI * 2, 0, Math.PI * 0.48),
+    new THREE.SphereGeometry(0.44, 18, 10, 0, Math.PI * 2, 0, Math.PI * 0.48),
     palette.warmStoneMat
   );
-  apseDome.position.set(apseX, sciY + 1.80, apseZ);
+  apseDome.position.set(apseX, sciY + 1.74, apseZ);
   apseDome.castShadow = true;
   group.add(apseDome);
 
-  // Covered glazed breezeway linking Octagonal Hall -> Apse -> NE Wing
+  // Recessed cream-stone transition collar & covered glazed breezeway linking Octagonal Hall -> Apse -> NE Wing
+  const linkCollar = new THREE.BoxGeometry(2.30, 2.18, 1.45);
+  xform(linkCollar, [6.36, sciY + 1.09, -10.45]);
+  warmStoneGeos.push(linkCollar);
+  const linkParapet = new THREE.BoxGeometry(2.44, 0.24, 1.56);
+  xform(linkParapet, [6.36, sciY + 2.26, -10.45]);
+  graniteGeos.push(linkParapet);
+
   const breezeWall = new THREE.Mesh(
-    new THREE.BoxGeometry(0.95, 1.48, 2.35),
+    new THREE.BoxGeometry(1.10, 1.42, 1.72),
     palette.libWallMat
   );
-  breezeWall.position.set(6.72, sciY + 0.74, -10.35);
+  breezeWall.position.set(6.95, sciY + 0.71, -10.12);
   breezeWall.castShadow = true;
   group.add(breezeWall);
 
   const breezeRoof = roofGroup(
     {
-      halfW: 0.66,
-      halfD: 1.25,
-      H: 0.44,
+      halfW: 0.54,
+      halfD: 0.90,
+      H: 0.38,
       mode: 'xieshan',
-      inset: 0.28,
-      lift: 0.10,
+      inset: 0.22,
+      lift: 0.08,
       segU: 10,
       segV: 6,
-      soffitInward: 0.28,
+      soffitInward: 0.22,
       rafters: false,
     },
     palette.roofMats
   );
-  breezeRoof.position.set(6.72, sciY + 1.48, -10.35);
+  breezeRoof.position.set(6.95, sciY + 1.42, -10.12);
   group.add(breezeRoof);
 
-  // 7. Attached North-East Turquoise 歇山 Wing + 3-Story Flat-Roof Lab Block (f12aa9d2.jpg right/back)
+  // 7. Attached North-East Turquoise 歇山 Wing (clear of Octagonal Hall parapet) + Chinese-Renaissance Lab Annex
   const neWingX = 6.45;
-  const neWingZ = -12.75;
+  const neWingZ = -13.15;
   const neWingBody = new THREE.Mesh(
-    fitBoxFacadeUVs(new THREE.BoxGeometry(2.90, 2.15, 2.70), 2.90, 2.15, 2.70, 3.6),
+    fitBoxFacadeUVs(new THREE.BoxGeometry(2.85, 2.15, 2.65), 2.85, 2.15, 2.65, 3.6),
     palette.dormWallMat
   );
   neWingBody.position.set(neWingX, sciY + 1.075, neWingZ);
@@ -257,15 +264,15 @@ export function createScienceComponent(textures, palette) {
 
   const neWingRoof = roofGroup(
     {
-      halfW: 1.72,
+      halfW: 1.56,
       halfD: 1.56,
-      H: 0.88,
+      H: 0.86,
       mode: 'xieshan',
-      inset: 0.56,
-      lift: 0.20,
+      inset: 0.52,
+      lift: 0.18,
       segU: 16,
       segV: 8,
-      soffitInward: 0.56,
+      soffitInward: 0.52,
       rafters: true,
     },
     palette.roofMats
@@ -275,33 +282,67 @@ export function createScienceComponent(textures, palette) {
   group.add(neWingRoof);
 
   const rearLabX = 6.45;
-  const rearLabZ = -15.85;
+  const rearLabZ = -15.95;
   const rearLabBody = new THREE.Mesh(
-    fitBoxFacadeUVs(new THREE.BoxGeometry(3.05, 2.45, 2.45), 3.05, 2.45, 2.45, 3.6),
+    fitBoxFacadeUVs(new THREE.BoxGeometry(3.05, 2.38, 2.40), 3.05, 2.38, 2.40, 3.6),
     palette.dormWallMat
   );
-  rearLabBody.position.set(rearLabX, sciY + 1.225, rearLabZ);
+  rearLabBody.position.set(rearLabX, sciY + 1.19, rearLabZ);
   rearLabBody.castShadow = true;
   rearLabBody.receiveShadow = true;
   group.add(rearLabBody);
 
-  const rearLabParapet = new THREE.BoxGeometry(3.16, 0.22, 2.56);
-  xform(rearLabParapet, [rearLabX, sciY + 2.52, rearLabZ]);
+  const rearLabSkirtRoof = roofGroup(
+    {
+      halfW: 1.72,
+      halfD: 1.40,
+      H: 0.42,
+      mode: 'ring',
+      ring: 0.48,
+      lift: 0.14,
+      segU: 14,
+      segV: 6,
+      soffitInward: 0.46,
+      rafters: false,
+    },
+    palette.roofMats
+  );
+  rearLabSkirtRoof.position.set(rearLabX, sciY + 2.34, rearLabZ);
+  group.add(rearLabSkirtRoof);
+
+  const rearLabParapet = new THREE.BoxGeometry(2.74, 0.24, 2.12);
+  xform(rearLabParapet, [rearLabX, sciY + 2.66, rearLabZ]);
   warmStoneGeos.push(rearLabParapet);
 
-  const rearLabDeck = new THREE.BoxGeometry(2.86, 0.10, 2.26);
-  xform(rearLabDeck, [rearLabX, sciY + 2.60, rearLabZ]);
+  const rearLabDeck = new THREE.BoxGeometry(2.50, 0.10, 1.88);
+  xform(rearLabDeck, [rearLabX, sciY + 2.75, rearLabZ]);
   darkSlateGeos.push(rearLabDeck);
 
-  // Subtle cream-stone rooftop skylight monitors & parapet ribs breaking up the flat rear lab deck
-  for (const dx of [-0.62, 0.62]) {
-    const monitor = new THREE.BoxGeometry(0.84, 0.24, 1.05);
-    xform(monitor, [rearLabX + dx, sciY + 2.74, rearLabZ]);
-    warmStoneGeos.push(monitor);
-    const monitorCap = new THREE.BoxGeometry(0.92, 0.08, 1.12);
-    xform(monitorCap, [rearLabX + dx, sciY + 2.88, rearLabZ]);
-    graniteGeos.push(monitorCap);
-  }
+  const rearLanternMonitor = new THREE.Mesh(
+    fitBoxFacadeUVs(new THREE.BoxGeometry(1.36, 0.42, 1.02), 1.36, 0.42, 1.02, 2.0),
+    palette.libWallMat
+  );
+  rearLanternMonitor.position.set(rearLabX, sciY + 2.98, rearLabZ);
+  rearLanternMonitor.castShadow = true;
+  group.add(rearLanternMonitor);
+
+  const rearLanternRoof = roofGroup(
+    {
+      halfW: 0.86,
+      halfD: 0.68,
+      H: 0.48,
+      mode: 'xieshan',
+      inset: 0.28,
+      lift: 0.12,
+      segU: 12,
+      segV: 6,
+      soffitInward: 0.28,
+      rafters: false,
+    },
+    palette.roofMats
+  );
+  rearLanternRoof.position.set(rearLabX, sciY + 3.18, rearLabZ);
+  group.add(rearLanternRoof);
 
   const sciGraniteMesh = new THREE.Mesh(mergeSafe(graniteGeos), palette.graniteMat);
   sciGraniteMesh.castShadow = true;

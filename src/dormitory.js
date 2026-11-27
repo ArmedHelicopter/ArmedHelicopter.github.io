@@ -1,14 +1,17 @@
 import * as THREE from 'three';
 import { mergeSafe, xform, lockStatic, roofGroup, fitBoxFacadeUVs } from './geo.js';
+import { applyWorldPlanarUVs } from './materials.js';
 
 function buildArchedGateTower(w, h, d, archR, archH) {
   const shape = new THREE.Shape();
   const hw = w * 0.5;
+  const openR = archR + 0.025;
+  const openH = archH + 0.025;
   shape.moveTo(-hw, 0);
-  shape.lineTo(-archR, 0);
-  shape.lineTo(-archR, archH - archR);
-  shape.absarc(0, archH - archR, archR, Math.PI, 0, true);
-  shape.lineTo(archR, 0);
+  shape.lineTo(-openR, 0);
+  shape.lineTo(-openR, openH - openR);
+  shape.absarc(0, openH - openR, openR, Math.PI, 0, true);
+  shape.lineTo(openR, 0);
   shape.lineTo(hw, 0);
   shape.lineTo(hw, h);
   shape.lineTo(-hw, h);
@@ -17,28 +20,43 @@ function buildArchedGateTower(w, h, d, archR, archH) {
   const g = new THREE.ExtrudeGeometry(shape, {
     depth: d,
     bevelEnabled: true,
-    bevelThickness: 0.025,
-    bevelSize: 0.02,
+    bevelThickness: 0.02,
+    bevelSize: 0.015,
     bevelSegments: 2,
-    curveSegments: 20,
+    curveSegments: 24,
   });
   g.translate(0, 0, -d * 0.5);
   return g;
 }
 
-function buildVaultSoffit(archR, archH, depth) {
-  // Semi-cylindrical interior tunnel soffit shell (inner surface dark-shaded granite)
-  const g = new THREE.CylinderGeometry(archR * 0.99, archR * 0.99, depth, 16, 1, true, 0, Math.PI);
-  g.rotateZ(Math.PI / 2);
-  g.rotateY(Math.PI / 2);
-  g.translate(0, archH - archR, 0);
+function buildArchTunnelLiner(archR, archH, depth, thickness = 0.075) {
+  // Solid double-sided inverted-U stone jambs + barrel-vault soffit liner (no culled strips or Z-fighting)
+  const outerR = archR + thickness;
+  const springY = archH - archR;
+  const shape = new THREE.Shape();
+  shape.moveTo(-outerR, 0);
+  shape.lineTo(-outerR, springY);
+  shape.absarc(0, springY, outerR, Math.PI, 0, true);
+  shape.lineTo(outerR, 0);
+  shape.lineTo(archR, 0);
+  shape.lineTo(archR, springY);
+  shape.absarc(0, springY, archR, 0, Math.PI, false);
+  shape.lineTo(-archR, 0);
+  shape.closePath();
+
+  const g = new THREE.ExtrudeGeometry(shape, {
+    depth,
+    bevelEnabled: false,
+    curveSegments: 24,
+  });
+  g.translate(0, 0, -depth * 0.5);
   return g;
 }
 
 /**
  * Independent component: Old Dormitory (老斋舍) with:
  * - 4 courtyard wings featuring open skywells (天井) & sloped turquoise front glazed eaves
- * - 3 completely OPEN Roman vaulted through-archways (zero blocked doors!)
+ * - 3 completely OPEN Roman vaulted through-archways (zero blocked doors or wing overlap!)
  * - Continuous 108-step staircase (百步梯) rising cleanly through the central arch straight up to 樱顶
  * - 3 enclosed cream-stone rooftop pavilion halls (千字文/学生会亭) with crimson windows & circular oculus gables
  */
@@ -47,81 +65,94 @@ export function createDormitoryComponent(textures, palette) {
   group.name = 'component-old-dormitory';
 
   const graniteGeos = [];
+  const noShadowTrimGeos = [];
   const warmStoneGeos = [];
-  const darkVaultGeos = [];
+  const noShadowWarmGeos = [];
+  const warmPoolMats = [];
+  const poolTex = textures.bokehDot('dorm-arch-pool');
 
   const dormGroup = new THREE.Group();
   dormGroup.position.set(0, 2.15, -0.8);
   group.add(dormGroup);
 
-  const wingXPositions = [-6.65, -2.30, 2.30, 6.65];
-  wingXPositions.forEach((wx, idx) => {
-    const wLen = idx === 0 || idx === 3 ? 3.5 : 3.2;
-
-    // Front & rear wing bars enclosing an authentic sunken open 天井 courtyard well
-    const frontBarGeo = fitBoxFacadeUVs(new THREE.BoxGeometry(wLen, 2.55, 0.88), wLen, 2.55, 0.88, 3.5);
+  // Strictly confined outside gatehouse pier envelopes ([-5.52,-3.68], [-0.92,+0.92], [+3.68,+5.52])
+  const wingSpecs = [
+    { wx: -6.88, wLen: 2.68 },
+    { wx: -2.30, wLen: 2.72 },
+    { wx: 2.30, wLen: 2.72 },
+    { wx: 6.88, wLen: 2.68 },
+  ];
+  wingSpecs.forEach(({ wx, wLen }) => {
+    // Wing walls keep receiveShadow=true but castShadow=false so facade moldings never show sawtooth shadow acne
+    const frontBarGeo = fitBoxFacadeUVs(new THREE.BoxGeometry(wLen, 2.46, 0.88), wLen, 2.46, 0.88, 3.5);
     const frontBar = new THREE.Mesh(frontBarGeo, palette.dormWallMat);
-    frontBar.position.set(wx, 1.28, 0.82);
-    frontBar.castShadow = true;
+    frontBar.position.set(wx, 1.23, 0.82);
+    frontBar.castShadow = false;
     frontBar.receiveShadow = true;
     dormGroup.add(frontBar);
 
-    const rearBarGeo = fitBoxFacadeUVs(new THREE.BoxGeometry(wLen, 2.55, 0.72), wLen, 2.55, 0.72, 3.5);
+    const rearBarGeo = fitBoxFacadeUVs(new THREE.BoxGeometry(wLen, 2.46, 0.72), wLen, 2.46, 0.72, 3.5);
     const rearBar = new THREE.Mesh(rearBarGeo, palette.dormWallMat);
-    rearBar.position.set(wx, 1.28, -0.88);
-    rearBar.castShadow = true;
+    rearBar.position.set(wx, 1.23, -0.88);
+    rearBar.castShadow = false;
     rearBar.receiveShadow = true;
     dormGroup.add(rearBar);
 
     for (const sx of [-1, 1]) {
-      const endWall = new THREE.BoxGeometry(0.44, 2.56, 2.48);
-      xform(endWall, [wx + sx * (wLen * 0.5 - 0.22), 2.15 + 1.28, -0.8]);
+      const endWall = new THREE.BoxGeometry(0.44, 2.46, 2.48);
+      xform(endWall, [wx + sx * (wLen * 0.5 - 0.22), 2.15 + 1.23, -0.8]);
+      applyWorldPlanarUVs(endWall, 0.45, 0.45);
       warmStoneGeos.push(endWall);
     }
 
     // Recessed courtyard deck at mid-height
     const skywellFloor = new THREE.BoxGeometry(wLen - 0.75, 0.14, 1.0);
     xform(skywellFloor, [wx, 2.15 + 1.78, -0.8 + 0.02]);
+    applyWorldPlanarUVs(skywellFloor, 0.45, 0.45);
     graniteGeos.push(skywellFloor);
 
-    // Facade pilasters, stringcourses & rooftop parapet balustrade rails
+    // Separate castShadow=false trim batch prevents shadow-map sawtooth acne on the vertical facade walls
+    for (const bandY of [0.88, 1.72]) {
+      const band = new THREE.BoxGeometry(wLen, 0.09, 2.60);
+      xform(band, [wx, 2.15 + bandY, -0.8]);
+      applyWorldPlanarUVs(band, 0.45, 0.45);
+      noShadowTrimGeos.push(band);
+    }
     for (const pxOff of [-wLen * 0.44, 0, wLen * 0.44]) {
       for (const sz of [-1, 1]) {
-        const dPil = new THREE.BoxGeometry(0.18, 2.58, 0.18);
-        xform(dPil, [wx + pxOff, 2.15 + 1.29, -0.8 + sz * 1.22]);
-        warmStoneGeos.push(dPil);
+        const dPil = new THREE.BoxGeometry(0.18, 2.46, 0.22);
+        xform(dPil, [wx + pxOff, 2.15 + 1.23, -0.8 + sz * 1.26]);
+        applyWorldPlanarUVs(dPil, 0.45, 0.45);
+        noShadowWarmGeos.push(dPil);
       }
     }
-    for (const bandY of [0.88, 1.74]) {
-      const band = new THREE.BoxGeometry(wLen + 0.14, 0.09, 2.62);
-      xform(band, [wx, 2.15 + bandY, -0.8]);
-      graniteGeos.push(band);
-    }
-    const eaveCornice = new THREE.BoxGeometry(wLen + 0.22, 0.12, 2.74);
-    xform(eaveCornice, [wx, 2.15 + 2.52, -0.8]);
-    graniteGeos.push(eaveCornice);
+    const eaveCornice = new THREE.BoxGeometry(wLen, 0.12, 2.76);
+    xform(eaveCornice, [wx, 2.15 + 2.53, -0.8]);
+    applyWorldPlanarUVs(eaveCornice, 0.45, 0.45);
+    noShadowTrimGeos.push(eaveCornice);
 
     // Signature sloped peacock-turquoise glazed tile front wing eaves (02054597.jpg)
     const wingGlazeEave = new THREE.Mesh(
-      new THREE.BoxGeometry(wLen + 0.16, 0.09, 0.42),
+      new THREE.BoxGeometry(wLen, 0.09, 0.42),
       palette.glazedTileMat
     );
-    wingGlazeEave.position.set(wx, 1.98, 1.26);
+    wingGlazeEave.position.set(wx, 1.98, 1.32);
     wingGlazeEave.rotation.x = 0.36;
     wingGlazeEave.castShadow = true;
     dormGroup.add(wingGlazeEave);
 
     const rearGlazeEave = new THREE.Mesh(
-      new THREE.BoxGeometry(wLen + 0.16, 0.09, 0.38),
+      new THREE.BoxGeometry(wLen, 0.09, 0.38),
       palette.glazedTileMat
     );
-    rearGlazeEave.position.set(wx, 1.98, -1.24);
+    rearGlazeEave.position.set(wx, 1.98, -1.30);
     rearGlazeEave.rotation.x = -0.36;
     dormGroup.add(rearGlazeEave);
 
     for (const sz of [-1, 1]) {
-      const rail = new THREE.BoxGeometry(wLen + 0.12, 0.30, 0.12);
+      const rail = new THREE.BoxGeometry(wLen, 0.28, 0.12);
       xform(rail, [wx, 2.15 + 2.74, -0.8 + sz * 1.25]);
+      applyWorldPlanarUVs(rail, 0.45, 0.45);
       graniteGeos.push(rail);
     }
   });
@@ -129,35 +160,36 @@ export function createDormitoryComponent(textures, palette) {
   // Outer wing end stone piers closing the east and west flanks cleanly with matching facade glazing
   for (const sx of [-1, 1]) {
     const flankWall = new THREE.Mesh(
-      fitBoxFacadeUVs(new THREE.BoxGeometry(0.46, 2.55, 2.56), 0.46, 2.55, 2.56, 3.2),
+      fitBoxFacadeUVs(new THREE.BoxGeometry(0.46, 2.46, 2.56), 0.46, 2.46, 2.56, 3.2),
       palette.dormWallMat
     );
-    flankWall.position.set(sx * 8.42, 2.15 + 1.28, -0.8);
+    flankWall.position.set(sx * 8.44, 2.15 + 1.23, -0.8);
     flankWall.castShadow = true;
     flankWall.receiveShadow = true;
     group.add(flankWall);
     const flankCoping = new THREE.BoxGeometry(0.54, 0.14, 2.74);
-    xform(flankCoping, [sx * 8.42, 2.15 + 2.58, -0.8]);
+    xform(flankCoping, [sx * 8.44, 2.15 + 2.54, -0.8]);
+    applyWorldPlanarUVs(flankCoping, 0.45, 0.45);
     graniteGeos.push(flankCoping);
   }
 
   // Three completely OPEN Roman vaulted through-archways + ascending stairs + enclosed rooftop pavilion halls
-  const gateOffsets = [-4.55, 0, 4.55];
+  const gateOffsets = [-4.60, 0, 4.60];
   gateOffsets.forEach((gx) => {
     const worldX = gx;
     const worldY = 2.15;
     const worldZ = -0.8;
-    const archR = 0.58;
+    const archR = 0.56;
     const archH = 2.12;
     const gateDepth = 3.04;
 
-    const towerGeo = buildArchedGateTower(1.80, 2.94, gateDepth, archR, archH);
+    const towerGeo = buildArchedGateTower(1.84, 2.94, gateDepth, archR, archH);
     xform(towerGeo, [worldX, worldY, worldZ]);
     warmStoneGeos.push(towerGeo);
 
     // Projecting granite archivolt rings & keystones on both front & back arch portals (tunnel left completely OPEN!)
     for (const faceZ of [worldZ + gateDepth * 0.5 + 0.02, worldZ - gateDepth * 0.5 - 0.02]) {
-      const archRing = new THREE.TorusGeometry(archR + 0.03, 0.055, 6, 16, Math.PI);
+      const archRing = new THREE.TorusGeometry(archR + 0.03, 0.055, 6, 18, Math.PI);
       xform(archRing, [worldX, worldY + archH - archR, faceZ]);
       graniteGeos.push(archRing);
 
@@ -170,21 +202,86 @@ export function createDormitoryComponent(textures, palette) {
       graniteGeos.push(medallion);
     }
 
-    // Hollow interior barrel-vault soffit & crimson side passage doors inside the open archway
-    const vaultGeo = buildVaultSoffit(archR, archH, gateDepth - 0.04);
-    xform(vaultGeo, [worldX, worldY, worldZ]);
-    darkVaultGeos.push(vaultGeo);
+    // Solid watertight granite barrel-vault & jamb liner inside the open archway + framed paneled crimson side doors
+    const linerGeo = buildArchTunnelLiner(archR, archH, gateDepth + 0.02, 0.075);
+    xform(linerGeo, [worldX, worldY, worldZ]);
+    graniteGeos.push(linerGeo);
 
-    // Interior tunnel steps + warm glowing tunnel ceiling lantern so through-passage reads cleanly
+    for (const sx of [-1, 1]) {
+      const doorX = worldX + sx * (archR - 0.012);
+      const doorZ = worldZ + 0.36;
+      const doorFrame = new THREE.BoxGeometry(0.042, 1.28, 0.54);
+      xform(doorFrame, [doorX, worldY + 0.64, doorZ]);
+      applyWorldPlanarUVs(doorFrame, 0.45, 0.45);
+      graniteGeos.push(doorFrame);
+
+      const doorLintel = new THREE.BoxGeometry(0.068, 0.10, 0.60);
+      xform(doorLintel, [doorX, worldY + 1.32, doorZ]);
+      applyWorldPlanarUVs(doorLintel, 0.45, 0.45);
+      graniteGeos.push(doorLintel);
+
+      const timberReveal = new THREE.Mesh(
+        new THREE.BoxGeometry(0.050, 1.18, 0.44),
+        palette.darkTimberMat
+      );
+      timberReveal.position.set(doorX, worldY + 0.61, doorZ);
+      group.add(timberReveal);
+
+      for (const dz of [-0.10, 0.10]) {
+        const leaf = new THREE.Mesh(
+          new THREE.BoxGeometry(0.058, 1.12, 0.18),
+          palette.crimsonColumnMat
+        );
+        leaf.position.set(doorX, worldY + 0.60, doorZ + dz);
+        group.add(leaf);
+      }
+
+      const handlePlate = new THREE.Mesh(
+        new THREE.BoxGeometry(0.068, 0.08, 0.05),
+        palette.warmStoneMat
+      );
+      handlePlate.position.set(doorX, worldY + 0.58, doorZ);
+      group.add(handlePlate);
+
+      const wallSconce = new THREE.Mesh(
+        new THREE.BoxGeometry(0.07, 0.11, 0.07),
+        palette.lampGlowMat
+      );
+      wallSconce.position.set(doorX - sx * 0.01, worldY + 1.48, doorZ);
+      group.add(wallSconce);
+    }
+
+    // Soft additive threshold lantern pool inside each Roman archway for night atmosphere
+    const archPoolMat = new THREE.MeshBasicMaterial({
+      map: poolTex,
+      color: new THREE.Color('#ffba66'),
+      transparent: true,
+      opacity: 0.0,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
+    warmPoolMats.push(archPoolMat);
+    const archPool = new THREE.Mesh(new THREE.PlaneGeometry(1.45, 2.35), archPoolMat);
+    archPool.rotation.x = -Math.PI / 2;
+    archPool.position.set(worldX, worldY + 0.075, worldZ + 0.65);
+    group.add(archPool);
+
+    // Interior tunnel steps (rising in center arch toward 百步梯; flat unobstructed stone floor in side arches)
     const isCenter = gx === 0;
-    const tunnelStepN = isCenter ? 10 : 6;
-    for (let s = 0; s < tunnelStepN; s++) {
-      const ft = s / (tunnelStepN - 1);
-      const stepY = worldY + 0.05 + ft * (isCenter ? 1.02 : 0.14);
-      const stepZ = worldZ + 1.34 - ft * 2.68;
-      const step = new THREE.BoxGeometry(1.12, 0.08, 0.30);
-      xform(step, [worldX, stepY, stepZ]);
-      graniteGeos.push(step);
+    if (isCenter) {
+      const tunnelStepN = 10;
+      for (let s = 0; s < tunnelStepN; s++) {
+        const ft = s / (tunnelStepN - 1);
+        const stepY = worldY + 0.04 + ft * 1.02;
+        const stepZ = worldZ + 1.34 - ft * 2.68;
+        const step = new THREE.BoxGeometry(1.10, 0.08, 0.30);
+        xform(step, [worldX, stepY, stepZ]);
+        graniteGeos.push(step);
+      }
+    } else {
+      const tunnelFloor = new THREE.BoxGeometry(1.10, 0.12, gateDepth + 0.18);
+      xform(tunnelFloor, [worldX, worldY - 0.02, worldZ]);
+      graniteGeos.push(tunnelFloor);
     }
 
     const tunnelLantern = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.14, 0.16), palette.lampGlowMat);
@@ -396,7 +493,7 @@ export function createDormitoryComponent(textures, palette) {
   xform(crossCurbN, [0, 2.07, 1.86]);
   graniteGeos.push(crossCurbN);
 
-  for (const gx of [-4.55, 4.55]) {
+  for (const gx of [-4.60, 4.60]) {
     const spurWalk = new THREE.Mesh(new THREE.BoxGeometry(1.42, 0.06, 2.15), palette.plazaMat);
     spurWalk.position.set(gx, 2.065, 1.48);
     spurWalk.receiveShadow = true;
@@ -436,19 +533,34 @@ export function createDormitoryComponent(textures, palette) {
   dormGraniteMesh.receiveShadow = true;
   group.add(dormGraniteMesh);
 
+  if (noShadowTrimGeos.length > 0) {
+    const dormTrimMesh = new THREE.Mesh(mergeSafe(noShadowTrimGeos), palette.graniteMat);
+    dormTrimMesh.castShadow = false;
+    dormTrimMesh.receiveShadow = true;
+    group.add(dormTrimMesh);
+  }
+
   const dormWarmStoneMesh = new THREE.Mesh(mergeSafe(warmStoneGeos), palette.warmStoneMat);
   dormWarmStoneMesh.castShadow = true;
   dormWarmStoneMesh.receiveShadow = true;
   group.add(dormWarmStoneMesh);
 
-  const dormVaultMesh = new THREE.Mesh(mergeSafe(darkVaultGeos), palette.darkTimberMat);
-  dormVaultMesh.receiveShadow = true;
-  group.add(dormVaultMesh);
+  if (noShadowWarmGeos.length > 0) {
+    const dormPilMesh = new THREE.Mesh(mergeSafe(noShadowWarmGeos), palette.warmStoneMat);
+    dormPilMesh.castShadow = false;
+    dormPilMesh.receiveShadow = true;
+    group.add(dormPilMesh);
+  }
 
   lockStatic(group);
 
   return {
     group,
-    setMood() {},
+    setMood(mood) {
+      const isNight = mood === 'night' || mood === 'sunset' || mood === 'convergence';
+      for (const m of warmPoolMats) {
+        m.opacity = isNight ? 0.24 : 0.0;
+      }
+    },
   };
 }

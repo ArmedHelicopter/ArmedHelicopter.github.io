@@ -514,19 +514,24 @@ export function createArchway(textures) {
     if (mood === 'night' || mood === 'sunset' || mood === 'convergence') {
       veilUniforms.uColorA.value.set('#89a8de');
       veilUniforms.uColorB.value.set('#ffb85c');
-      glazedTileMat.color.set('#287488');
-      glazedTileMat.emissiveIntensity = 0.10;
+      glazedTileMat.color.set('#38908e');
+      glazedTileMat.emissive.set('#0b3b3a');
+      glazedTileMat.emissiveIntensity = 0.22;
+      graniteMat.emissive.set('#3d3022');
+      graniteMat.emissiveIntensity = 0.14;
       frontPlaqueMat.emissive.set('#ffcf86');
       frontPlaqueMat.emissiveMap = frontPlaqueMap;
-      frontPlaqueMat.emissiveIntensity = 0.26;
+      frontPlaqueMat.emissiveIntensity = 0.28;
       backPlaqueMat.emissive.set('#ffcf86');
       backPlaqueMat.emissiveMap = backPlaqueMap;
-      backPlaqueMat.emissiveIntensity = 0.22;
+      backPlaqueMat.emissiveIntensity = 0.24;
     } else {
       veilUniforms.uColorA.value.set('#ffe2a8');
       veilUniforms.uColorB.value.set('#ffcad9');
       glazedTileMat.color.set('#2ba6b4');
+      glazedTileMat.emissive.set('#0c5c6b');
       glazedTileMat.emissiveIntensity = 0.06;
+      graniteMat.emissiveIntensity = 0.0;
       frontPlaqueMat.emissiveIntensity = 0.0;
       backPlaqueMat.emissiveIntensity = 0.0;
     }

@@ -213,13 +213,27 @@ export function createLibraryComponent(textures, palette) {
     libGroup.add(wingRoof);
   }
 
-  // Signature Carved Octagonal Stone Chimney Turret on rear NW/NE roof shoulder (ffa6c42d.jpg)
-  const chimneyBase = new THREE.CylinderGeometry(0.24, 0.28, 1.95, 8);
-  xform(chimneyBase, [libX + 2.55, libY + 0.58 + 3.45, libZ - 1.55]);
+  // Signature Carved Octagonal Stone Chimney Turret with flashing plinth & glazed cap on rear NE roof shoulder
+  const chimneyPedestal = new THREE.BoxGeometry(0.68, 0.48, 0.68);
+  xform(chimneyPedestal, [libX + 2.55, libY + 0.58 + 3.24, libZ - 1.55]);
+  graniteGeos.push(chimneyPedestal);
+  const chimneyBase = new THREE.CylinderGeometry(0.24, 0.28, 1.65, 8);
+  xform(chimneyBase, [libX + 2.55, libY + 0.58 + 3.72, libZ - 1.55]);
   warmStoneGeos.push(chimneyBase);
-  const chimneyCap = new THREE.CylinderGeometry(0.30, 0.24, 0.22, 8);
-  xform(chimneyCap, [libX + 2.55, libY + 0.58 + 4.48, libZ - 1.55]);
+  const chimneyCollar = new THREE.BoxGeometry(0.62, 0.10, 0.62);
+  xform(chimneyCollar, [libX + 2.55, libY + 0.58 + 4.42, libZ - 1.55]);
+  graniteGeos.push(chimneyCollar);
+  const chimneyCap = new THREE.CylinderGeometry(0.32, 0.24, 0.20, 8);
+  xform(chimneyCap, [libX + 2.55, libY + 0.58 + 4.56, libZ - 1.55]);
   graniteGeos.push(chimneyCap);
+  const chimneyFinial = new THREE.Mesh(
+    new THREE.ConeGeometry(0.32, 0.24, 4),
+    palette.glazedRidgeMat
+  );
+  chimneyFinial.rotation.y = Math.PI / 4;
+  chimneyFinial.position.set(2.55, 0.58 + 4.78, -1.55);
+  chimneyFinial.castShadow = true;
+  libGroup.add(chimneyFinial);
 
   // 5. White-Stone 平坐 Terrace Balustrade + True 8-Sided Octagonal Clerestory Drum + 8-Cornered Crown Roof
   const roofDeckY = 0.58 + 3.36;

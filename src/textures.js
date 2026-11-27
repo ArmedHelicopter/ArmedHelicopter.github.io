@@ -534,196 +534,223 @@ export function createTextureFactory(renderer) {
     return register(label, c, { wrap: false, pixel: true, mip: true });
   }
 
-  /** Crisp 16x32 pixel-art warm cherrywood bark. */
+  /** Crisp 32x64 pixel-art warm cherrywood bark with chestnut furrows & lenticels. */
   function bark(label = 'bark') {
-    const W = 16;
-    const H = 32;
+    const W = 32;
+    const H = 64;
     const c = makeCanvas(W, H);
     const ctx = c.getContext('2d');
     const rand = mulberry32(77);
-    px(ctx, 0, 0, W, H, '#6a4c44');
+    px(ctx, 0, 0, W, H, '#8d685c');
     for (let y = 0; y < H; y++) {
       for (let x = 0; x < W; x++) {
-        if (x % 4 === 0 && rand() < 0.75) px(ctx, x, y, 1, 1, '#4a322d');
-        else if (x % 4 === 1 && rand() < 0.55) px(ctx, x, y, 1, 1, '#846257');
+        if ((x % 6 === 0 || x % 6 === 1) && rand() < 0.72) px(ctx, x, y, 1, 1, '#684840');
+        else if (x % 6 === 3 && rand() < 0.62) px(ctx, x, y, 1, 1, '#b58e7e');
+        else if (rand() < 0.25) px(ctx, x, y, 1, 1, '#7a584d');
       }
     }
-    for (let i = 0; i < 18; i++) {
-      px(ctx, Math.floor(rand() * (W - 3)), Math.floor(rand() * H), 3, 1, '#9c776b');
+    for (let i = 0; i < 34; i++) {
+      const lx = Math.floor(rand() * (W - 5));
+      const ly = Math.floor(rand() * H);
+      px(ctx, lx, ly, 4 + Math.floor(rand() * 3), 1, '#cfa996');
+      px(ctx, lx, ly + 1, 3, 1, '#5d3f38');
     }
     return register(label, c, { pixel: true, mip: true });
   }
 
   /**
-   * Hand-pixeled 64x80 3/4-angled OurSongs protagonist chibi sprite (2.2-head-tall silver-blue
-   * long straight hair, expressive sparkling blue eyes, fitted sky-blue zip tracksuit w/ white stripes,
-   * chunky white-sole skate sneakers, silver camera + #ff3b3b red dot).
+   * Authentic Guardian Tales (坎公骑冠剑) compact chibi pixel-art character sprite
+   * inspired by gtlibrary Spine rigs (knight_demon_queen hair silhouette + knight_female_sport_uniform
+   * tracksuit proportions) and the user's silver-haired sky-blue tracksuit character design.
+   * Uses colored selvedge outlines, plump cheeks, tall 4x5 jewel blue eyes, sculpted 5-ramp hair
+   * clusters, and zero internal black lines across the waist or neck.
    */
-  const PROTAG_PAL = {
-    H_HI: '#fafcff',
-    H_BASE: '#eaeff7',
-    H_MID: '#cdd7e8',
-    H_SHAD: '#9eadc6',
-    H_DEEP: '#7686a4',
-    SKIN: '#fff1eb',
-    SKIN_SHAD: '#ebcfc6',
-    BLUSH: '#ffbac8',
-    EYE_LASH: '#24324e',
-    EYE_DEEP: '#3f5f9e',
-    EYE_MID: '#7ca6ea',
-    EYE_HI: '#ffffff',
-    EYE_WHITE: '#f7faff',
-    SUIT_HI: '#b6d7e8',
-    SUIT: '#96bfd4',
-    SUIT_SHAD: '#749eb5',
-    ZIP: '#45677f',
-    STRIPE: '#f2f8fc',
-    SHOE: '#34486b',
-    SHOE_SHAD: '#23314b',
-    SHOE_LACE: '#768db3',
-    SOLE: '#f2f6fc',
-    SOLE_SHAD: '#cdd8eb',
-    OUTLINE: [38, 50, 76],
+  const GT_KANADE_PAL = {
+    '.': null,
+    // Hair & unified colored selvedge outlines (consistent slate-indigo outline clarity on all tips)
+    O: '#3c4c6e', // upper dome cool slate-indigo selvedge
+    o: '#46587c', // matching outer hair-tip selvedge so lower tips pop against bright tiles
+    W: '#ffffff', // pure halo zig-zag crown sheen
+    H: '#f4f8ff', // luminous icy silver-white light
+    S: '#dde7f7', // cool silver-white base hair
+    M: '#b8c9e4', // cool periwinkle-silver mid shadow
+    D: '#8a9ec0', // deep periwinkle hair crease
+    // Plump cheeks, warm skin & balanced rose-umber selvedge
+    k: '#6b4c52', // crisp warm plum-umber chin/hand selvedge
+    f: '#fff2ea', // warm porcelain-cream face/hand highlight
+    s: '#fadbc9', // soft peach cheek warmth
+    c: '#ecc0aa', // gentle chin/palm shadow bevel
+    b: '#f6adb0', // cute small cheek blush dots
+    m: '#c26b6e', // tiny delicate rose mouth
+    // Guardian Tales tall jewel eyes & calm silver-blue brows
+    L: '#2c263b', // dark espresso-plum upper eyelash
+    e: '#284584', // deep sapphire upper iris
+    i: '#4e96e2', // vivid cerulean mid-iris
+    g: '#96e0ff', // luminous ice-cyan lower iris crescent
+    w: '#ffffff', // crisp sclera & directional eye sparkle
+    r: '#7d8fb2', // calm silver-blue eyebrow
+    // Powder sky-blue tracksuit & navy sneakers (unified navy selvedge, soft internal seams)
+    u: '#3c5174', // unified cool navy garment/shoe outer selvedge
+    B: '#bfe5f8', // sky-blue jacket highlight & pocket piping
+    T: '#90c5e0', // powder sky-blue main fabric
+    t: '#6799b5', // soft sky-blue internal fold/seam shadow
+    d: '#4b7690', // collar/hem shadow
+    Z: '#f8fcff', // crisp white center zipper, outer leg stripes & sneaker sole
+    N: '#344970', // dark navy sneaker upper
+    n: '#273858', // subtle sneaker toe shadow (no near-black blocks)
   };
 
-  function outlineCanvas(ctx, w, h, rgb = PROTAG_PAL.OUTLINE) {
-    const img = ctx.getImageData(0, 0, w, h);
-    const src = new Uint8ClampedArray(img.data);
-    const [r, g, b] = rgb;
-    for (let y = 1; y < h - 1; y++) {
-      for (let x = 1; x < w - 1; x++) {
-        const i = (y * w + x) * 4;
-        if (src[i + 3] > 20) continue;
-        const n =
-          src[((y - 1) * w + x) * 4 + 3] > 20 ||
-          src[((y + 1) * w + x) * 4 + 3] > 20 ||
-          src[(y * w + x - 1) * 4 + 3] > 20 ||
-          src[(y * w + x + 1) * 4 + 3] > 20;
-        if (n) {
-          img.data[i] = r;
-          img.data[i + 1] = g;
-          img.data[i + 2] = b;
-          img.data[i + 3] = 255;
+  function drawSpriteGrid(rows, pal = GT_KANADE_PAL, mirrorX = false) {
+    const h = rows.length;
+    const w = rows[0].length;
+    const c = makeCanvas(w, h);
+    const ctx = c.getContext('2d');
+    for (let y = 0; y < h; y++) {
+      const row = rows[y];
+      for (let x = 0; x < w; x++) {
+        const ch = row[mirrorX ? w - 1 - x : x];
+        const col = pal[ch];
+        if (col) {
+          ctx.fillStyle = col;
+          ctx.fillRect(x, y, 1, 1);
         }
       }
     }
-    ctx.putImageData(img, 0, 0);
+    return c;
   }
 
   function protagonistParts() {
     if (cache.has('protagonist-parts')) return cache.get('protagonist-parts');
-    const P = PROTAG_PAL;
 
-    // 1. Graceful waist-to-mid-thigh silver back hair with softer slate outline so arms & torso pop cleanly in front
-    const bh = makeCanvas(48, 52);
-    const bhCtx = bh.getContext('2d');
-    px(bhCtx, 11, 5, 26, 20, P.H_BASE);
-    px(bhCtx, 9, 12, 30, 18, P.H_MID);
-    px(bhCtx, 8, 19, 32, 13, P.H_SHAD);
-    px(bhCtx, 13, 16, 22, 18, P.H_DEEP);
-    px(bhCtx, 8, 28, 5, 11, P.H_MID);
-    px(bhCtx, 10, 36, 4, 8, P.H_SHAD);
-    px(bhCtx, 12, 41, 4, 6, P.H_DEEP);
-    px(bhCtx, 15, 33, 18, 8, P.H_DEEP);
-    px(bhCtx, 35, 28, 5, 11, P.H_MID);
-    px(bhCtx, 34, 36, 4, 8, P.H_SHAD);
-    px(bhCtx, 32, 41, 4, 6, P.H_DEEP);
-    outlineCanvas(bhCtx, 48, 52, [96, 112, 142]);
+    // 1. Graceful sculpted bell-shaped silver back hair closed with crisp 'o' selvedge (30x25)
+    const BACK_HAIR_ROWS = [
+      '..............................',
+      '........oooooooooooooo........',
+      '......ooSSSSSSSSSSSSSSoo......',
+      '.....oSSSSSSMMMMMMSSSSSSo.....',
+      '....oSSSSSMMMMDDDDMMMMSSSo....',
+      '....oSSSSMMMDDDDDDDDMMMSSo....',
+      '...oSSSSMMMDDDDDDDDDDMMMSSo...',
+      '...oSSSMMMDDDDDDDDDDDDMMMSo...',
+      '..oSSSMMMDDDDDDDDDDDDDDMMMSo..',
+      '..oSSSMMMDDDDDDDDDDDDDDMMMSo..',
+      '.oSSSMMMMDDDDDDDDDDDDDDMMMMSo.',
+      '.oSSSMMMDDDDDDDDDDDDDDDDMMMSo.',
+      '.oSSMMMMDDDDDDDDDDDDDDDDMMMMSo',
+      'oSSSMMMMDDDDDDMDDDDDMDDDDMMMSo',
+      'oSSSMMMDDDDDDDMDDDDDMDDDDDMMSo',
+      'oSSSMMMDDDDDDDMDDDDDMDDDDDMMSo',
+      'oSSMMMDDDDDDDDMDDDDDMDDDDDDMSo',
+      '.oSMMMDDDDDMDDMDMMMMDMDDDDMMSo',
+      '.oSMMDDDDDoDMDDMMMMMMDMDDoMMSo',
+      '..oSMDDDo..oDMDDMMMMDDMDo.oMSo',
+      '..oSDDDo....oDDDoMMoDDDo...oo.',
+      '...oDDo......oDo.oo.oDo.......',
+      '....oo........o......o........',
+      '..............................',
+      '..............................',
+    ];
 
-    const lg = makeCanvas(18, 26);
-    const lgCtx = lg.getContext('2d');
-    px(lgCtx, 6, 2, 6, 14, P.SUIT);
-    px(lgCtx, 6, 2, 2, 13, P.SUIT_HI);
-    px(lgCtx, 10, 2, 2, 14, P.SUIT_SHAD);
-    px(lgCtx, 6, 2, 1, 13, P.STRIPE);
-    px(lgCtx, 6, 15, 6, 2, P.SUIT_SHAD);
-    px(lgCtx, 4, 17, 10, 5, P.SHOE);
-    px(lgCtx, 5, 17, 7, 2, P.SHOE_LACE);
-    px(lgCtx, 4, 21, 10, 1, P.SHOE_SHAD);
-    px(lgCtx, 4, 22, 10, 2, P.SOLE);
-    px(lgCtx, 4, 23, 10, 1, P.SOLE_SHAD);
-    outlineCanvas(lgCtx, 18, 26);
+    // 2. Stubby powder-blue tracksuit leg + dark navy white-soled sneaker (7x9, soft internal seam)
+    const LEFT_LEG_ROWS = [
+      '.......',
+      '.uZTTt.',
+      '.uZTTt.',
+      '.uZTtt.',
+      '.udtdt.',
+      'uNNNNt.',
+      'uNnnNu.',
+      'uZZZZu.',
+      '.uuuu..',
+    ];
 
-    const tr = makeCanvas(28, 28);
-    const trCtx = tr.getContext('2d');
-    px(trCtx, 8, 2, 12, 4, P.SUIT_SHAD);
-    px(trCtx, 9, 2, 10, 3, P.SUIT_HI);
-    px(trCtx, 13, 2, 2, 4, P.ZIP);
-    px(trCtx, 6, 6, 16, 17, P.SUIT);
-    px(trCtx, 7, 7, 5, 13, P.SUIT_HI);
-    px(trCtx, 17, 7, 5, 14, P.SUIT_SHAD);
-    px(trCtx, 13, 6, 2, 17, P.ZIP);
-    px(trCtx, 8, 16, 3, 1, P.ZIP);
-    px(trCtx, 9, 17, 2, 1, P.ZIP);
-    px(trCtx, 17, 16, 3, 1, P.ZIP);
-    px(trCtx, 17, 17, 2, 1, P.ZIP);
-    px(trCtx, 6, 22, 16, 2, P.SUIT_SHAD);
-    outlineCanvas(trCtx, 28, 28);
+    // 3. Compact Guardian Tales zip-up tracksuit jacket: vertical zipper only (NO '+' cross) & soft internal cuffs (15x11)
+    const TORSO_ROWS = [
+      '...............',
+      '....udTZTdu....',
+      '...uBBTZTBBu...',
+      '..BBBBTZTBTTt..',
+      '..BTTTZTTTTtt..',
+      '..TTTTZTTTTtt..',
+      '..TBTTZTTTtBt..',
+      '..uTTTZTTTttu..',
+      '..utttZtttttu..',
+      '...udddZdddu...',
+      '...utTTdTTtu...',
+    ];
 
-    const ar = makeCanvas(14, 24);
-    const arCtx = ar.getContext('2d');
-    px(arCtx, 4, 2, 6, 14, P.SUIT);
-    px(arCtx, 4, 2, 2, 13, P.SUIT_HI);
-    px(arCtx, 4, 2, 1, 13, P.STRIPE);
-    px(arCtx, 4, 15, 6, 2, P.SUIT_SHAD);
-    px(arCtx, 5, 17, 4, 4, P.SKIN);
-    px(arCtx, 5, 20, 4, 1, P.SKIN_SHAD);
-    outlineCanvas(arCtx, 14, 24);
+    // 4. Outstretched A-pose stubby tracksuit sleeve + chunky peach hand w/ crisp closed outline (9x10)
+    const LEFT_ARM_ROWS = [
+      '.........',
+      '.....tB..',
+      '....uZBT.',
+      '...uZBTT.',
+      '..uZBTtd.',
+      '.uZBTtdu.',
+      '.ukffkdu.',
+      '.kfffck..',
+      '.kfscck..',
+      '..kkkk...',
+    ];
 
-    function makeHead(blink) {
-      const hd = makeCanvas(48, 44);
-      const hCtx = hd.getContext('2d');
-      px(hCtx, 13, 14, 22, 18, P.SKIN);
-      px(hCtx, 15, 31, 18, 2, P.SKIN_SHAD);
-      px(hCtx, 19, 33, 10, 1, P.SKIN_SHAD);
-      if (blink) {
-        px(hCtx, 16, 24, 5, 1, P.EYE_LASH);
-        px(hCtx, 17, 25, 3, 1, P.H_DEEP);
-        px(hCtx, 27, 24, 5, 1, P.EYE_LASH);
-        px(hCtx, 28, 25, 3, 1, P.H_DEEP);
-      } else {
-        px(hCtx, 15, 21, 6, 1, P.EYE_LASH);
-        px(hCtx, 16, 22, 5, 5, P.EYE_WHITE);
-        px(hCtx, 17, 22, 4, 4, P.EYE_DEEP);
-        px(hCtx, 17, 24, 4, 2, P.EYE_MID);
-        px(hCtx, 17, 22, 2, 1, P.EYE_HI);
-        px(hCtx, 27, 21, 6, 1, P.EYE_LASH);
-        px(hCtx, 27, 22, 5, 5, P.EYE_WHITE);
-        px(hCtx, 27, 22, 4, 4, P.EYE_DEEP);
-        px(hCtx, 27, 24, 4, 2, P.EYE_MID);
-        px(hCtx, 27, 22, 2, 1, P.EYE_HI);
-      }
-      px(hCtx, 14, 27, 2, 1, P.BLUSH);
-      px(hCtx, 32, 27, 2, 1, P.BLUSH);
-      px(hCtx, 23, 30, 2, 1, '#c88c92');
-      px(hCtx, 12, 4, 24, 11, P.H_BASE);
-      px(hCtx, 15, 2, 18, 4, P.H_HI);
-      px(hCtx, 10, 8, 28, 9, P.H_BASE);
-      px(hCtx, 14, 7, 20, 2, P.H_HI);
-      px(hCtx, 11, 15, 4, 7, P.H_BASE);
-      px(hCtx, 15, 15, 5, 5, P.H_HI);
-      px(hCtx, 20, 15, 3, 7, P.H_MID);
-      px(hCtx, 23, 15, 2, 8, P.H_HI);
-      px(hCtx, 25, 15, 3, 7, P.H_MID);
-      px(hCtx, 28, 15, 5, 5, P.H_HI);
-      px(hCtx, 33, 15, 4, 7, P.H_BASE);
-      px(hCtx, 10, 16, 3, 22, P.H_BASE);
-      px(hCtx, 11, 18, 2, 18, P.H_HI);
-      px(hCtx, 11, 35, 2, 6, P.H_MID);
-      px(hCtx, 35, 16, 3, 22, P.H_BASE);
-      px(hCtx, 35, 18, 2, 18, P.H_HI);
-      px(hCtx, 35, 35, 2, 6, P.H_MID);
-      outlineCanvas(hCtx, 48, 44);
-      return hd;
-    }
+    // 5. Rounded Guardian Tales Kanade chibi head: zero jaw specks, full bottom tip selvedge (30x26)
+    const HEAD_OPEN_ROWS = [
+      '..............................',
+      '...........OOOOOOOO...........',
+      '........OOOHHHHHHHHOOO........',
+      '......OOHHHHHHHHHHHHHHOO......',
+      '.....OHHHHWWWWWWWWWWHHHHO.....',
+      '....OHHWWWWWHHHHHHWWWWWHHO....',
+      '...OHHWWWHHHHHMMHHHHHWWWHHO...',
+      '..OHHHHHHHHHHMMHMHHHHHHHHHHO..',
+      '..OSHSSHHHHMMMMMMMMHHHHSSSHO..',
+      '.oOSSSSSHHMHHHMMHHHMMHHSSSSOo.',
+      '.oOSSHSHHMffHHHHHHffHMHSHSSOo.',
+      '.oOSHSHHMfrrffHHffrrfMHSHSSOo.',
+      '.oOSHSHkffffffMSffffffkSHSSOo.',
+      'oOSSHSkfLLLLffMSffLLLLfkSHSSOo',
+      'oOSSHMkfwwweffffffweeeffkMSSOo',
+      'oOSSHSkfwwiiffffffwiiiffkMSSOo',
+      'oOSSHMkfwggiffssffwggiffkMSSOo',
+      '.oSSHMkfbbfssffffssfbbbbfMSSo.',
+      '.oSSHMMsffffscmmcffffffsMMSSo.',
+      '.oSSHMMssssssccccssssssMMSSSo.',
+      '..oSHMoooookkkkkkkkoooooMHSo..',
+      '..oSHo..................oHSo..',
+      '...oHo..................oHo...',
+      '...oMo..................oMo...',
+      '....o....................o....',
+      '..............................',
+    ];
+
+    const HEAD_BLINK_ROWS = HEAD_OPEN_ROWS.map((row, idx) => {
+      if (idx === 13) return 'oOSSHSkfffffffMSfffffffkSHSSOo';
+      if (idx === 14) return 'oOSSHMkfcLLffffffffLLcfkMSSOo.';
+      if (idx === 15) return 'oOSSHSkfLLLLffffffLLLLfkMSSOo.';
+      if (idx === 16) return 'oOSSHMkfffffffssfffffffkMSSOo.';
+      return row;
+    });
+
+    const bhCanvas = drawSpriteGrid(BACK_HAIR_ROWS);
+    const llCanvas = drawSpriteGrid(LEFT_LEG_ROWS, GT_KANADE_PAL, false);
+    const rlCanvas = drawSpriteGrid(LEFT_LEG_ROWS, GT_KANADE_PAL, true);
+    const trCanvas = drawSpriteGrid(TORSO_ROWS);
+    const laCanvas = drawSpriteGrid(LEFT_ARM_ROWS, GT_KANADE_PAL, false);
+    const raCanvas = drawSpriteGrid(LEFT_ARM_ROWS, GT_KANADE_PAL, true);
+    const hoCanvas = drawSpriteGrid(HEAD_OPEN_ROWS);
+    const hbCanvas = drawSpriteGrid(HEAD_BLINK_ROWS);
 
     const parts = {
-      backHair: register('protagonist-back-hair', bh, { wrap: false, pixel: true, mip: false }),
-      leg: register('protagonist-leg', lg, { wrap: false, pixel: true, mip: false }),
-      torso: register('protagonist-torso', tr, { wrap: false, pixel: true, mip: false }),
-      arm: register('protagonist-arm', ar, { wrap: false, pixel: true, mip: false }),
-      headOpen: register('protagonist-head-open', makeHead(false), { wrap: false, pixel: true, mip: false }),
-      headBlink: register('protagonist-head-blink', makeHead(true), { wrap: false, pixel: true, mip: false }),
+      backHair: register('protagonist-back-hair', bhCanvas, { wrap: false, pixel: true, mip: false }),
+      leg: register('protagonist-leg', llCanvas, { wrap: false, pixel: true, mip: false }),
+      leftLeg: register('protagonist-left-leg', llCanvas, { wrap: false, pixel: true, mip: false }),
+      rightLeg: register('protagonist-right-leg', rlCanvas, { wrap: false, pixel: true, mip: false }),
+      torso: register('protagonist-torso', trCanvas, { wrap: false, pixel: true, mip: false }),
+      arm: register('protagonist-arm', laCanvas, { wrap: false, pixel: true, mip: false }),
+      leftArm: register('protagonist-left-arm', laCanvas, { wrap: false, pixel: true, mip: false }),
+      rightArm: register('protagonist-right-arm', raCanvas, { wrap: false, pixel: true, mip: false }),
+      headOpen: register('protagonist-head-open', hoCanvas, { wrap: false, pixel: true, mip: false }),
+      headBlink: register('protagonist-head-blink', hbCanvas, { wrap: false, pixel: true, mip: false }),
     };
     cache.set('protagonist-parts', parts);
     return parts;
@@ -733,15 +760,15 @@ export function createTextureFactory(renderer) {
     const label = `protagonist-frame-${frameIdx}`;
     if (cache.has(label)) return cache.get(label);
     const parts = protagonistParts();
-    const c = makeCanvas(64, 80);
+    const c = makeCanvas(36, 40);
     const ctx = c.getContext('2d');
-    ctx.drawImage(parts.backHair.image, 4, 16);
-    ctx.drawImage(parts.leg.image, 17, 52);
-    ctx.drawImage(parts.leg.image, 29, 52);
-    ctx.drawImage(parts.torso.image, 18, 30);
-    ctx.drawImage(parts.arm.image, 11, 35);
-    ctx.drawImage(parts.arm.image, 39, 35);
-    ctx.drawImage(frameIdx === 1 ? parts.headBlink.image : parts.headOpen.image, 8, 0);
+    ctx.drawImage(parts.backHair.image, 3, 13);
+    ctx.drawImage(parts.leftLeg.image, 11, 30);
+    ctx.drawImage(parts.rightLeg.image, 18, 30);
+    ctx.drawImage(parts.torso.image, 10, 21);
+    ctx.drawImage(parts.leftArm.image, 5, 22);
+    ctx.drawImage(parts.rightArm.image, 22, 22);
+    ctx.drawImage(frameIdx === 1 ? parts.headBlink.image : parts.headOpen.image, 3, 2);
     return register(label, c, { wrap: false, pixel: true, mip: false });
   }
 
