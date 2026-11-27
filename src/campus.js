@@ -3,12 +3,13 @@ import { createCampusPalette } from './materials.js';
 import { createTerrainComponent } from './terrain.js';
 import { createDormitoryComponent } from './dormitory.js';
 import { createLibraryComponent } from './library.js';
+import { createScienceComponent } from './science.js';
 import { createLakeComponent } from './lake.js';
 import { createFoliageComponent } from './foliage.js';
 
 /**
  * Composes all independent 2.5D WHU campus diorama components into one root group
- * while keeping each landmark modular (`terrain`, `dormitory`, `library`, `lake`, `foliage`)
+ * while keeping each landmark modular (`terrain`, `dormitory`, `library`, `science`, `lake`, `foliage`)
  * for effortless standalone editing.
  */
 export function createCampusDiorama(textures, prebuiltComponents = null) {
@@ -19,12 +20,14 @@ export function createCampusDiorama(textures, prebuiltComponents = null) {
   const terrain = prebuiltComponents?.terrain || createTerrainComponent(textures, palette);
   const dormitory = prebuiltComponents?.dormitory || createDormitoryComponent(textures, palette);
   const library = prebuiltComponents?.library || createLibraryComponent(textures, palette);
+  const science = prebuiltComponents?.science || createScienceComponent(textures, palette);
   const lake = prebuiltComponents?.lake || createLakeComponent(textures, palette);
   const foliage = prebuiltComponents?.foliage || createFoliageComponent(textures, palette);
 
   group.add(terrain.group);
   group.add(dormitory.group);
   group.add(library.group);
+  group.add(science.group);
   group.add(lake.group);
   group.add(foliage.group);
 
@@ -33,6 +36,7 @@ export function createCampusDiorama(textures, prebuiltComponents = null) {
     terrain.setMood(mood);
     dormitory.setMood(mood);
     library.setMood(mood);
+    science.setMood(mood);
     lake.setMood(mood);
     foliage.setMood(mood);
   }
@@ -45,7 +49,7 @@ export function createCampusDiorama(textures, prebuiltComponents = null) {
 
   return {
     group,
-    components: { terrain, dormitory, library, lake, foliage },
+    components: { terrain, dormitory, library, science, lake, foliage },
     setMood,
     updateCampus,
     updateWaterReflection: (renderer, scene, camera, keyLight, setSkyLinearOutput, protagonistGroup = null) =>

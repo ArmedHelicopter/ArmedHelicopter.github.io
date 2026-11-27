@@ -570,6 +570,150 @@ export function roofGroup(opts, mats) {
   return group;
 }
 
+/**
+ * 8-sided curved Chinese glazed roof (八角重檐亭顶) with optional 4 cardinal 歇山山花 pediments,
+ * matching F. H. Kales's 1935 Old Library octagonal crown.
+ */
+export function octagonalRoofGroup(
+  { radius = 2.6, H = 1.5, lift = 0.30, pediments = true, segU = 8, segV = 10, tilePitch = 0.30 } = {},
+  mats
+) {
+  const group = new THREE.Group();
+  const tiles = [];
+  const ridges = [];
+  const fascia = [];
+  const soffit = [];
+  const corners = [];
+  for (let k = 0; k < 8; k++) {
+    const a = (k + 0.5) * (Math.PI / 4);
+    corners.push(new THREE.Vector2(Math.cos(a) * radius, Math.sin(a) * radius));
+  }
+
+  const deformPt = (baseX, baseZ, u, v) => {
+    const fc = Math.pow(1 - v, 2) * Math.pow(2 * u - 1, 2);
+    const radialStretch = 1 + (lift * 0.22 * fc) / Math.max(0.5, radius);
+    const y = H * (0.25 * v + 0.75 * Math.pow(v, 1.82)) + fc * lift;
+    return [baseX * radialStretch, y, baseZ * radialStretch];
+  };
+
+  for (let k = 0; k < 8; k++) {
+    const c0 = corners[k];
+    const c1 = corners[(k + 1) % 8];
+    const verts = [];
+    const uvs = [];
+    const idx = [];
+    const eavePts = [];
+    for (let j = 0; j <= segV; j++) {
+      const v = j / segV;
+      for (let i = 0; i <= segU; i++) {
+        const u = i / segU;
+        const ex = THREE.MathUtils.lerp(c0.x, c1.x, u);
+        const ez = THREE.MathUtils.lerp(c0.y, c1.y, u);
+        const bx = ex * (1 - v);
+        const bz = ez * (1 - v);
+        const [x, y, z] = deformPt(bx, bz, u, v);
+        verts.push(x, y, z);
+        uvs.push(((u - 0.5) * radius * 0.8) / tilePitch, (v * radius) / (tilePitch * 1.35));
+        if (j === 0) eavePts.push(new THREE.Vector3(x, y, z));
+      }
+    }
+    for (let j = 0; j < segV; j++) {
+      for (let i = 0; i < segU; i++) {
+        const a = j * (segU + 1) + i;
+        const b = a + 1;
+        const c = a + (segU + 1);
+        const d = c + 1;
+        idx.push(a, b, c, b, d, c);
+      }
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
+    g.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+    g.setIndex(idx);
+    g.computeVertexNormals();
+    const n = g.attributes.normal;
+    let sumY = 0;
+    for (let m = 0; m < n.count; m++) sumY += n.getY(m);
+    if (sumY < 0) {
+      for (let m = 0; m < idx.length; m += 3) {
+        const t = idx[m + 1];
+        idx[m + 1] = idx[m + 2];
+        idx[m + 2] = t;
+      }
+      g.setIndex(idx);
+      g.computeVertexNormals();
+    }
+    tiles.push(g.toNonIndexed());
+    fascia.push(eaveBand(eavePts, 0.11));
+    soffit.push(eaveSoffitBand(eavePts, 0.11, radius, radius, radius * 0.38));
+  }
+
+  const ridgeScale = Math.max(0.055, radius * 0.032);
+  const hipGeos = [];
+  for (let k = 0; k < 8; k++) {
+    const c = corners[k];
+    const pts = [];
+    for (let i = 0; i <= 10; i++) {
+      const v = 1 - i / 10;
+      const [x, y, z] = deformPt(c.x * (1 - v), c.y * (1 - v), 0, v);
+      pts.push(new THREE.Vector3(x, y + 0.02, z));
+    }
+    hipGeos.push(tubeAlong(pts, ridgeScale * 0.98, 6, 12));
+    const tip = pts[pts.length - 1];
+    const finial = new THREE.ConeGeometry(ridgeScale * 0.95, ridgeScale * 2.4, 5);
+    const outAng = Math.atan2(tip.z, tip.x);
+    xform(finial, [tip.x * 1.01, tip.y + ridgeScale * 1.15, tip.z * 1.01], [0, -outAng, -0.35]);
+    hipGeos.push(finial);
+  }
+  ridges.push(...hipGeos);
+
+  const tilesMesh = new THREE.Mesh(mergeSafe(tiles), mats.tile);
+  tilesMesh.castShadow = true;
+  tilesMesh.receiveShadow = true;
+  group.add(tilesMesh);
+
+  const ridgeMesh = new THREE.Mesh(mergeSafe(ridges), mats.ridge);
+  ridgeMesh.castShadow = true;
+  group.add(ridgeMesh);
+
+  const fasciaMesh = new THREE.Mesh(mergeSafe(fascia), mats.fascia || mats.ridge);
+  fasciaMesh.material.side = THREE.DoubleSide;
+  group.add(fasciaMesh);
+
+  const soffitMesh = new THREE.Mesh(mergeSafe(soffit), mats.soffit || mats.fascia);
+  soffitMesh.material.side = THREE.DoubleSide;
+  soffitMesh.castShadow = true;
+  group.add(soffitMesh);
+
+  // 4 cardinal projecting 歇山山花 gables intersecting the octagonal crown
+  if (pediments) {
+    for (let d = 0; d < 4; d++) {
+      const rotY = (d * Math.PI) / 2;
+      const dormer = roofGroup(
+        {
+          halfW: radius * 0.44,
+          halfD: radius * 0.36,
+          H: H * 0.56,
+          mode: 'xieshan',
+          inset: radius * 0.14,
+          lift: lift * 0.48,
+          segU: 12,
+          segV: 6,
+          soffitInward: radius * 0.16,
+          rafters: false,
+        },
+        mats
+      );
+      dormer.rotation.y = rotY + Math.PI / 2;
+      const dist = radius * 0.62;
+      dormer.position.set(Math.sin(rotY) * dist, H * 0.24, Math.cos(rotY) * dist);
+      group.add(dormer);
+    }
+  }
+
+  return group;
+}
+
 /* ------------------------------------------------------------------ */
 /* Sakura petal geometry                                               */
 /* ------------------------------------------------------------------ */

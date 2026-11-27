@@ -375,8 +375,9 @@ export function createLightingSystem(scene, renderer) {
     [-4.55, 5.75, -0.8],
     [0.0, 5.75, -0.8],
     [4.55, 5.75, -0.8],
-    [-2.8, 9.1, -8.8],
-    [2.8, 9.1, -8.8],
+    [-2.4, 9.2, -13.0],
+    [2.4, 9.2, -13.0],
+    [6.30, 6.25, -5.8],
   ];
   const pointLights = localLightCoords.map(([x, y, z], idx) => {
     const intensity =
@@ -391,7 +392,7 @@ export function createLightingSystem(scene, renderer) {
               : idx >= 10 && idx <= 12
                 ? 2.4
                 : idx >= 13
-                  ? 2.35
+                  ? 2.45
                   : idx >= 7
                     ? 3.7
                     : 3.0;
@@ -403,7 +404,7 @@ export function createLightingSystem(scene, renderer) {
           : idx >= 10 && idx <= 12
             ? 5.6
             : idx >= 13
-              ? 7.2
+              ? 8.0
               : idx >= 7
                 ? 7.6
                 : 11.0;

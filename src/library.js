@@ -1,9 +1,13 @@
 import * as THREE from 'three';
-import { mergeSafe, xform, lockStatic, roofGroup, fitBoxFacadeUVs } from './geo.js';
+import { mergeSafe, xform, lockStatic, roofGroup, octagonalRoofGroup, fitBoxFacadeUVs } from './geo.js';
 
 /**
- * Independent component: Old Library (樱顶老图书馆) on Lion Hill Crest
- * plus Flanking Cherry Crest Courtyard Wings (文理侧翼).
+ * Independent component:
+ * 1) Old Library (樱顶老图书馆, F. H. Kales 1935) centered at (0, 4.55, -13.6)
+ *    with 3-bay portico colonnade, twin forward-gabled 歇山 corner pavilions,
+ *    monumental double-height stack hall, E/W reading wings, carved octagonal chimney turret,
+ *    true 8-sided octagonal clerestory drum, 8-cornered turquoise pavilion crown with 4 pediments, & 宝顶 spire.
+ * 2) Old School of Liberal Arts (老文学院四合院) quadrangle on West Lion Hill crest (-9.8, 4.55, -10.8).
  */
 export function createLibraryComponent(textures, palette) {
   const group = new THREE.Group();
@@ -12,179 +16,286 @@ export function createLibraryComponent(textures, palette) {
   const graniteGeos = [];
   const warmStoneGeos = [];
 
+  const libX = 0;
+  const libY = 4.55;
+  const libZ = -13.6;
+
   const libGroup = new THREE.Group();
-  libGroup.position.set(0, 4.55, -9.8);
+  libGroup.position.set(libX, libY, libZ);
   group.add(libGroup);
 
-  const podium = new THREE.BoxGeometry(9.6, 0.55, 7.8);
-  xform(podium, [0, 4.55 + 0.27, -9.5]);
+  // 1. Stepped Rusticated Granite Podium & Balustraded Central Entrance Stairs
+  const podium = new THREE.BoxGeometry(8.6, 0.58, 7.6);
+  xform(podium, [libX, libY + 0.29, libZ + 0.5]);
   graniteGeos.push(podium);
 
-  // Articulated dado panels & horizontal granite stringcourses framing Old Library podium
-  const podiumTrim = new THREE.BoxGeometry(9.82, 0.12, 8.02);
-  xform(podiumTrim, [0, 4.55 + 0.54, -9.5]);
+  const podiumTrim = new THREE.BoxGeometry(8.8, 0.11, 7.8);
+  xform(podiumTrim, [libX, libY + 0.57, libZ + 0.5]);
   warmStoneGeos.push(podiumTrim);
-  for (const sx of [-4.6, -2.4, 2.4, 4.6]) {
-    for (const sz of [-13.42, -5.58]) {
-      const pPil = new THREE.BoxGeometry(0.32, 0.56, 0.16);
-      xform(pPil, [sx, 4.55 + 0.28, sz]);
-      warmStoneGeos.push(pPil);
-    }
-  }
-  for (const sz of [-12.6, -10.8, -8.8, -6.6]) {
-    for (const sx of [-4.82, 4.82]) {
-      const pPil = new THREE.BoxGeometry(0.16, 0.56, 0.32);
-      xform(pPil, [sx, 4.55 + 0.28, sz]);
-      warmStoneGeos.push(pPil);
-    }
-  }
 
   for (let s = 0; s < 6; s++) {
-    const st = new THREE.BoxGeometry(3.2, 0.12, 0.34);
-    xform(st, [0, 4.55 + s * 0.09, -5.5 + s * -0.22]);
+    const st = new THREE.BoxGeometry(2.55, 0.11, 0.30);
+    xform(st, [libX, libY + 0.08 + s * 0.095, libZ + 5.15 - s * 0.24]);
     graniteGeos.push(st);
   }
-
-  // Corner podium steps near south-east forecourt leading up onto extended Old Library podium
-  for (let s = 0; s < 4; s++) {
-    const cStep = new THREE.BoxGeometry(1.45, 0.14, 0.32);
-    xform(cStep, [3.4, 4.55 + 0.07 + s * 0.12, -5.50 - s * 0.24]);
-    graniteGeos.push(cStep);
+  for (const sx of [-1.40, 1.40]) {
+    const cheek = new THREE.BoxGeometry(0.22, 0.44, 1.55);
+    xform(cheek, [libX + sx, libY + 0.34, libZ + 4.60], [0.36, 0, 0]);
+    graniteGeos.push(cheek);
+    const pier = new THREE.BoxGeometry(0.28, 0.72, 0.28);
+    xform(pier, [libX + sx, libY + 0.36, libZ + 5.32]);
+    graniteGeos.push(pier);
   }
 
-  const libMainHall = new THREE.Mesh(
-    fitBoxFacadeUVs(new THREE.BoxGeometry(7.8, 2.72, 5.4), 7.8, 2.72, 5.4, 7.4),
+  // 2. Monumental Double-Height Stack Core (5.6 x 3.25 x 4.4)
+  const mainHall = new THREE.Mesh(
+    fitBoxFacadeUVs(new THREE.BoxGeometry(5.6, 3.25, 4.4), 5.6, 3.25, 4.4, 6.2),
     palette.libWallMat
   );
-  libMainHall.position.set(0, 0.55 + 1.36, 0);
-  libMainHall.castShadow = true;
-  libMainHall.receiveShadow = true;
-  libGroup.add(libMainHall);
+  mainHall.position.set(0, 0.58 + 1.625, 0.1);
+  mainHall.castShadow = true;
+  mainHall.receiveShadow = true;
+  libGroup.add(mainHall);
 
   for (const sx of [-1, 1]) {
     for (const sz of [-1, 1]) {
-      const pilaster = new THREE.BoxGeometry(0.42, 2.72, 0.42);
-      xform(pilaster, [sx * 3.8, 4.55 + 0.55 + 1.36, -9.8 + sz * 2.6]);
-      warmStoneGeos.push(pilaster);
+      const pil = new THREE.BoxGeometry(0.36, 3.28, 0.36);
+      xform(pil, [libX + sx * 2.72, libY + 0.58 + 1.64, libZ + 0.1 + sz * 2.12]);
+      warmStoneGeos.push(pil);
     }
   }
 
-  const lowerFrieze = new THREE.Mesh(new THREE.BoxGeometry(7.68, 0.18, 5.32), palette.darkTimberMat);
-  lowerFrieze.position.set(0, 0.55 + 2.68, 0);
-  lowerFrieze.castShadow = true;
-  libGroup.add(lowerFrieze);
-
-  // Portico seated cleanly below lowerSkirtRoof's upturned southern eave (zero roof collision)
-  const porchHall = new THREE.Mesh(
-    fitBoxFacadeUVs(new THREE.BoxGeometry(3.0, 2.16, 1.55), 3.0, 2.16, 1.55, 7.4),
-    palette.libWallMat
-  );
-  porchHall.position.set(0, 0.55 + 1.08, 3.12);
-  porchHall.castShadow = true;
-  porchHall.receiveShadow = true;
-  libGroup.add(porchHall);
-
-  const porchRoof = roofGroup(
-    {
-      halfW: 1.82,
-      halfD: 0.98,
-      H: 0.66,
-      mode: 'xieshan',
-      inset: 0.42,
-      lift: 0.18,
-      segU: 16,
-      segV: 10,
-      soffitInward: 0.56,
-      rafters: true,
-    },
-    palette.roofMats
-  );
-  porchRoof.position.set(0, 0.55 + 2.16, 3.24);
-  libGroup.add(porchRoof);
-
+  // Lower perimeter turquoise 腰檐 skirt eave
   const lowerSkirtRoof = roofGroup(
     {
-      halfW: 4.26,
-      halfD: 3.18,
-      H: 1.02,
+      halfW: 3.32,
+      halfD: 2.70,
+      H: 0.74,
       mode: 'ring',
-      ring: 1.35,
-      lift: 0.34,
-      segU: 24,
-      segV: 10,
-      soffitInward: 1.15,
+      ring: 0.92,
+      lift: 0.24,
+      segU: 20,
+      segV: 8,
+      soffitInward: 0.85,
       rafters: true,
     },
     palette.roofMats
   );
-  lowerSkirtRoof.position.set(0, 0.55 + 2.76, 0);
+  lowerSkirtRoof.position.set(0, 0.58 + 3.22, 0.1);
   libGroup.add(lowerSkirtRoof);
 
-  const upperHall = new THREE.Mesh(
-    fitBoxFacadeUVs(new THREE.BoxGeometry(5.6, 1.52, 3.7), 5.6, 1.52, 3.7, 7.4),
+  // 3. South Entrance Portico (4 tall columns, recessed crimson double portal doors) + 2 Front Forward-Gabled 歇山 Corner Pavilions
+  const porchBack = new THREE.Mesh(
+    fitBoxFacadeUVs(new THREE.BoxGeometry(2.6, 2.25, 0.75), 2.6, 2.25, 0.75, 4.0),
     palette.libWallMat
   );
-  upperHall.position.set(0, 0.55 + 3.82 + 0.76, 0);
-  upperHall.castShadow = true;
-  upperHall.receiveShadow = true;
-  libGroup.add(upperHall);
+  porchBack.position.set(0, 0.58 + 1.12, 2.55);
+  porchBack.castShadow = true;
+  porchBack.receiveShadow = true;
+  libGroup.add(porchBack);
 
-  for (const sx of [-1, 1]) {
-    for (const sz of [-1, 1]) {
-      const uPil = new THREE.BoxGeometry(0.32, 1.56, 0.32);
-      xform(uPil, [sx * 2.74, 4.55 + 0.55 + 4.58, -9.8 + sz * 1.78]);
-      warmStoneGeos.push(uPil);
-    }
+  const portalSurround = new THREE.BoxGeometry(1.38, 1.72, 0.10);
+  xform(portalSurround, [libX, libY + 0.58 + 0.86, libZ + 2.94]);
+  graniteGeos.push(portalSurround);
+
+  for (const dx of [-0.36, 0.36]) {
+    const doorLeaf = new THREE.Mesh(
+      new THREE.BoxGeometry(0.44, 1.18, 0.08),
+      palette.crimsonColumnMat
+    );
+    doorLeaf.position.set(dx, 0.58 + 0.59, 2.98);
+    libGroup.add(doorLeaf);
   }
-  for (const px of [-2.85, -1.75, -0.65, 0.65, 1.75, 2.85]) {
-    for (const pz of [-1.96, 1.96]) {
-      const col = new THREE.CylinderGeometry(0.055, 0.06, 1.34, 8);
-      col.translate(px, 0.55 + 4.55, pz);
-      const cMesh = new THREE.Mesh(col, palette.crimsonColumnMat);
-      cMesh.castShadow = true;
-      libGroup.add(cMesh);
-    }
+  const portalTransom = new THREE.Mesh(
+    fitBoxFacadeUVs(new THREE.BoxGeometry(1.06, 0.34, 0.09), 1.06, 0.34, 0.09, 2.0),
+    palette.libWallMat
+  );
+  portalTransom.position.set(0, 0.58 + 1.38, 2.98);
+  libGroup.add(portalTransom);
+
+  for (const px of [-1.20, -0.44, 0.44, 1.20]) {
+    const colBase = new THREE.BoxGeometry(0.24, 0.14, 0.24);
+    xform(colBase, [libX + px, libY + 0.58 + 0.07, libZ + 3.46]);
+    graniteGeos.push(colBase);
+    const colShaft = new THREE.CylinderGeometry(0.08, 0.095, 2.02, 8);
+    xform(colShaft, [libX + px, libY + 0.58 + 1.14, libZ + 3.46]);
+    warmStoneGeos.push(colShaft);
   }
-  const upperFrieze = new THREE.Mesh(new THREE.BoxGeometry(6.25, 0.28, 4.35), palette.darkTimberMat);
-  upperFrieze.position.set(0, 0.55 + 5.20, 0);
-  upperFrieze.castShadow = true;
-  libGroup.add(upperFrieze);
+  const porticoFrieze = new THREE.BoxGeometry(2.74, 0.34, 1.24);
+  xform(porticoFrieze, [libX, libY + 0.58 + 2.30, libZ + 3.05]);
+  warmStoneGeos.push(porticoFrieze);
 
-  const upperBalustrade = new THREE.BoxGeometry(5.68, 0.24, 3.88);
-  xform(upperBalustrade, [0, 4.55 + 0.55 + 3.90, -9.8]);
-  graniteGeos.push(upperBalustrade);
-
-  const upperMainRoof = roofGroup(
+  const porticoRoof = roofGroup(
     {
-      halfW: 3.75,
-      halfD: 2.65,
-      H: 1.62,
+      halfW: 1.54,
+      halfD: 0.92,
+      H: 0.60,
       mode: 'xieshan',
-      inset: 1.1,
-      lift: 0.36,
-      segU: 24,
-      segV: 12,
-      soffitInward: 1.12,
-      rafters: true,
+      inset: 0.38,
+      lift: 0.16,
+      segU: 14,
+      segV: 8,
+      soffitInward: 0.42,
+      rafters: false,
     },
     palette.roofMats
   );
-  upperMainRoof.position.set(0, 0.55 + 5.20, 0);
-  libGroup.add(upperMainRoof);
+  porticoRoof.position.set(0, 0.58 + 2.46, libZ === 0 ? 3.1 : 3.08);
+  libGroup.add(porticoRoof);
 
-  // Refined slender 2-tier lotus pedestal & graduated 5-ring 宝顶 spire (unified teal glaze)
+  // Twin Projecting Forward Corner Reading Pavilions (forward-facing 歇山 ridges facing South, 193a6b98.jpg)
+  for (const sx of [-1, 1]) {
+    const cornerHall = new THREE.Mesh(
+      fitBoxFacadeUVs(new THREE.BoxGeometry(1.75, 2.38, 1.85), 1.75, 2.38, 1.85, 3.6),
+      palette.libWallMat
+    );
+    cornerHall.position.set(sx * 2.22, 0.58 + 1.19, 3.02);
+    cornerHall.castShadow = true;
+    cornerHall.receiveShadow = true;
+    libGroup.add(cornerHall);
+
+    for (const cx of [-0.82, 0.82]) {
+      for (const cz of [-0.86, 0.86]) {
+        const pil = new THREE.BoxGeometry(0.20, 2.40, 0.20);
+        xform(pil, [libX + sx * 2.22 + cx, libY + 0.58 + 1.20, libZ + 3.02 + cz]);
+        warmStoneGeos.push(pil);
+      }
+    }
+
+    const cornerRoof = roofGroup(
+      {
+        halfW: 1.16,
+        halfD: 1.06,
+        H: 0.72,
+        mode: 'xieshan',
+        inset: 0.44,
+        lift: 0.18,
+        segU: 14,
+        segV: 8,
+        soffitInward: 0.44,
+        rafters: true,
+      },
+      palette.roofMats
+    );
+    cornerRoof.rotation.y = Math.PI / 2; // North-South ridge facing hero South elevation!
+    cornerRoof.position.set(sx * 2.22, 0.58 + 2.38, 3.02);
+    libGroup.add(cornerRoof);
+  }
+
+  // 4. East & West Attached 歇山 Reading Wings (x = +-3.55, outer eave +-4.65 -> wide clear corridor east to 理学楼!)
+  for (const sx of [-1, 1]) {
+    const wing = new THREE.Mesh(
+      fitBoxFacadeUVs(new THREE.BoxGeometry(1.65, 2.42, 2.90), 1.65, 2.42, 2.90, 3.8),
+      palette.dormWallMat
+    );
+    wing.position.set(sx * 3.45, 0.58 + 1.21, -0.35);
+    wing.castShadow = true;
+    wing.receiveShadow = true;
+    libGroup.add(wing);
+
+    const wingRoof = roofGroup(
+      {
+        halfW: 1.12,
+        halfD: 1.68,
+        H: 0.78,
+        mode: 'xieshan',
+        inset: 0.56,
+        lift: 0.20,
+        segU: 14,
+        segV: 8,
+        soffitInward: 0.48,
+        rafters: true,
+      },
+      palette.roofMats
+    );
+    wingRoof.rotation.y = Math.PI / 2;
+    wingRoof.position.set(sx * 3.45, 0.58 + 2.42, -0.35);
+    libGroup.add(wingRoof);
+  }
+
+  // Signature Carved Octagonal Stone Chimney Turret on rear NW/NE roof shoulder (ffa6c42d.jpg)
+  const chimneyBase = new THREE.CylinderGeometry(0.24, 0.28, 1.95, 8);
+  xform(chimneyBase, [libX + 2.55, libY + 0.58 + 3.45, libZ - 1.55]);
+  warmStoneGeos.push(chimneyBase);
+  const chimneyCap = new THREE.CylinderGeometry(0.30, 0.24, 0.22, 8);
+  xform(chimneyCap, [libX + 2.55, libY + 0.58 + 4.48, libZ - 1.55]);
+  graniteGeos.push(chimneyCap);
+
+  // 5. White-Stone 平坐 Terrace Balustrade + True 8-Sided Octagonal Clerestory Drum + 8-Cornered Crown Roof
+  const roofDeckY = 0.58 + 3.36;
+  const upperBalustrade = new THREE.BoxGeometry(5.15, 0.28, 4.05);
+  xform(upperBalustrade, [libX, libY + roofDeckY + 0.14, libZ + 0.1]);
+  graniteGeos.push(upperBalustrade);
+
+  const octRadius = 2.02;
+  const octHeight = 1.48;
+  const octDrum = new THREE.Mesh(
+    new THREE.CylinderGeometry(octRadius, octRadius * 1.02, octHeight, 8),
+    palette.libWallMat
+  );
+  octDrum.rotation.y = Math.PI / 8;
+  octDrum.position.set(0, roofDeckY + octHeight * 0.5, 0.1);
+  octDrum.castShadow = true;
+  octDrum.receiveShadow = true;
+  libGroup.add(octDrum);
+
+  // 8 vertical stone corner pilasters & crimson bracket frieze around octagonal drum
+  for (let k = 0; k < 8; k++) {
+    const a = (k + 0.5) * (Math.PI / 4);
+    const px = Math.cos(a) * octRadius;
+    const pz = 0.1 + Math.sin(a) * octRadius;
+    const pil = new THREE.BoxGeometry(0.20, octHeight + 0.04, 0.20);
+    xform(pil, [libX + px, libY + roofDeckY + octHeight * 0.5, libZ + pz], [0, -a, 0]);
+    warmStoneGeos.push(pil);
+
+    const col = new THREE.CylinderGeometry(0.045, 0.05, octHeight * 0.85, 8);
+    col.translate(px * 1.03, roofDeckY + octHeight * 0.45, pz * 1.03);
+    const colM = new THREE.Mesh(col, palette.crimsonColumnMat);
+    colM.castShadow = true;
+    libGroup.add(colM);
+  }
+
+  const octFrieze = new THREE.Mesh(
+    new THREE.CylinderGeometry(octRadius * 1.08, octRadius * 1.06, 0.24, 8),
+    palette.darkTimberMat
+  );
+  octFrieze.rotation.y = Math.PI / 8;
+  octFrieze.position.set(0, roofDeckY + octHeight + 0.06, 0.1);
+  octFrieze.castShadow = true;
+  libGroup.add(octFrieze);
+
+  // Iconic 8-Cornered Turquoise Pavilion Crown with 4 Cardinal 歇山山花 Pediments
+  const octCrownY = roofDeckY + octHeight + 0.14;
+  const octCrownRoof = octagonalRoofGroup(
+    {
+      radius: 2.86,
+      H: 1.56,
+      lift: 0.34,
+      pediments: true,
+      segU: 8,
+      segV: 10,
+      tilePitch: 0.28,
+    },
+    palette.roofMats
+  );
+  octCrownRoof.position.set(0, octCrownY, 0.1);
+  libGroup.add(octCrownRoof);
+
+  // 2-tier lotus pedestal + graduated 7-ring 相轮宝顶 spire
+  const finialY = octCrownY + 1.52;
   const finialBaseTier = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.36, 0.44, 0.14, 8),
+    new THREE.CylinderGeometry(0.32, 0.40, 0.13, 8),
     palette.glazedRidgeMat
   );
-  finialBaseTier.position.set(0, 0.55 + 6.72, 0);
+  finialBaseTier.position.set(0, finialY, 0.1);
   finialBaseTier.castShadow = true;
   libGroup.add(finialBaseTier);
+
   const finialUpperTier = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.26, 0.34, 0.12, 8),
+    new THREE.CylinderGeometry(0.22, 0.30, 0.11, 8),
     palette.glazedRidgeMat
   );
-  finialUpperTier.position.set(0, 0.55 + 6.83, 0);
+  finialUpperTier.position.set(0, finialY + 0.10, 0.1);
   finialUpperTier.castShadow = true;
   libGroup.add(finialUpperTier);
 
@@ -192,58 +303,67 @@ export function createLibraryComponent(textures, palette) {
   const bSteps = 44;
   for (let i = 0; i <= bSteps; i++) {
     const t = i / bSteps;
-    const y = t * 1.24;
-    let r = 0.26 * (1 - t * 0.62);
-    if (t < 0.78) {
-      const wave = Math.sin(t * Math.PI * 10.0);
-      r += Math.max(0, wave) * 0.08;
+    const y = t * 1.18;
+    let r = 0.22 * (1 - t * 0.62);
+    if (t < 0.80) {
+      const wave = Math.sin(t * Math.PI * 14.0);
+      r += Math.max(0, wave) * 0.07;
     } else {
-      const u = (t - 0.78) / 0.22;
-      r = 0.14 * Math.cos(u * Math.PI * 0.49);
+      const u = (t - 0.80) / 0.20;
+      r = 0.12 * Math.cos(u * Math.PI * 0.49);
     }
     baodingPts.push(new THREE.Vector2(Math.max(0.015, r), y));
   }
-  const baodingGeo = new THREE.LatheGeometry(baodingPts, 24);
-  const baodingMesh = new THREE.Mesh(baodingGeo, palette.glazedRidgeMat);
-  baodingMesh.position.set(0, 0.55 + 6.90, 0);
+  const baodingMesh = new THREE.Mesh(new THREE.LatheGeometry(baodingPts, 24), palette.glazedRidgeMat);
+  baodingMesh.position.set(0, finialY + 0.16, 0.1);
   baodingMesh.castShadow = true;
   libGroup.add(baodingMesh);
 
-  // Flanking Cherry Crest Courtyard Wings (>1.4m clear gap from Old Library eaves & pilasters)
-  for (const sx of [-1, 1]) {
-    const wingX = sx * 7.20;
-    const wingY = 4.55;
-    const wingZ = -8.6;
+  // 6. West Crest Quadrangle — Old School of Liberal Arts (老文学院四合院, 02054597.jpg left)
+  const libArtsX = -9.8;
+  const libArtsY = 4.55;
+  const libArtsZ = -10.8;
 
-    const sidePodium = new THREE.BoxGeometry(3.10, 0.26, 3.10);
-    xform(sidePodium, [wingX, wingY + 0.13, wingZ]);
-    graniteGeos.push(sidePodium);
+  const qPodium = new THREE.BoxGeometry(5.1, 0.30, 5.5);
+  xform(qPodium, [libArtsX, libArtsY + 0.15, libArtsZ]);
+  graniteGeos.push(qPodium);
 
-    const sideHall = new THREE.Mesh(
-      fitBoxFacadeUVs(new THREE.BoxGeometry(2.80, 2.08, 2.80), 2.80, 2.08, 2.80, 3.8),
+  const qBarSpecs = [
+    { pos: [libArtsX, libArtsZ + 1.85], size: [4.6, 2.05, 1.15], roof: { hw: 2.55, hd: 0.72, rot: 0 } },
+    { pos: [libArtsX, libArtsZ - 1.85], size: [4.6, 2.05, 1.15], roof: { hw: 2.55, hd: 0.72, rot: 0 } },
+    { pos: [libArtsX - 1.75, libArtsZ], size: [1.10, 2.05, 2.60], roof: { hw: 2.15, hd: 0.72, rot: Math.PI / 2 } },
+    { pos: [libArtsX + 1.75, libArtsZ], size: [1.10, 2.05, 2.60], roof: { hw: 2.15, hd: 0.72, rot: Math.PI / 2 } },
+  ];
+  for (const bar of qBarSpecs) {
+    const [bx, bz] = bar.pos;
+    const [bw, bh, bd] = bar.size;
+    const wall = new THREE.Mesh(
+      fitBoxFacadeUVs(new THREE.BoxGeometry(bw, bh, bd), bw, bh, bd, 3.6),
       palette.dormWallMat
     );
-    sideHall.position.set(wingX, wingY + 0.26 + 1.04, wingZ);
-    sideHall.castShadow = true;
-    sideHall.receiveShadow = true;
-    group.add(sideHall);
+    wall.position.set(bx, libArtsY + 0.30 + bh * 0.5, bz);
+    wall.castShadow = true;
+    wall.receiveShadow = true;
+    group.add(wall);
 
-    const sideRoof = roofGroup(
+    const bRoof = roofGroup(
       {
-        halfW: 1.60,
-        halfD: 1.66,
-        H: 0.90,
-        mode: 'hip',
-        lift: 0.20,
-        segU: 16,
-        segV: 8,
-        soffitInward: 0.60,
-        rafters: true,
+        halfW: bar.roof.hw,
+        halfD: bar.roof.hd,
+        H: 0.68,
+        mode: 'xieshan',
+        inset: 0.34,
+        lift: 0.16,
+        segU: 12,
+        segV: 6,
+        soffitInward: 0.34,
+        rafters: false,
       },
       palette.roofMats
     );
-    sideRoof.position.set(wingX, wingY + 2.28, wingZ);
-    group.add(sideRoof);
+    bRoof.rotation.y = bar.roof.rot;
+    bRoof.position.set(bx, libArtsY + 0.30 + bh, bz);
+    group.add(bRoof);
   }
 
   const libGraniteMesh = new THREE.Mesh(mergeSafe(graniteGeos), palette.graniteMat);

@@ -12200,12 +12200,12 @@ var CHAPTERS = [
     id: "library",
     index: "03",
     shortLabel: "03 \u8001\u56FE",
-    landmarkName: "\u6A31\u9876\u8001\u56FE\u4E66\u9986",
+    landmarkName: "\u6A31\u9876\u8001\u56FE\u4E66\u9986 \xB7 \u7406\u5B66\u697C",
     sectionTitle: "03 \u8001\u56FE \xB7 \u7814",
     subtitle: "\u79D1\u7814\u534F\u8BAE\u4E0E AI4S \xB7 Research & Protocols",
-    anchor: [5.2, 8.4, -10.2],
-    camPos: [22.8, 22.6, 4.2],
-    camTarget: [0.5, 7.2, -8.8],
+    anchor: [4.6, 8.8, -11.4],
+    camPos: [21.5, 22.8, 6.5],
+    camTarget: [0.8, 7, -11.2],
     accentColor: "#1a96ad",
     summary: "\u72EE\u5B50\u5C71\u5DC5\u5B54\u96C0\u84DD\u91CD\u6A90\u6B47\u5C71\u9876\u4E0E\u4E94\u91CD\u8F6E\u5B9D\u9876\u4E4B\u4E0B\uFF0C\u662F\u5173\u4E8E\u79D1\u7814\u667A\u80FD\u4F53\u201C\u5206\u6743\u5236\u8861\u201D\u4E0E\u79D1\u5B66\u8BA1\u7B97\u524D\u7F6E\u786E\u5B9A\u6027\u7EA6\u675F\u7684\u4E24\u9879\u6838\u5FC3\u5F00\u6E90\u63A2\u7D22\u3002",
     badges: ["Separation of Powers", "Deterministic Gating", "AI4S"],
@@ -12763,150 +12763,176 @@ function createTextureFactory(renderer) {
     }
     return register(label, c, { pixel: true, mip: true });
   }
-  function protagonistFrame(frameIdx = 0) {
-    const label = `protagonist-frame-${frameIdx}`;
-    if (cache.has(label)) return cache.get(label);
-    const W2 = 64;
-    const H2 = 80;
-    const c = makeCanvas(W2, H2);
-    const ctx = c.getContext("2d");
-    ctx.clearRect(0, 0, W2, H2);
-    const H_HI = "#f7faff";
-    const H_BASE = "#d8e6fc";
-    const H_MID = "#a9c2ec";
-    const H_SHAD = "#6d85ba";
-    const H_DEEP = "#4e6396";
-    const SKIN = "#ffe2d5";
-    const SKIN_SHAD = "#eab8a6";
-    const BLUSH = "#ffa8ba";
-    const EYE_LASH = "#122248";
-    const EYE_DEEP = "#163578";
-    const EYE_MID = "#357fd8";
-    const EYE_SKY = "#74bdfc";
-    const EYE_HI = "#ffffff";
-    const SUIT_HI = "#8ed0f5";
-    const SUIT = "#4a9ee0";
-    const SUIT_SHAD = "#306ca8";
-    const SUIT_DARK = "#1e4470";
-    const STRIPE = "#ffffff";
-    const PANT = "#2d4b76";
-    const PANT_HI = "#446aa0";
-    const PANT_SHAD = "#1d3252";
-    const SHOE_TOP = "#88c5ee";
-    const SHOE_SHAD = "#5694c4";
-    const SOLE = "#fcfdff";
-    const SOLE_SHAD = "#cdd8eb";
-    const CAM_BODY = "#d7e0ec";
-    const CAM_EDGE = "#9aa6ba";
-    const CAM_DARK = "#313a4d";
-    const RED_DOT = "#ff3b3b";
-    const bob = frameIdx === 1 ? 1 : 0;
-    const sway = frameIdx === 1 ? 1 : 0;
-    const stride = frameIdx === 1 ? 2 : 0;
-    px(ctx, 20, 22 + bob, 23, 30, H_SHAD);
-    px(ctx, 18 - sway, 26 + bob, 26, 25, H_SHAD);
-    px(ctx, 21, 30 + bob, 20, 21, H_MID);
-    px(ctx, 16 - sway, 37 + bob, 5, 15, H_MID);
-    px(ctx, 16 - sway, 46 + bob, 4, 8, H_SHAD);
-    px(ctx, 41 + sway, 37 + bob, 5, 14, H_MID);
-    px(ctx, 42 + sway, 46 + bob, 4, 7, H_SHAD);
-    px(ctx, 22, 50 + bob, 7, 4, H_DEEP);
-    px(ctx, 32, 49 + bob, 7, 4, H_DEEP);
-    const legY = 54;
-    px(ctx, 24, legY, 6, 16 - stride, PANT_SHAD);
-    px(ctx, 25, legY, 4, 15 - stride, PANT);
-    px(ctx, 24, legY, 1, 14 - stride, STRIPE);
-    px(ctx, 32, legY, 6, 16, PANT);
-    px(ctx, 33, legY, 3, 15, PANT_HI);
-    px(ctx, 37, legY, 1, 15, STRIPE);
-    const lsY = 69 - stride;
-    px(ctx, 22, lsY, 8, 4, SHOE_SHAD);
-    px(ctx, 23, lsY, 6, 3, SHOE_TOP);
-    px(ctx, 24, lsY + 1, 4, 1, STRIPE);
-    px(ctx, 22, lsY + 4, 9, 3, SOLE);
-    px(ctx, 22, lsY + 6, 9, 1, SOLE_SHAD);
-    const rsY = 69;
-    px(ctx, 32, rsY, 9, 4, SHOE_SHAD);
-    px(ctx, 33, rsY, 7, 3, SHOE_TOP);
-    px(ctx, 35, rsY + 1, 4, 1, STRIPE);
-    px(ctx, 32, rsY + 4, 10, 3, SOLE);
-    px(ctx, 32, rsY + 6, 10, 1, SOLE_SHAD);
-    const bodyY = 38 + bob;
-    px(ctx, 23, bodyY, 17, 17, SUIT);
-    px(ctx, 23, bodyY + 13, 17, 4, SUIT_SHAD);
-    px(ctx, 24, bodyY + 1, 6, 11, SUIT_HI);
-    px(ctx, 35, bodyY + 2, 5, 13, SUIT_SHAD);
-    px(ctx, 31, bodyY, 2, 16, STRIPE);
-    px(ctx, 30, bodyY + 15, 4, 2, SUIT_DARK);
-    px(ctx, 26, bodyY - 3, 12, 4, SUIT_DARK);
-    px(ctx, 27, bodyY - 3, 10, 3, SUIT_HI);
-    px(ctx, 19, bodyY + 1, 4, 11, SUIT);
-    px(ctx, 19, bodyY + 1, 1, 10, STRIPE);
-    px(ctx, 19, bodyY + 11, 4, 2, STRIPE);
-    px(ctx, 39, bodyY + 2, 4, 10, SUIT_SHAD);
-    px(ctx, 42, bodyY + 2, 1, 9, STRIPE);
-    px(ctx, 39, bodyY + 11, 4, 2, STRIPE);
-    px(ctx, 21, bodyY + 10, 5, 4, SKIN);
-    px(ctx, 36, bodyY + 10, 5, 4, SKIN);
-    px(ctx, 25, bodyY + 8, 13, 7, CAM_DARK);
-    px(ctx, 26, bodyY + 9, 11, 5, CAM_BODY);
-    px(ctx, 26, bodyY + 9, 11, 1, STRIPE);
-    px(ctx, 26, bodyY + 13, 11, 1, CAM_EDGE);
-    px(ctx, 30, bodyY + 9, 5, 5, CAM_DARK);
-    px(ctx, 31, bodyY + 10, 3, 3, EYE_MID);
-    px(ctx, 31, bodyY + 10, 1, 1, EYE_HI);
-    px(ctx, 35, bodyY + 9, 2, 2, RED_DOT);
-    const headY = 10 + bob;
-    px(ctx, 21, headY + 6, 22, 21, SKIN);
-    px(ctx, 22, headY + 25, 20, 3, SKIN_SHAD);
-    px(ctx, 25, headY + 27, 14, 2, SKIN_SHAD);
-    px(ctx, 23, headY + 15, 6, 1, EYE_LASH);
-    px(ctx, 24, headY + 16, 5, 6, EYE_DEEP);
-    px(ctx, 25, headY + 19, 3, 2, EYE_MID);
-    px(ctx, 24, headY + 16, 2, 1, EYE_HI);
-    px(ctx, 35, headY + 15, 6, 1, EYE_LASH);
-    px(ctx, 35, headY + 16, 5, 6, EYE_DEEP);
-    px(ctx, 36, headY + 19, 3, 2, EYE_MID);
-    px(ctx, 35, headY + 16, 2, 1, EYE_HI);
-    px(ctx, 22, headY + 22, 3, 1, BLUSH);
-    px(ctx, 39, headY + 22, 3, 1, BLUSH);
-    px(ctx, 31, headY + 25, 2, 1, "#c87f86");
-    px(ctx, 21, headY + 1, 22, 8, H_BASE);
-    px(ctx, 24, headY - 1, 16, 4, H_HI);
-    px(ctx, 19, headY + 4, 26, 8, H_BASE);
-    px(ctx, 22, headY + 3, 20, 2, H_HI);
-    px(ctx, 30, headY - 3, 4, 3, H_BASE);
-    px(ctx, 31, headY - 4, 2, 2, H_HI);
-    px(ctx, 19, headY + 9, 5, 7, H_BASE);
-    px(ctx, 24, headY + 9, 4, 5, H_HI);
-    px(ctx, 28, headY + 9, 4, 6, H_MID);
-    px(ctx, 32, headY + 9, 5, 5, H_HI);
-    px(ctx, 37, headY + 9, 6, 7, H_BASE);
-    px(ctx, 29, headY + 12, 2, 4, H_MID);
-    px(ctx, 18, headY + 10, 3, 22, H_BASE);
-    px(ctx, 19, headY + 12, 2, 18, H_HI);
-    px(ctx, 19, headY + 31, 2, 8, H_MID);
-    px(ctx, 43, headY + 10, 3, 22, H_BASE);
-    px(ctx, 43, headY + 12, 2, 18, H_HI);
-    px(ctx, 43, headY + 31, 2, 8, H_MID);
-    const img = ctx.getImageData(0, 0, W2, H2);
+  const PROTAG_PAL = {
+    H_HI: "#fafcff",
+    H_BASE: "#eaeff7",
+    H_MID: "#cdd7e8",
+    H_SHAD: "#9eadc6",
+    H_DEEP: "#7686a4",
+    SKIN: "#fff1eb",
+    SKIN_SHAD: "#ebcfc6",
+    BLUSH: "#ffbac8",
+    EYE_LASH: "#24324e",
+    EYE_DEEP: "#3f5f9e",
+    EYE_MID: "#7ca6ea",
+    EYE_HI: "#ffffff",
+    EYE_WHITE: "#f7faff",
+    SUIT_HI: "#b6d7e8",
+    SUIT: "#96bfd4",
+    SUIT_SHAD: "#749eb5",
+    ZIP: "#45677f",
+    STRIPE: "#f2f8fc",
+    SHOE: "#34486b",
+    SHOE_SHAD: "#23314b",
+    SHOE_LACE: "#768db3",
+    SOLE: "#f2f6fc",
+    SOLE_SHAD: "#cdd8eb",
+    OUTLINE: [38, 50, 76]
+  };
+  function outlineCanvas(ctx, w2, h, rgb = PROTAG_PAL.OUTLINE) {
+    const img = ctx.getImageData(0, 0, w2, h);
     const src = new Uint8ClampedArray(img.data);
-    const outR = 54, outG = 64, outB = 92;
-    for (let y2 = 1; y2 < H2 - 1; y2++) {
-      for (let x = 1; x < W2 - 1; x++) {
-        const i = (y2 * W2 + x) * 4;
+    const [r, g2, b] = rgb;
+    for (let y2 = 1; y2 < h - 1; y2++) {
+      for (let x = 1; x < w2 - 1; x++) {
+        const i = (y2 * w2 + x) * 4;
         if (src[i + 3] > 20) continue;
-        const n = src[((y2 - 1) * W2 + x) * 4 + 3] > 20 || src[((y2 + 1) * W2 + x) * 4 + 3] > 20 || src[(y2 * W2 + x - 1) * 4 + 3] > 20 || src[(y2 * W2 + x + 1) * 4 + 3] > 20;
+        const n = src[((y2 - 1) * w2 + x) * 4 + 3] > 20 || src[((y2 + 1) * w2 + x) * 4 + 3] > 20 || src[(y2 * w2 + x - 1) * 4 + 3] > 20 || src[(y2 * w2 + x + 1) * 4 + 3] > 20;
         if (n) {
-          img.data[i] = outR;
-          img.data[i + 1] = outG;
-          img.data[i + 2] = outB;
+          img.data[i] = r;
+          img.data[i + 1] = g2;
+          img.data[i + 2] = b;
           img.data[i + 3] = 255;
         }
       }
     }
     ctx.putImageData(img, 0, 0);
-    return register(label, c, { wrap: false, pixel: true, mip: true });
+  }
+  function protagonistParts() {
+    if (cache.has("protagonist-parts")) return cache.get("protagonist-parts");
+    const P2 = PROTAG_PAL;
+    const bh = makeCanvas(48, 52);
+    const bhCtx = bh.getContext("2d");
+    px(bhCtx, 11, 5, 26, 20, P2.H_BASE);
+    px(bhCtx, 9, 12, 30, 18, P2.H_MID);
+    px(bhCtx, 8, 19, 32, 13, P2.H_SHAD);
+    px(bhCtx, 13, 16, 22, 18, P2.H_DEEP);
+    px(bhCtx, 8, 28, 5, 11, P2.H_MID);
+    px(bhCtx, 10, 36, 4, 8, P2.H_SHAD);
+    px(bhCtx, 12, 41, 4, 6, P2.H_DEEP);
+    px(bhCtx, 15, 33, 18, 8, P2.H_DEEP);
+    px(bhCtx, 35, 28, 5, 11, P2.H_MID);
+    px(bhCtx, 34, 36, 4, 8, P2.H_SHAD);
+    px(bhCtx, 32, 41, 4, 6, P2.H_DEEP);
+    outlineCanvas(bhCtx, 48, 52, [96, 112, 142]);
+    const lg = makeCanvas(18, 26);
+    const lgCtx = lg.getContext("2d");
+    px(lgCtx, 6, 2, 6, 14, P2.SUIT);
+    px(lgCtx, 6, 2, 2, 13, P2.SUIT_HI);
+    px(lgCtx, 10, 2, 2, 14, P2.SUIT_SHAD);
+    px(lgCtx, 6, 2, 1, 13, P2.STRIPE);
+    px(lgCtx, 6, 15, 6, 2, P2.SUIT_SHAD);
+    px(lgCtx, 4, 17, 10, 5, P2.SHOE);
+    px(lgCtx, 5, 17, 7, 2, P2.SHOE_LACE);
+    px(lgCtx, 4, 21, 10, 1, P2.SHOE_SHAD);
+    px(lgCtx, 4, 22, 10, 2, P2.SOLE);
+    px(lgCtx, 4, 23, 10, 1, P2.SOLE_SHAD);
+    outlineCanvas(lgCtx, 18, 26);
+    const tr2 = makeCanvas(28, 28);
+    const trCtx = tr2.getContext("2d");
+    px(trCtx, 8, 2, 12, 4, P2.SUIT_SHAD);
+    px(trCtx, 9, 2, 10, 3, P2.SUIT_HI);
+    px(trCtx, 13, 2, 2, 4, P2.ZIP);
+    px(trCtx, 6, 6, 16, 17, P2.SUIT);
+    px(trCtx, 7, 7, 5, 13, P2.SUIT_HI);
+    px(trCtx, 17, 7, 5, 14, P2.SUIT_SHAD);
+    px(trCtx, 13, 6, 2, 17, P2.ZIP);
+    px(trCtx, 8, 16, 3, 1, P2.ZIP);
+    px(trCtx, 9, 17, 2, 1, P2.ZIP);
+    px(trCtx, 17, 16, 3, 1, P2.ZIP);
+    px(trCtx, 17, 17, 2, 1, P2.ZIP);
+    px(trCtx, 6, 22, 16, 2, P2.SUIT_SHAD);
+    outlineCanvas(trCtx, 28, 28);
+    const ar2 = makeCanvas(14, 24);
+    const arCtx = ar2.getContext("2d");
+    px(arCtx, 4, 2, 6, 14, P2.SUIT);
+    px(arCtx, 4, 2, 2, 13, P2.SUIT_HI);
+    px(arCtx, 4, 2, 1, 13, P2.STRIPE);
+    px(arCtx, 4, 15, 6, 2, P2.SUIT_SHAD);
+    px(arCtx, 5, 17, 4, 4, P2.SKIN);
+    px(arCtx, 5, 20, 4, 1, P2.SKIN_SHAD);
+    outlineCanvas(arCtx, 14, 24);
+    function makeHead(blink) {
+      const hd2 = makeCanvas(48, 44);
+      const hCtx = hd2.getContext("2d");
+      px(hCtx, 13, 14, 22, 18, P2.SKIN);
+      px(hCtx, 15, 31, 18, 2, P2.SKIN_SHAD);
+      px(hCtx, 19, 33, 10, 1, P2.SKIN_SHAD);
+      if (blink) {
+        px(hCtx, 16, 24, 5, 1, P2.EYE_LASH);
+        px(hCtx, 17, 25, 3, 1, P2.H_DEEP);
+        px(hCtx, 27, 24, 5, 1, P2.EYE_LASH);
+        px(hCtx, 28, 25, 3, 1, P2.H_DEEP);
+      } else {
+        px(hCtx, 15, 21, 6, 1, P2.EYE_LASH);
+        px(hCtx, 16, 22, 5, 5, P2.EYE_WHITE);
+        px(hCtx, 17, 22, 4, 4, P2.EYE_DEEP);
+        px(hCtx, 17, 24, 4, 2, P2.EYE_MID);
+        px(hCtx, 17, 22, 2, 1, P2.EYE_HI);
+        px(hCtx, 27, 21, 6, 1, P2.EYE_LASH);
+        px(hCtx, 27, 22, 5, 5, P2.EYE_WHITE);
+        px(hCtx, 27, 22, 4, 4, P2.EYE_DEEP);
+        px(hCtx, 27, 24, 4, 2, P2.EYE_MID);
+        px(hCtx, 27, 22, 2, 1, P2.EYE_HI);
+      }
+      px(hCtx, 14, 27, 2, 1, P2.BLUSH);
+      px(hCtx, 32, 27, 2, 1, P2.BLUSH);
+      px(hCtx, 23, 30, 2, 1, "#c88c92");
+      px(hCtx, 12, 4, 24, 11, P2.H_BASE);
+      px(hCtx, 15, 2, 18, 4, P2.H_HI);
+      px(hCtx, 10, 8, 28, 9, P2.H_BASE);
+      px(hCtx, 14, 7, 20, 2, P2.H_HI);
+      px(hCtx, 11, 15, 4, 7, P2.H_BASE);
+      px(hCtx, 15, 15, 5, 5, P2.H_HI);
+      px(hCtx, 20, 15, 3, 7, P2.H_MID);
+      px(hCtx, 23, 15, 2, 8, P2.H_HI);
+      px(hCtx, 25, 15, 3, 7, P2.H_MID);
+      px(hCtx, 28, 15, 5, 5, P2.H_HI);
+      px(hCtx, 33, 15, 4, 7, P2.H_BASE);
+      px(hCtx, 10, 16, 3, 22, P2.H_BASE);
+      px(hCtx, 11, 18, 2, 18, P2.H_HI);
+      px(hCtx, 11, 35, 2, 6, P2.H_MID);
+      px(hCtx, 35, 16, 3, 22, P2.H_BASE);
+      px(hCtx, 35, 18, 2, 18, P2.H_HI);
+      px(hCtx, 35, 35, 2, 6, P2.H_MID);
+      outlineCanvas(hCtx, 48, 44);
+      return hd2;
+    }
+    const parts = {
+      backHair: register("protagonist-back-hair", bh, { wrap: false, pixel: true, mip: false }),
+      leg: register("protagonist-leg", lg, { wrap: false, pixel: true, mip: false }),
+      torso: register("protagonist-torso", tr2, { wrap: false, pixel: true, mip: false }),
+      arm: register("protagonist-arm", ar2, { wrap: false, pixel: true, mip: false }),
+      headOpen: register("protagonist-head-open", makeHead(false), { wrap: false, pixel: true, mip: false }),
+      headBlink: register("protagonist-head-blink", makeHead(true), { wrap: false, pixel: true, mip: false })
+    };
+    cache.set("protagonist-parts", parts);
+    return parts;
+  }
+  function protagonistFrame(frameIdx = 0) {
+    const label = `protagonist-frame-${frameIdx}`;
+    if (cache.has(label)) return cache.get(label);
+    const parts = protagonistParts();
+    const c = makeCanvas(64, 80);
+    const ctx = c.getContext("2d");
+    ctx.drawImage(parts.backHair.image, 4, 16);
+    ctx.drawImage(parts.leg.image, 17, 52);
+    ctx.drawImage(parts.leg.image, 29, 52);
+    ctx.drawImage(parts.torso.image, 18, 30);
+    ctx.drawImage(parts.arm.image, 11, 35);
+    ctx.drawImage(parts.arm.image, 39, 35);
+    ctx.drawImage(frameIdx === 1 ? parts.headBlink.image : parts.headOpen.image, 8, 0);
+    return register(label, c, { wrap: false, pixel: true, mip: false });
   }
   function chibiShadowMap(label = "chibi-shadow-map") {
     if (cache.has(label)) return cache.get(label);
@@ -12990,6 +13016,7 @@ function createTextureFactory(renderer) {
     inscription,
     rosette,
     bark,
+    protagonistParts,
     protagonistFrame,
     chibiShadowMap,
     bokehDot,
@@ -14310,6 +14337,132 @@ function roofGroup(opts, mats) {
   group.userData.eave = r.eave;
   return group;
 }
+function octagonalRoofGroup({ radius = 2.6, H: H2 = 1.5, lift = 0.3, pediments = true, segU = 8, segV = 10, tilePitch = 0.3 } = {}, mats) {
+  const group = new jl();
+  const tiles = [];
+  const ridges = [];
+  const fascia = [];
+  const soffit = [];
+  const corners = [];
+  for (let k2 = 0; k2 < 8; k2++) {
+    const a = (k2 + 0.5) * (Math.PI / 4);
+    corners.push(new Jn(Math.cos(a) * radius, Math.sin(a) * radius));
+  }
+  const deformPt = (baseX, baseZ, u2, v) => {
+    const fc2 = Math.pow(1 - v, 2) * Math.pow(2 * u2 - 1, 2);
+    const radialStretch = 1 + lift * 0.22 * fc2 / Math.max(0.5, radius);
+    const y2 = H2 * (0.25 * v + 0.75 * Math.pow(v, 1.82)) + fc2 * lift;
+    return [baseX * radialStretch, y2, baseZ * radialStretch];
+  };
+  for (let k2 = 0; k2 < 8; k2++) {
+    const c0 = corners[k2];
+    const c1 = corners[(k2 + 1) % 8];
+    const verts = [];
+    const uvs = [];
+    const idx = [];
+    const eavePts = [];
+    for (let j2 = 0; j2 <= segV; j2++) {
+      const v = j2 / segV;
+      for (let i = 0; i <= segU; i++) {
+        const u2 = i / segU;
+        const ex = Zn.lerp(c0.x, c1.x, u2);
+        const ez = Zn.lerp(c0.y, c1.y, u2);
+        const bx = ex * (1 - v);
+        const bz = ez * (1 - v);
+        const [x, y2, z2] = deformPt(bx, bz, u2, v);
+        verts.push(x, y2, z2);
+        uvs.push((u2 - 0.5) * radius * 0.8 / tilePitch, v * radius / (tilePitch * 1.35));
+        if (j2 === 0) eavePts.push(new Ci(x, y2, z2));
+      }
+    }
+    for (let j2 = 0; j2 < segV; j2++) {
+      for (let i = 0; i < segU; i++) {
+        const a = j2 * (segU + 1) + i;
+        const b = a + 1;
+        const c = a + (segU + 1);
+        const d2 = c + 1;
+        idx.push(a, b, c, b, d2, c);
+      }
+    }
+    const g2 = new Es();
+    g2.setAttribute("position", new _s(verts, 3));
+    g2.setAttribute("uv", new _s(uvs, 2));
+    g2.setIndex(idx);
+    g2.computeVertexNormals();
+    const n = g2.attributes.normal;
+    let sumY = 0;
+    for (let m = 0; m < n.count; m++) sumY += n.getY(m);
+    if (sumY < 0) {
+      for (let m = 0; m < idx.length; m += 3) {
+        const t2 = idx[m + 1];
+        idx[m + 1] = idx[m + 2];
+        idx[m + 2] = t2;
+      }
+      g2.setIndex(idx);
+      g2.computeVertexNormals();
+    }
+    tiles.push(g2.toNonIndexed());
+    fascia.push(eaveBand(eavePts, 0.11));
+    soffit.push(eaveSoffitBand(eavePts, 0.11, radius, radius, radius * 0.38));
+  }
+  const ridgeScale = Math.max(0.055, radius * 0.032);
+  const hipGeos = [];
+  for (let k2 = 0; k2 < 8; k2++) {
+    const c = corners[k2];
+    const pts = [];
+    for (let i = 0; i <= 10; i++) {
+      const v = 1 - i / 10;
+      const [x, y2, z2] = deformPt(c.x * (1 - v), c.y * (1 - v), 0, v);
+      pts.push(new Ci(x, y2 + 0.02, z2));
+    }
+    hipGeos.push(tubeAlong(pts, ridgeScale * 0.98, 6, 12));
+    const tip = pts[pts.length - 1];
+    const finial = new mu(ridgeScale * 0.95, ridgeScale * 2.4, 5);
+    const outAng = Math.atan2(tip.z, tip.x);
+    xform(finial, [tip.x * 1.01, tip.y + ridgeScale * 1.15, tip.z * 1.01], [0, -outAng, -0.35]);
+    hipGeos.push(finial);
+  }
+  ridges.push(...hipGeos);
+  const tilesMesh = new Bs(mergeSafe(tiles), mats.tile);
+  tilesMesh.castShadow = true;
+  tilesMesh.receiveShadow = true;
+  group.add(tilesMesh);
+  const ridgeMesh = new Bs(mergeSafe(ridges), mats.ridge);
+  ridgeMesh.castShadow = true;
+  group.add(ridgeMesh);
+  const fasciaMesh = new Bs(mergeSafe(fascia), mats.fascia || mats.ridge);
+  fasciaMesh.material.side = p;
+  group.add(fasciaMesh);
+  const soffitMesh = new Bs(mergeSafe(soffit), mats.soffit || mats.fascia);
+  soffitMesh.material.side = p;
+  soffitMesh.castShadow = true;
+  group.add(soffitMesh);
+  if (pediments) {
+    for (let d2 = 0; d2 < 4; d2++) {
+      const rotY = d2 * Math.PI / 2;
+      const dormer = roofGroup(
+        {
+          halfW: radius * 0.44,
+          halfD: radius * 0.36,
+          H: H2 * 0.56,
+          mode: "xieshan",
+          inset: radius * 0.14,
+          lift: lift * 0.48,
+          segU: 12,
+          segV: 6,
+          soffitInward: radius * 0.16,
+          rafters: false
+        },
+        mats
+      );
+      dormer.rotation.y = rotY + Math.PI / 2;
+      const dist = radius * 0.62;
+      dormer.position.set(Math.sin(rotY) * dist, H2 * 0.24, Math.cos(rotY) * dist);
+      group.add(dormer);
+    }
+  }
+  return group;
+}
 function petalGeometry(size = 0.14) {
   const s = new Su();
   s.moveTo(0, 0);
@@ -14563,29 +14716,37 @@ function createTerrainComponent(textures, palette) {
   const tier1CornerCap = new ks(0.38, 0.08, 0.38);
   xform(tier1CornerCap, [-15.32, 2.82, 4.32]);
   graniteGeos.push(tier1CornerCap);
-  const tier2Body = new ks(21.2, 4.42, 11.6);
-  xform(tier2Body, [-1.6, 2.21, -10.2]);
-  applyWorldPlanarUVs(tier2Body, 0.46, 0.52);
-  ashlarGeos.push(tier2Body);
-  const tier2EastCoping = new ks(0.56, 0.22, 11.88);
-  xform(tier2EastCoping, [8.96, 4.42, -10.2]);
+  const tier2BodyW = new ks(13.1, 4.42, 15);
+  xform(tier2BodyW, [-7.65, 2.21, -11.9]);
+  applyWorldPlanarUVs(tier2BodyW, 0.46, 0.52);
+  ashlarGeos.push(tier2BodyW);
+  const tier2BodyE = new ks(7.9, 4.42, 15);
+  xform(tier2BodyE, [5.05, 2.21, -11.9]);
+  applyWorldPlanarUVs(tier2BodyE, 0.46, 0.52);
+  ashlarGeos.push(tier2BodyE);
+  const tier2BodyCenterN = new ks(2.2, 4.42, 13.3);
+  xform(tier2BodyCenterN, [0, 2.21, -12.75]);
+  applyWorldPlanarUVs(tier2BodyCenterN, 0.46, 0.52);
+  ashlarGeos.push(tier2BodyCenterN);
+  const tier2EastCoping = new ks(0.56, 0.22, 15.28);
+  xform(tier2EastCoping, [8.96, 4.42, -11.9]);
   graniteGeos.push(tier2EastCoping);
-  const tier2EastLedge = new ks(0.32, 0.24, 11.76);
-  xform(tier2EastLedge, [9.06, 2.24, -10.2]);
+  const tier2EastLedge = new ks(0.32, 0.24, 15.16);
+  xform(tier2EastLedge, [9.06, 2.24, -11.9]);
   graniteGeos.push(tier2EastLedge);
-  const tier2EastBasePlinth = new ks(0.42, 0.56, 11.84);
-  xform(tier2EastBasePlinth, [9.06, 0.28, -10.2]);
+  const tier2EastBasePlinth = new ks(0.42, 0.56, 15.24);
+  xform(tier2EastBasePlinth, [9.06, 0.28, -11.9]);
   graniteGeos.push(tier2EastBasePlinth);
-  const tier2SouthCoping = new ks(8.2, 0.22, 0.48);
-  xform(tier2SouthCoping, [5.05, 4.42, -4.34]);
+  const tier2SouthCoping = new ks(8.05, 0.22, 0.48);
+  xform(tier2SouthCoping, [5.12, 4.42, -4.34]);
   graniteGeos.push(tier2SouthCoping);
-  const tier2SouthCopingW = new ks(11.3, 0.22, 0.48);
-  xform(tier2SouthCopingW, [-6.65, 4.42, -4.34]);
+  const tier2SouthCopingW = new ks(13.25, 0.22, 0.48);
+  xform(tier2SouthCopingW, [-7.72, 4.42, -4.34]);
   graniteGeos.push(tier2SouthCopingW);
-  const tier2WestCoping = new ks(0.52, 0.22, 9.6);
-  xform(tier2WestCoping, [-12.06, 4.42, -9]);
+  const tier2WestCoping = new ks(0.52, 0.22, 13.6);
+  xform(tier2WestCoping, [-14.06, 4.42, -11]);
   graniteGeos.push(tier2WestCoping);
-  const tier2PilasterZs = [-15.5, -13.4, -11.3, -9.2, -7.1, -4.9];
+  const tier2PilasterZs = [-18.9, -16.8, -14.7, -12.6, -10.5, -8.4, -6.4, -4.7];
   tier2PilasterZs.forEach((pz, pIdx) => {
     const pil = new ks(0.34, 4.48, 0.48);
     xform(pil, [9.06, 2.24, pz]);
@@ -14605,28 +14766,42 @@ function createTerrainComponent(textures, palette) {
       ashlarGeos.push(lowerPanel);
     }
   });
-  for (const px2 of [-11.95, -9.8, -6.6, -5, -2.6, -1.2, 1.2, 3.8, 6.4, 8.85]) {
+  for (const px2 of [-13.95, -11.6, -9.2, -6.8, -4.4, -2, 1.2, 3.8, 6.4, 8.85]) {
     const sPil = new ks(0.46, 4.48, 0.32);
     xform(sPil, [px2, 2.24, -4.34]);
     graniteGeos.push(sPil);
   }
-  for (const wz of [-7.1, -9.8, -12.5]) {
+  for (const wz of [-7.1, -10.2, -13.3, -16.4]) {
     const wPil = new ks(0.34, 4.48, 0.46);
-    xform(wPil, [-12.06, 2.24, wz]);
+    xform(wPil, [-14.06, 2.24, wz]);
     graniteGeos.push(wPil);
   }
-  const tier2Lawn = new ks(20.8, 0.18, 11.2);
-  xform(tier2Lawn, [-1.6, 4.48, -10.2]);
-  grassGeos.push(tier2Lawn);
-  const tier2SouthWalk = new Bs(new ks(21.1, 0.06, 1.32), palette.plazaMat);
-  tier2SouthWalk.position.set(-1.55, 4.565, -5.2);
-  tier2SouthWalk.receiveShadow = true;
-  group.add(tier2SouthWalk);
-  const tier2EastCurb = new ks(0.22, 0.14, 11.2);
-  xform(tier2EastCurb, [8.86, 4.62, -10.02]);
+  const tier2LawnW = new ks(12.7, 0.18, 14.6);
+  xform(tier2LawnW, [-7.65, 4.48, -11.9]);
+  grassGeos.push(tier2LawnW);
+  const tier2LawnE = new ks(7.5, 0.18, 14.6);
+  xform(tier2LawnE, [5.05, 4.48, -11.9]);
+  grassGeos.push(tier2LawnE);
+  const tier2LawnCenterN = new ks(2.2, 0.18, 12.9);
+  xform(tier2LawnCenterN, [0, 4.48, -12.75]);
+  grassGeos.push(tier2LawnCenterN);
+  const tier2Forecourt = new Bs(new ks(22.4, 0.06, 3.2), palette.plazaMat);
+  tier2Forecourt.position.set(-2.5, 4.565, -7.25);
+  tier2Forecourt.receiveShadow = true;
+  group.add(tier2Forecourt);
+  const tier2WalkE = new Bs(new ks(7.6, 0.06, 1.35), palette.plazaMat);
+  tier2WalkE.position.set(4.95, 4.565, -5.2);
+  tier2WalkE.receiveShadow = true;
+  group.add(tier2WalkE);
+  const tier2WalkW = new Bs(new ks(12.6, 0.06, 1.35), palette.plazaMat);
+  tier2WalkW.position.set(-7.5, 4.565, -5.2);
+  tier2WalkW.receiveShadow = true;
+  group.add(tier2WalkW);
+  const tier2EastCurb = new ks(0.22, 0.14, 14.4);
+  xform(tier2EastCurb, [8.86, 4.62, -11.6]);
   graniteGeos.push(tier2EastCurb);
-  const tier2EastRail = new ks(0.26, 0.11, 11.26);
-  xform(tier2EastRail, [8.86, 5.34, -10.02]);
+  const tier2EastRail = new ks(0.26, 0.11, 14.46);
+  xform(tier2EastRail, [8.86, 5.34, -11.6]);
   graniteGeos.push(tier2EastRail);
   const eastNewelZs = [...tier2PilasterZs, -4.45];
   eastNewelZs.forEach((pz, idx) => {
@@ -14673,13 +14848,13 @@ function createTerrainComponent(textures, palette) {
       }
     }
   });
-  const tier2SouthCurbW = new ks(10.8, 0.14, 0.22);
-  xform(tier2SouthCurbW, [-6.65, 4.62, -4.45]);
+  const tier2SouthCurbW = new ks(12.8, 0.14, 0.22);
+  xform(tier2SouthCurbW, [-7.6, 4.62, -4.45]);
   graniteGeos.push(tier2SouthCurbW);
-  const tier2SouthRailW = new ks(10.86, 0.11, 0.26);
-  xform(tier2SouthRailW, [-6.65, 5.34, -4.45]);
+  const tier2SouthRailW = new ks(12.86, 0.11, 0.26);
+  xform(tier2SouthRailW, [-7.6, 5.34, -4.45]);
   graniteGeos.push(tier2SouthRailW);
-  const southWestNewelXs = [-11.95, -9.3, -6.65, -4, -1.35];
+  const southWestNewelXs = [-13.95, -10.8, -7.6, -4.4, -1.2];
   southWestNewelXs.forEach((px2, idx) => {
     const isCorner = idx === 0;
     const post = new ks(isCorner ? 0.34 : 0.26, isCorner ? 0.94 : 0.86, isCorner ? 0.34 : 0.26);
@@ -14698,21 +14873,40 @@ function createTerrainComponent(textures, palette) {
       }
     }
   });
-  const tier2WestCurb = new ks(0.22, 0.14, 8.2);
-  xform(tier2WestCurb, [-11.95, 4.62, -8.5]);
+  for (const sx of [-1.2, 1.2]) {
+    const canyonCurb = new ks(0.22, 0.14, 1.85);
+    xform(canyonCurb, [sx, 4.62, -5.25]);
+    graniteGeos.push(canyonCurb);
+    const canyonRail = new ks(0.26, 0.11, 1.85);
+    xform(canyonRail, [sx, 5.34, -5.25]);
+    graniteGeos.push(canyonRail);
+    const endPost = new ks(0.26, 0.86, 0.26);
+    xform(endPost, [sx, 4.98, -6.12]);
+    graniteGeos.push(endPost);
+    const endCap = new ks(0.32, 0.1, 0.32);
+    xform(endCap, [sx, 5.44, -6.12]);
+    graniteGeos.push(endCap);
+    for (const bz of [-4.95, -5.55]) {
+      const bal = new ks(0.09, 0.54, 0.09);
+      xform(bal, [sx, 4.96, bz]);
+      graniteGeos.push(bal);
+    }
+  }
+  const tier2WestCurb = new ks(0.22, 0.14, 12.2);
+  xform(tier2WestCurb, [-13.95, 4.62, -10.5]);
   graniteGeos.push(tier2WestCurb);
-  const tier2WestRail = new ks(0.26, 0.11, 8.26);
-  xform(tier2WestRail, [-11.95, 5.34, -8.5]);
+  const tier2WestRail = new ks(0.26, 0.11, 12.26);
+  xform(tier2WestRail, [-13.95, 5.34, -10.5]);
   graniteGeos.push(tier2WestRail);
-  const westNewelZs = [-4.45, -7.1, -9.8, -12.5];
+  const westNewelZs = [-4.45, -7.5, -10.5, -13.5, -16.5];
   westNewelZs.forEach((pz, idx) => {
     if (idx > 0) {
       const isEnd = idx === westNewelZs.length - 1;
       const post = new ks(isEnd ? 0.36 : 0.26, isEnd ? 1.02 : 0.86, isEnd ? 0.36 : 0.26);
-      xform(post, [-11.95, isEnd ? 5.04 : 4.98, pz]);
+      xform(post, [-13.95, isEnd ? 5.04 : 4.98, pz]);
       graniteGeos.push(post);
       const cap = new ks(isEnd ? 0.44 : 0.32, 0.1, isEnd ? 0.44 : 0.32);
-      xform(cap, [-11.95, isEnd ? 5.58 : 5.44, pz]);
+      xform(cap, [-13.95, isEnd ? 5.58 : 5.44, pz]);
       graniteGeos.push(cap);
     }
     if (idx < westNewelZs.length - 1) {
@@ -14720,7 +14914,7 @@ function createTerrainComponent(textures, palette) {
       for (let b = 1; b <= 3; b++) {
         const bz = Zn.lerp(pz, zNext, b / 4);
         const bal = new ks(0.09, 0.54, 0.09);
-        xform(bal, [-11.95, 4.96, bz]);
+        xform(bal, [-13.95, 4.96, bz]);
         graniteGeos.push(bal);
       }
     }
@@ -14749,6 +14943,14 @@ function createTerrainComponent(textures, palette) {
     const stepStone = new gu(0.62, 0);
     xform(stepStone, [tx, th2 - 0.02, tz], [0.1, i * 0.9, 0.05], [1.35, 0.14, 1.1]);
     graniteGeos.push(stepStone);
+  }
+  for (const [tx, tz] of [[-4.6, -6.4], [-3.2, -7.2]]) {
+    const pitCurb = new ks(1.42, 0.16, 1.42);
+    xform(pitCurb, [tx, 4.62, tz]);
+    graniteGeos.push(pitCurb);
+    const pitSoil = new ks(1.12, 0.19, 1.12);
+    xform(pitSoil, [tx, 4.63, tz]);
+    soilGeos.push(pitSoil);
   }
   const graniteBatch = new Bs(mergeSafe(graniteGeos), palette.graniteMat);
   graniteBatch.castShadow = true;
@@ -14788,12 +14990,19 @@ function buildArchedGateTower(w2, h, d2, archR, archH) {
   const g2 = new Ku(shape, {
     depth: d2,
     bevelEnabled: true,
-    bevelThickness: 0.03,
-    bevelSize: 0.025,
+    bevelThickness: 0.025,
+    bevelSize: 0.02,
     bevelSegments: 2,
-    curveSegments: 18
+    curveSegments: 20
   });
   g2.translate(0, 0, -d2 * 0.5);
+  return g2;
+}
+function buildVaultSoffit(archR, archH, depth) {
+  const g2 = new pu(archR * 0.99, archR * 0.99, depth, 16, 1, true, 0, Math.PI);
+  g2.rotateZ(Math.PI / 2);
+  g2.rotateY(Math.PI / 2);
+  g2.translate(0, archH - archR, 0);
   return g2;
 }
 function createDormitoryComponent(textures, palette) {
@@ -14801,114 +15010,186 @@ function createDormitoryComponent(textures, palette) {
   group.name = "component-old-dormitory";
   const graniteGeos = [];
   const warmStoneGeos = [];
+  const darkVaultGeos = [];
   const dormGroup = new jl();
   dormGroup.position.set(0, 2.15, -0.8);
   group.add(dormGroup);
-  const wingXPositions = [-6.6, -2.35, 2.35, 6.6];
+  const wingXPositions = [-6.65, -2.3, 2.3, 6.65];
   wingXPositions.forEach((wx, idx) => {
     const wLen = idx === 0 || idx === 3 ? 3.5 : 3.2;
-    const wingGeo = fitBoxFacadeUVs(new ks(wLen, 2.55, 2.5), wLen, 2.55, 2.5, 3.5);
-    const wing = new Bs(wingGeo, palette.dormWallMat);
-    wing.position.set(wx, 1.28, 0);
-    wing.castShadow = true;
-    wing.receiveShadow = true;
-    dormGroup.add(wing);
+    const frontBarGeo = fitBoxFacadeUVs(new ks(wLen, 2.55, 0.88), wLen, 2.55, 0.88, 3.5);
+    const frontBar = new Bs(frontBarGeo, palette.dormWallMat);
+    frontBar.position.set(wx, 1.28, 0.82);
+    frontBar.castShadow = true;
+    frontBar.receiveShadow = true;
+    dormGroup.add(frontBar);
+    const rearBarGeo = fitBoxFacadeUVs(new ks(wLen, 2.55, 0.72), wLen, 2.55, 0.72, 3.5);
+    const rearBar = new Bs(rearBarGeo, palette.dormWallMat);
+    rearBar.position.set(wx, 1.28, -0.88);
+    rearBar.castShadow = true;
+    rearBar.receiveShadow = true;
+    dormGroup.add(rearBar);
+    for (const sx of [-1, 1]) {
+      const endWall = new ks(0.44, 2.56, 2.48);
+      xform(endWall, [wx + sx * (wLen * 0.5 - 0.22), 2.15 + 1.28, -0.8]);
+      warmStoneGeos.push(endWall);
+    }
+    const skywellFloor = new ks(wLen - 0.75, 0.14, 1);
+    xform(skywellFloor, [wx, 2.15 + 1.78, -0.8 + 0.02]);
+    graniteGeos.push(skywellFloor);
     for (const pxOff of [-wLen * 0.44, 0, wLen * 0.44]) {
       for (const sz of [-1, 1]) {
-        const dPil = new ks(0.18, 2.58, 0.2);
+        const dPil = new ks(0.18, 2.58, 0.18);
         xform(dPil, [wx + pxOff, 2.15 + 1.29, -0.8 + sz * 1.22]);
         warmStoneGeos.push(dPil);
       }
     }
     for (const bandY of [0.88, 1.74]) {
-      const band = new ks(wLen + 0.14, 0.09, 2.64);
+      const band = new ks(wLen + 0.14, 0.09, 2.62);
       xform(band, [wx, 2.15 + bandY, -0.8]);
       graniteGeos.push(band);
     }
-    const eaveCornice = new ks(wLen + 0.22, 0.12, 2.76);
+    const eaveCornice = new ks(wLen + 0.22, 0.12, 2.74);
     xform(eaveCornice, [wx, 2.15 + 2.52, -0.8]);
     graniteGeos.push(eaveCornice);
-    const slab = new ks(wLen + 0.16, 0.18, 2.72);
-    xform(slab, [wx, 2.15 + 2.6, -0.8]);
-    warmStoneGeos.push(slab);
+    const wingGlazeEave = new Bs(
+      new ks(wLen + 0.16, 0.09, 0.42),
+      palette.glazedTileMat
+    );
+    wingGlazeEave.position.set(wx, 1.98, 1.26);
+    wingGlazeEave.rotation.x = 0.36;
+    wingGlazeEave.castShadow = true;
+    dormGroup.add(wingGlazeEave);
+    const rearGlazeEave = new Bs(
+      new ks(wLen + 0.16, 0.09, 0.38),
+      palette.glazedTileMat
+    );
+    rearGlazeEave.position.set(wx, 1.98, -1.24);
+    rearGlazeEave.rotation.x = -0.36;
+    dormGroup.add(rearGlazeEave);
     for (const sz of [-1, 1]) {
-      const rail = new ks(wLen + 0.12, 0.34, 0.12);
-      xform(rail, [wx, 2.15 + 2.82, -0.8 + sz * 1.26]);
+      const rail = new ks(wLen + 0.12, 0.3, 0.12);
+      xform(rail, [wx, 2.15 + 2.74, -0.8 + sz * 1.25]);
       graniteGeos.push(rail);
     }
-    const roofSkylight = new ks(wLen * 0.56, 0.16, 1.05);
-    xform(roofSkylight, [wx, 2.15 + 2.74, -0.8]);
-    warmStoneGeos.push(roofSkylight);
-    const skylightCap = new ks(wLen * 0.6, 0.07, 1.14);
-    xform(skylightCap, [wx, 2.15 + 2.84, -0.8]);
-    graniteGeos.push(skylightCap);
   });
+  for (const sx of [-1, 1]) {
+    const flankWall = new Bs(
+      fitBoxFacadeUVs(new ks(0.46, 2.55, 2.56), 0.46, 2.55, 2.56, 3.2),
+      palette.dormWallMat
+    );
+    flankWall.position.set(sx * 8.42, 2.15 + 1.28, -0.8);
+    flankWall.castShadow = true;
+    flankWall.receiveShadow = true;
+    group.add(flankWall);
+    const flankCoping = new ks(0.54, 0.14, 2.74);
+    xform(flankCoping, [sx * 8.42, 2.15 + 2.58, -0.8]);
+    graniteGeos.push(flankCoping);
+  }
   const gateOffsets = [-4.55, 0, 4.55];
   gateOffsets.forEach((gx) => {
     const worldX = gx;
     const worldY = 2.15;
     const worldZ = -0.8;
-    const towerGeo = buildArchedGateTower(1.65, 2.85, 2.95, 0.48, 1.9);
+    const archR = 0.58;
+    const archH = 2.12;
+    const gateDepth = 3.04;
+    const towerGeo = buildArchedGateTower(1.8, 2.94, gateDepth, archR, archH);
     xform(towerGeo, [worldX, worldY, worldZ]);
     warmStoneGeos.push(towerGeo);
-    const doorPortalZ = worldZ + 1.18;
-    const doorSurround = new ks(1.04, 1.82, 0.14);
-    xform(doorSurround, [worldX, worldY + 0.91, doorPortalZ - 0.04]);
-    graniteGeos.push(doorSurround);
-    const doorFrameWhite = new Bs(new ks(0.92, 1.66, 0.06), palette.warmStoneMat);
-    doorFrameWhite.position.set(worldX, worldY + 0.84, doorPortalZ + 0.03);
-    group.add(doorFrameWhite);
-    const doorGlass = new Bs(
-      fitBoxFacadeUVs(new ks(0.76, 1.48, 0.08), 0.76, 1.48, 0.08, 2.2),
+    for (const faceZ of [worldZ + gateDepth * 0.5 + 0.02, worldZ - gateDepth * 0.5 - 0.02]) {
+      const archRing = new sd(archR + 0.03, 0.055, 6, 16, Math.PI);
+      xform(archRing, [worldX, worldY + archH - archR, faceZ]);
+      graniteGeos.push(archRing);
+      const keystone = new ks(0.16, 0.22, 0.1);
+      xform(keystone, [worldX, worldY + archH + 0.04, faceZ]);
+      graniteGeos.push(keystone);
+      const medallion = new pu(0.11, 0.11, 0.06, 12);
+      xform(medallion, [worldX, worldY + 2.48, faceZ], [Math.PI / 2, 0, 0]);
+      graniteGeos.push(medallion);
+    }
+    const vaultGeo = buildVaultSoffit(archR, archH, gateDepth - 0.04);
+    xform(vaultGeo, [worldX, worldY, worldZ]);
+    darkVaultGeos.push(vaultGeo);
+    const isCenter = gx === 0;
+    const tunnelStepN = isCenter ? 10 : 6;
+    for (let s = 0; s < tunnelStepN; s++) {
+      const ft2 = s / (tunnelStepN - 1);
+      const stepY = worldY + 0.05 + ft2 * (isCenter ? 1.02 : 0.14);
+      const stepZ = worldZ + 1.34 - ft2 * 2.68;
+      const step = new ks(1.12, 0.08, 0.3);
+      xform(step, [worldX, stepY, stepZ]);
+      graniteGeos.push(step);
+    }
+    const tunnelLantern = new Bs(new ks(0.16, 0.14, 0.16), palette.lampGlowMat);
+    tunnelLantern.position.set(worldX, worldY + archH - 0.14, worldZ + 0.45);
+    group.add(tunnelLantern);
+    const cornice = new ks(1.94, 0.18, 3.16);
+    xform(cornice, [worldX, worldY + 2.94, worldZ]);
+    graniteGeos.push(cornice);
+    const pavY = worldY + 3.03;
+    const hallPlinth = new ks(1.86, 0.12, 2.24);
+    xform(hallPlinth, [worldX, pavY + 0.06, worldZ]);
+    graniteGeos.push(hallPlinth);
+    const hallCore = new Bs(
+      fitBoxFacadeUVs(new ks(1.52, 0.88, 1.96), 1.52, 0.88, 1.96, 2.4),
       palette.libWallMat
     );
-    doorGlass.position.set(worldX, worldY + 0.8, doorPortalZ + 0.05);
-    group.add(doorGlass);
-    const centerMullion = new Bs(new ks(0.06, 1.62, 0.1), palette.warmStoneMat);
-    centerMullion.position.set(worldX, worldY + 0.84, doorPortalZ + 0.055);
-    group.add(centerMullion);
-    const transomBar = new Bs(new ks(0.9, 0.07, 0.1), palette.warmStoneMat);
-    transomBar.position.set(worldX, worldY + 1.32, doorPortalZ + 0.055);
-    group.add(transomBar);
-    const cornice = new ks(1.82, 0.18, 3.12);
-    xform(cornice, [worldX, worldY + 2.88, worldZ]);
-    graniteGeos.push(cornice);
-    const pavY = worldY + 2.96;
-    for (const px2 of [-0.62, 0.62]) {
-      for (const pz of [-0.88, 0.88]) {
-        const plinth = new ks(0.34, 0.12, 0.34);
-        xform(plinth, [worldX + px2, pavY + 0.07, worldZ + pz]);
+    hallCore.position.set(worldX, pavY + 0.52, worldZ);
+    hallCore.castShadow = true;
+    hallCore.receiveShadow = true;
+    group.add(hallCore);
+    for (const sx of [-1, 1]) {
+      const endStone = new ks(0.18, 0.9, 2.02);
+      xform(endStone, [worldX + sx * 0.72, pavY + 0.52, worldZ]);
+      warmStoneGeos.push(endStone);
+      const sideDoor = new Bs(
+        new ks(0.06, 0.62, 0.36),
+        palette.crimsonColumnMat
+      );
+      sideDoor.position.set(worldX + sx * 0.82, pavY + 0.42, worldZ + 0.56);
+      group.add(sideDoor);
+    }
+    for (const px2 of [-0.74, 0.74]) {
+      for (const pz of [-0.94, 0, 0.94]) {
+        const plinth = new ks(0.24, 0.08, 0.24);
+        xform(plinth, [worldX + px2, pavY + 0.12, worldZ + pz]);
         graniteGeos.push(plinth);
-        const drum = new pu(0.14, 0.18, 0.14, 10);
-        xform(drum, [worldX + px2, pavY + 0.19, worldZ + pz]);
-        graniteGeos.push(drum);
-        const col = new pu(0.075, 0.08, 0.8, 10);
-        col.translate(worldX + px2, pavY + 0.65, worldZ + pz);
+        const col = new pu(0.055, 0.06, 0.78, 8);
+        col.translate(worldX + px2, pavY + 0.54, worldZ + pz);
         const colMesh = new Bs(col, palette.crimsonColumnMat);
         colMesh.castShadow = true;
         group.add(colMesh);
       }
     }
-    const pavLantern = new Bs(new ks(0.24, 0.14, 0.24), palette.lampGlowMat);
-    pavLantern.position.set(worldX, pavY + 0.94, worldZ);
-    group.add(pavLantern);
     const pavRoof = roofGroup(
       {
-        halfW: 1.18,
-        halfD: 1.32,
-        H: 0.88,
+        halfW: 1.24,
+        halfD: 1.38,
+        H: 0.9,
         mode: "xieshan",
-        inset: 0.52,
-        lift: 0.22,
+        inset: 0.54,
+        lift: 0.24,
         segU: 16,
         segV: 10,
-        soffitInward: 0.52,
+        soffitInward: 0.54,
         rafters: true
       },
       palette.roofMats
     );
-    pavRoof.position.set(worldX, pavY + 0.98, worldZ);
+    pavRoof.position.set(worldX, pavY + 0.96, worldZ);
     group.add(pavRoof);
+    for (const sx of [-1, 1]) {
+      for (const oz of [-0.2, 0.2]) {
+        const oculus = new Bs(
+          new pu(0.07, 0.07, 0.05, 10),
+          palette.darkTimberMat
+        );
+        oculus.rotation.z = Math.PI / 2;
+        oculus.position.set(worldX + sx * 0.71, pavY + 1.32, worldZ + oz);
+        group.add(oculus);
+      }
+    }
   });
   const darkRiserGeos = [];
   const stepCount = 34;
@@ -14923,6 +15204,42 @@ function createDormitoryComponent(textures, palette) {
     xform(riser, [0, sy - 0.04, sz + 0.075]);
     darkRiserGeos.push(riser);
   }
+  const upperStepCount = 26;
+  for (let i = 0; i < upperStepCount; i++) {
+    const t2 = i / (upperStepCount - 1);
+    const sy = 3.16 + t2 * 1.4;
+    const sz = -2.2 - t2 * 3.88;
+    const step = new ks(2.02, 0.075, 0.2);
+    xform(step, [0, sy, sz]);
+    graniteGeos.push(step);
+    const riser = new ks(2, 0.075, 0.06);
+    xform(riser, [0, sy - 0.045, sz + 0.07]);
+    darkRiserGeos.push(riser);
+  }
+  const upperStairBed = new ks(2.14, 1.48, 3.8);
+  xform(upperStairBed, [0, 3.1, -4.15]);
+  warmStoneGeos.push(upperStairBed);
+  const stairBridgeBeam = new Bs(new ks(2.56, 0.24, 0.72), palette.warmStoneMat);
+  stairBridgeBeam.position.set(0, 5.26, -4.45);
+  stairBridgeBeam.castShadow = true;
+  group.add(stairBridgeBeam);
+  const stairBridgeRoof = roofGroup(
+    {
+      halfW: 1.48,
+      halfD: 0.56,
+      H: 0.42,
+      mode: "xieshan",
+      inset: 0.24,
+      lift: 0.1,
+      segU: 10,
+      segV: 6,
+      soffitInward: 0.26,
+      rafters: false
+    },
+    palette.roofMats
+  );
+  stairBridgeRoof.position.set(0, 5.38, -4.45);
+  group.add(stairBridgeRoof);
   const risersMesh = new Bs(mergeSafe(darkRiserGeos), palette.darkTimberMat);
   risersMesh.receiveShadow = true;
   group.add(risersMesh);
@@ -14952,11 +15269,12 @@ function createDormitoryComponent(textures, palette) {
     xform(footCap, [sx, 0.42, 8.2]);
     graniteGeos.push(footCap);
   }
-  const terraceWalk = new ks(2.6, 0.14, 8.75);
-  xform(terraceWalk, [0, 2.15, 0.02]);
-  graniteGeos.push(terraceWalk);
-  const terracePierBase = new ks(2.38, 0.48, 8.6);
-  xform(terracePierBase, [0, 1.9, 0.02]);
+  const terraceWalk = new Bs(new ks(2.58, 0.07, 3.65), palette.plazaMat);
+  terraceWalk.position.set(0, 2.13, 2.52);
+  terraceWalk.receiveShadow = true;
+  group.add(terraceWalk);
+  const terracePierBase = new ks(2.38, 0.48, 3.55);
+  xform(terracePierBase, [0, 1.88, 2.52]);
   warmStoneGeos.push(terracePierBase);
   const frontApron = new Bs(new ks(11.4, 0.06, 0.94), palette.plazaMat);
   frontApron.position.set(0, 2.065, 0.86);
@@ -14989,54 +15307,26 @@ function createDormitoryComponent(textures, palette) {
     const spurFoundation = new ks(1.4, 0.38, 2.12);
     xform(spurFoundation, [gx, 1.88, 1.48]);
     warmStoneGeos.push(spurFoundation);
-    const thresholdStep = new ks(1.56, 0.11, 0.42);
-    xform(thresholdStep, [gx, 2.09, 0.72]);
-    graniteGeos.push(thresholdStep);
+    const rearCourtPad = new Bs(new ks(2.1, 0.07, 2.1), palette.plazaMat);
+    rearCourtPad.position.set(gx, 2.078, -3.1);
+    rearCourtPad.receiveShadow = true;
+    group.add(rearCourtPad);
     for (const sx of [-0.75, 0.75]) {
       const curb = new ks(0.12, 0.09, 2.15);
       xform(curb, [gx + sx, 2.07, 1.48]);
       graniteGeos.push(curb);
     }
   }
-  const courtyardPortal = buildArchedGateTower(1.85, 2.45, 0.28, 0.56, 1.85);
-  xform(courtyardPortal, [0, 2.15, -4.3]);
-  warmStoneGeos.push(courtyardPortal);
-  const courtyardCornice = new ks(2.04, 0.18, 0.42);
-  xform(courtyardCornice, [0, 4.64, -4.3]);
-  graniteGeos.push(courtyardCornice);
-  const portalStep1 = new ks(2.38, 0.14, 0.92);
-  xform(portalStep1, [0, 2.13, -4]);
-  graniteGeos.push(portalStep1);
-  const portalStep2 = new ks(1.98, 0.14, 0.54);
-  xform(portalStep2, [0, 2.22, -4.18]);
-  graniteGeos.push(portalStep2);
-  const courtyardDoor = new Bs(new ks(1.2, 1.92, 0.14), palette.darkTimberMat);
-  courtyardDoor.position.set(0, 3.12, -4.36);
-  courtyardDoor.castShadow = true;
-  courtyardDoor.receiveShadow = true;
-  group.add(courtyardDoor);
-  const courtyardPatio = new Bs(new ks(3.4, 0.07, 3.1), palette.plazaMat);
-  courtyardPatio.position.set(0, 2.082, -2.92);
-  courtyardPatio.receiveShadow = true;
-  group.add(courtyardPatio);
-  const rearGardenWalk = new Bs(new ks(15.6, 0.07, 1.32), palette.plazaMat);
-  rearGardenWalk.position.set(0, 2.078, -3.22);
-  rearGardenWalk.receiveShadow = true;
-  group.add(rearGardenWalk);
-  for (const sz of [-3.88, -2.56]) {
-    const rCurb = new ks(15.6, 0.09, 0.12);
-    xform(rCurb, [0, 2.085, sz]);
-    graniteGeos.push(rCurb);
-  }
-  for (const sx of [-1.72, 1.72]) {
-    const pCurb = new ks(0.12, 0.09, 3.1);
-    xform(pCurb, [sx, 2.09, -2.92]);
-    graniteGeos.push(pCurb);
-  }
-  for (const sx of [-1.25, 1.25]) {
-    const cPlanter = new ks(0.68, 0.28, 0.68);
-    xform(cPlanter, [sx, 2.29, -3.85]);
-    graniteGeos.push(cPlanter);
+  for (const [rx, rw] of [[-4.75, 6.8], [4.75, 6.8]]) {
+    const rearWalk = new Bs(new ks(rw, 0.07, 1.32), palette.plazaMat);
+    rearWalk.position.set(rx, 2.078, -3.22);
+    rearWalk.receiveShadow = true;
+    group.add(rearWalk);
+    for (const sz of [-3.88, -2.56]) {
+      const rCurb = new ks(rw, 0.09, 0.12);
+      xform(rCurb, [rx, 2.085, sz]);
+      graniteGeos.push(rCurb);
+    }
   }
   const dormGraniteMesh = new Bs(mergeSafe(graniteGeos), palette.graniteMat);
   dormGraniteMesh.castShadow = true;
@@ -15046,6 +15336,9 @@ function createDormitoryComponent(textures, palette) {
   dormWarmStoneMesh.castShadow = true;
   dormWarmStoneMesh.receiveShadow = true;
   group.add(dormWarmStoneMesh);
+  const dormVaultMesh = new Bs(mergeSafe(darkVaultGeos), palette.darkTimberMat);
+  dormVaultMesh.receiveShadow = true;
+  group.add(dormVaultMesh);
   lockStatic(group);
   return {
     group,
@@ -15060,213 +15353,311 @@ function createLibraryComponent(textures, palette) {
   group.name = "component-old-library";
   const graniteGeos = [];
   const warmStoneGeos = [];
+  const libX = 0;
+  const libY = 4.55;
+  const libZ = -13.6;
   const libGroup = new jl();
-  libGroup.position.set(0, 4.55, -9.8);
+  libGroup.position.set(libX, libY, libZ);
   group.add(libGroup);
-  const podium = new ks(9.6, 0.55, 7.8);
-  xform(podium, [0, 4.55 + 0.27, -9.5]);
+  const podium = new ks(8.6, 0.58, 7.6);
+  xform(podium, [libX, libY + 0.29, libZ + 0.5]);
   graniteGeos.push(podium);
-  const podiumTrim = new ks(9.82, 0.12, 8.02);
-  xform(podiumTrim, [0, 4.55 + 0.54, -9.5]);
+  const podiumTrim = new ks(8.8, 0.11, 7.8);
+  xform(podiumTrim, [libX, libY + 0.57, libZ + 0.5]);
   warmStoneGeos.push(podiumTrim);
-  for (const sx of [-4.6, -2.4, 2.4, 4.6]) {
-    for (const sz of [-13.42, -5.58]) {
-      const pPil = new ks(0.32, 0.56, 0.16);
-      xform(pPil, [sx, 4.55 + 0.28, sz]);
-      warmStoneGeos.push(pPil);
-    }
-  }
-  for (const sz of [-12.6, -10.8, -8.8, -6.6]) {
-    for (const sx of [-4.82, 4.82]) {
-      const pPil = new ks(0.16, 0.56, 0.32);
-      xform(pPil, [sx, 4.55 + 0.28, sz]);
-      warmStoneGeos.push(pPil);
-    }
-  }
   for (let s = 0; s < 6; s++) {
-    const st = new ks(3.2, 0.12, 0.34);
-    xform(st, [0, 4.55 + s * 0.09, -5.5 + s * -0.22]);
+    const st = new ks(2.55, 0.11, 0.3);
+    xform(st, [libX, libY + 0.08 + s * 0.095, libZ + 5.15 - s * 0.24]);
     graniteGeos.push(st);
   }
-  for (let s = 0; s < 4; s++) {
-    const cStep = new ks(1.45, 0.14, 0.32);
-    xform(cStep, [3.4, 4.55 + 0.07 + s * 0.12, -5.5 - s * 0.24]);
-    graniteGeos.push(cStep);
+  for (const sx of [-1.4, 1.4]) {
+    const cheek = new ks(0.22, 0.44, 1.55);
+    xform(cheek, [libX + sx, libY + 0.34, libZ + 4.6], [0.36, 0, 0]);
+    graniteGeos.push(cheek);
+    const pier = new ks(0.28, 0.72, 0.28);
+    xform(pier, [libX + sx, libY + 0.36, libZ + 5.32]);
+    graniteGeos.push(pier);
   }
-  const libMainHall = new Bs(
-    fitBoxFacadeUVs(new ks(7.8, 2.72, 5.4), 7.8, 2.72, 5.4, 7.4),
+  const mainHall = new Bs(
+    fitBoxFacadeUVs(new ks(5.6, 3.25, 4.4), 5.6, 3.25, 4.4, 6.2),
     palette.libWallMat
   );
-  libMainHall.position.set(0, 0.55 + 1.36, 0);
-  libMainHall.castShadow = true;
-  libMainHall.receiveShadow = true;
-  libGroup.add(libMainHall);
+  mainHall.position.set(0, 0.58 + 1.625, 0.1);
+  mainHall.castShadow = true;
+  mainHall.receiveShadow = true;
+  libGroup.add(mainHall);
   for (const sx of [-1, 1]) {
     for (const sz of [-1, 1]) {
-      const pilaster = new ks(0.42, 2.72, 0.42);
-      xform(pilaster, [sx * 3.8, 4.55 + 0.55 + 1.36, -9.8 + sz * 2.6]);
-      warmStoneGeos.push(pilaster);
+      const pil = new ks(0.36, 3.28, 0.36);
+      xform(pil, [libX + sx * 2.72, libY + 0.58 + 1.64, libZ + 0.1 + sz * 2.12]);
+      warmStoneGeos.push(pil);
     }
   }
-  const lowerFrieze = new Bs(new ks(7.68, 0.18, 5.32), palette.darkTimberMat);
-  lowerFrieze.position.set(0, 0.55 + 2.68, 0);
-  lowerFrieze.castShadow = true;
-  libGroup.add(lowerFrieze);
-  const porchHall = new Bs(
-    fitBoxFacadeUVs(new ks(3, 2.16, 1.55), 3, 2.16, 1.55, 7.4),
-    palette.libWallMat
-  );
-  porchHall.position.set(0, 0.55 + 1.08, 3.12);
-  porchHall.castShadow = true;
-  porchHall.receiveShadow = true;
-  libGroup.add(porchHall);
-  const porchRoof = roofGroup(
-    {
-      halfW: 1.82,
-      halfD: 0.98,
-      H: 0.66,
-      mode: "xieshan",
-      inset: 0.42,
-      lift: 0.18,
-      segU: 16,
-      segV: 10,
-      soffitInward: 0.56,
-      rafters: true
-    },
-    palette.roofMats
-  );
-  porchRoof.position.set(0, 0.55 + 2.16, 3.24);
-  libGroup.add(porchRoof);
   const lowerSkirtRoof = roofGroup(
     {
-      halfW: 4.26,
-      halfD: 3.18,
-      H: 1.02,
+      halfW: 3.32,
+      halfD: 2.7,
+      H: 0.74,
       mode: "ring",
-      ring: 1.35,
-      lift: 0.34,
-      segU: 24,
-      segV: 10,
-      soffitInward: 1.15,
+      ring: 0.92,
+      lift: 0.24,
+      segU: 20,
+      segV: 8,
+      soffitInward: 0.85,
       rafters: true
     },
     palette.roofMats
   );
-  lowerSkirtRoof.position.set(0, 0.55 + 2.76, 0);
+  lowerSkirtRoof.position.set(0, 0.58 + 3.22, 0.1);
   libGroup.add(lowerSkirtRoof);
-  const upperHall = new Bs(
-    fitBoxFacadeUVs(new ks(5.6, 1.52, 3.7), 5.6, 1.52, 3.7, 7.4),
+  const porchBack = new Bs(
+    fitBoxFacadeUVs(new ks(2.6, 2.25, 0.75), 2.6, 2.25, 0.75, 4),
     palette.libWallMat
   );
-  upperHall.position.set(0, 0.55 + 3.82 + 0.76, 0);
-  upperHall.castShadow = true;
-  upperHall.receiveShadow = true;
-  libGroup.add(upperHall);
-  for (const sx of [-1, 1]) {
-    for (const sz of [-1, 1]) {
-      const uPil = new ks(0.32, 1.56, 0.32);
-      xform(uPil, [sx * 2.74, 4.55 + 0.55 + 4.58, -9.8 + sz * 1.78]);
-      warmStoneGeos.push(uPil);
-    }
+  porchBack.position.set(0, 0.58 + 1.12, 2.55);
+  porchBack.castShadow = true;
+  porchBack.receiveShadow = true;
+  libGroup.add(porchBack);
+  const portalSurround = new ks(1.38, 1.72, 0.1);
+  xform(portalSurround, [libX, libY + 0.58 + 0.86, libZ + 2.94]);
+  graniteGeos.push(portalSurround);
+  for (const dx of [-0.36, 0.36]) {
+    const doorLeaf = new Bs(
+      new ks(0.44, 1.18, 0.08),
+      palette.crimsonColumnMat
+    );
+    doorLeaf.position.set(dx, 0.58 + 0.59, 2.98);
+    libGroup.add(doorLeaf);
   }
-  for (const px2 of [-2.85, -1.75, -0.65, 0.65, 1.75, 2.85]) {
-    for (const pz of [-1.96, 1.96]) {
-      const col = new pu(0.055, 0.06, 1.34, 8);
-      col.translate(px2, 0.55 + 4.55, pz);
-      const cMesh = new Bs(col, palette.crimsonColumnMat);
-      cMesh.castShadow = true;
-      libGroup.add(cMesh);
-    }
+  const portalTransom = new Bs(
+    fitBoxFacadeUVs(new ks(1.06, 0.34, 0.09), 1.06, 0.34, 0.09, 2),
+    palette.libWallMat
+  );
+  portalTransom.position.set(0, 0.58 + 1.38, 2.98);
+  libGroup.add(portalTransom);
+  for (const px2 of [-1.2, -0.44, 0.44, 1.2]) {
+    const colBase = new ks(0.24, 0.14, 0.24);
+    xform(colBase, [libX + px2, libY + 0.58 + 0.07, libZ + 3.46]);
+    graniteGeos.push(colBase);
+    const colShaft = new pu(0.08, 0.095, 2.02, 8);
+    xform(colShaft, [libX + px2, libY + 0.58 + 1.14, libZ + 3.46]);
+    warmStoneGeos.push(colShaft);
   }
-  const upperFrieze = new Bs(new ks(6.25, 0.28, 4.35), palette.darkTimberMat);
-  upperFrieze.position.set(0, 0.55 + 5.2, 0);
-  upperFrieze.castShadow = true;
-  libGroup.add(upperFrieze);
-  const upperBalustrade = new ks(5.68, 0.24, 3.88);
-  xform(upperBalustrade, [0, 4.55 + 0.55 + 3.9, -9.8]);
-  graniteGeos.push(upperBalustrade);
-  const upperMainRoof = roofGroup(
+  const porticoFrieze = new ks(2.74, 0.34, 1.24);
+  xform(porticoFrieze, [libX, libY + 0.58 + 2.3, libZ + 3.05]);
+  warmStoneGeos.push(porticoFrieze);
+  const porticoRoof = roofGroup(
     {
-      halfW: 3.75,
-      halfD: 2.65,
-      H: 1.62,
+      halfW: 1.54,
+      halfD: 0.92,
+      H: 0.6,
       mode: "xieshan",
-      inset: 1.1,
-      lift: 0.36,
-      segU: 24,
-      segV: 12,
-      soffitInward: 1.12,
-      rafters: true
+      inset: 0.38,
+      lift: 0.16,
+      segU: 14,
+      segV: 8,
+      soffitInward: 0.42,
+      rafters: false
     },
     palette.roofMats
   );
-  upperMainRoof.position.set(0, 0.55 + 5.2, 0);
-  libGroup.add(upperMainRoof);
+  porticoRoof.position.set(0, 0.58 + 2.46, libZ === 0 ? 3.1 : 3.08);
+  libGroup.add(porticoRoof);
+  for (const sx of [-1, 1]) {
+    const cornerHall = new Bs(
+      fitBoxFacadeUVs(new ks(1.75, 2.38, 1.85), 1.75, 2.38, 1.85, 3.6),
+      palette.libWallMat
+    );
+    cornerHall.position.set(sx * 2.22, 0.58 + 1.19, 3.02);
+    cornerHall.castShadow = true;
+    cornerHall.receiveShadow = true;
+    libGroup.add(cornerHall);
+    for (const cx of [-0.82, 0.82]) {
+      for (const cz of [-0.86, 0.86]) {
+        const pil = new ks(0.2, 2.4, 0.2);
+        xform(pil, [libX + sx * 2.22 + cx, libY + 0.58 + 1.2, libZ + 3.02 + cz]);
+        warmStoneGeos.push(pil);
+      }
+    }
+    const cornerRoof = roofGroup(
+      {
+        halfW: 1.16,
+        halfD: 1.06,
+        H: 0.72,
+        mode: "xieshan",
+        inset: 0.44,
+        lift: 0.18,
+        segU: 14,
+        segV: 8,
+        soffitInward: 0.44,
+        rafters: true
+      },
+      palette.roofMats
+    );
+    cornerRoof.rotation.y = Math.PI / 2;
+    cornerRoof.position.set(sx * 2.22, 0.58 + 2.38, 3.02);
+    libGroup.add(cornerRoof);
+  }
+  for (const sx of [-1, 1]) {
+    const wing = new Bs(
+      fitBoxFacadeUVs(new ks(1.65, 2.42, 2.9), 1.65, 2.42, 2.9, 3.8),
+      palette.dormWallMat
+    );
+    wing.position.set(sx * 3.45, 0.58 + 1.21, -0.35);
+    wing.castShadow = true;
+    wing.receiveShadow = true;
+    libGroup.add(wing);
+    const wingRoof = roofGroup(
+      {
+        halfW: 1.12,
+        halfD: 1.68,
+        H: 0.78,
+        mode: "xieshan",
+        inset: 0.56,
+        lift: 0.2,
+        segU: 14,
+        segV: 8,
+        soffitInward: 0.48,
+        rafters: true
+      },
+      palette.roofMats
+    );
+    wingRoof.rotation.y = Math.PI / 2;
+    wingRoof.position.set(sx * 3.45, 0.58 + 2.42, -0.35);
+    libGroup.add(wingRoof);
+  }
+  const chimneyBase = new pu(0.24, 0.28, 1.95, 8);
+  xform(chimneyBase, [libX + 2.55, libY + 0.58 + 3.45, libZ - 1.55]);
+  warmStoneGeos.push(chimneyBase);
+  const chimneyCap = new pu(0.3, 0.24, 0.22, 8);
+  xform(chimneyCap, [libX + 2.55, libY + 0.58 + 4.48, libZ - 1.55]);
+  graniteGeos.push(chimneyCap);
+  const roofDeckY = 0.58 + 3.36;
+  const upperBalustrade = new ks(5.15, 0.28, 4.05);
+  xform(upperBalustrade, [libX, libY + roofDeckY + 0.14, libZ + 0.1]);
+  graniteGeos.push(upperBalustrade);
+  const octRadius = 2.02;
+  const octHeight = 1.48;
+  const octDrum = new Bs(
+    new pu(octRadius, octRadius * 1.02, octHeight, 8),
+    palette.libWallMat
+  );
+  octDrum.rotation.y = Math.PI / 8;
+  octDrum.position.set(0, roofDeckY + octHeight * 0.5, 0.1);
+  octDrum.castShadow = true;
+  octDrum.receiveShadow = true;
+  libGroup.add(octDrum);
+  for (let k2 = 0; k2 < 8; k2++) {
+    const a = (k2 + 0.5) * (Math.PI / 4);
+    const px2 = Math.cos(a) * octRadius;
+    const pz = 0.1 + Math.sin(a) * octRadius;
+    const pil = new ks(0.2, octHeight + 0.04, 0.2);
+    xform(pil, [libX + px2, libY + roofDeckY + octHeight * 0.5, libZ + pz], [0, -a, 0]);
+    warmStoneGeos.push(pil);
+    const col = new pu(0.045, 0.05, octHeight * 0.85, 8);
+    col.translate(px2 * 1.03, roofDeckY + octHeight * 0.45, pz * 1.03);
+    const colM = new Bs(col, palette.crimsonColumnMat);
+    colM.castShadow = true;
+    libGroup.add(colM);
+  }
+  const octFrieze = new Bs(
+    new pu(octRadius * 1.08, octRadius * 1.06, 0.24, 8),
+    palette.darkTimberMat
+  );
+  octFrieze.rotation.y = Math.PI / 8;
+  octFrieze.position.set(0, roofDeckY + octHeight + 0.06, 0.1);
+  octFrieze.castShadow = true;
+  libGroup.add(octFrieze);
+  const octCrownY = roofDeckY + octHeight + 0.14;
+  const octCrownRoof = octagonalRoofGroup(
+    {
+      radius: 2.86,
+      H: 1.56,
+      lift: 0.34,
+      pediments: true,
+      segU: 8,
+      segV: 10,
+      tilePitch: 0.28
+    },
+    palette.roofMats
+  );
+  octCrownRoof.position.set(0, octCrownY, 0.1);
+  libGroup.add(octCrownRoof);
+  const finialY = octCrownY + 1.52;
   const finialBaseTier = new Bs(
-    new pu(0.36, 0.44, 0.14, 8),
+    new pu(0.32, 0.4, 0.13, 8),
     palette.glazedRidgeMat
   );
-  finialBaseTier.position.set(0, 0.55 + 6.72, 0);
+  finialBaseTier.position.set(0, finialY, 0.1);
   finialBaseTier.castShadow = true;
   libGroup.add(finialBaseTier);
   const finialUpperTier = new Bs(
-    new pu(0.26, 0.34, 0.12, 8),
+    new pu(0.22, 0.3, 0.11, 8),
     palette.glazedRidgeMat
   );
-  finialUpperTier.position.set(0, 0.55 + 6.83, 0);
+  finialUpperTier.position.set(0, finialY + 0.1, 0.1);
   finialUpperTier.castShadow = true;
   libGroup.add(finialUpperTier);
   const baodingPts = [];
   const bSteps = 44;
   for (let i = 0; i <= bSteps; i++) {
     const t2 = i / bSteps;
-    const y2 = t2 * 1.24;
-    let r = 0.26 * (1 - t2 * 0.62);
-    if (t2 < 0.78) {
-      const wave = Math.sin(t2 * Math.PI * 10);
-      r += Math.max(0, wave) * 0.08;
+    const y2 = t2 * 1.18;
+    let r = 0.22 * (1 - t2 * 0.62);
+    if (t2 < 0.8) {
+      const wave = Math.sin(t2 * Math.PI * 14);
+      r += Math.max(0, wave) * 0.07;
     } else {
-      const u2 = (t2 - 0.78) / 0.22;
-      r = 0.14 * Math.cos(u2 * Math.PI * 0.49);
+      const u2 = (t2 - 0.8) / 0.2;
+      r = 0.12 * Math.cos(u2 * Math.PI * 0.49);
     }
     baodingPts.push(new Jn(Math.max(0.015, r), y2));
   }
-  const baodingGeo = new hu(baodingPts, 24);
-  const baodingMesh = new Bs(baodingGeo, palette.glazedRidgeMat);
-  baodingMesh.position.set(0, 0.55 + 6.9, 0);
+  const baodingMesh = new Bs(new hu(baodingPts, 24), palette.glazedRidgeMat);
+  baodingMesh.position.set(0, finialY + 0.16, 0.1);
   baodingMesh.castShadow = true;
   libGroup.add(baodingMesh);
-  for (const sx of [-1, 1]) {
-    const wingX = sx * 7.2;
-    const wingY = 4.55;
-    const wingZ = -8.6;
-    const sidePodium = new ks(3.1, 0.26, 3.1);
-    xform(sidePodium, [wingX, wingY + 0.13, wingZ]);
-    graniteGeos.push(sidePodium);
-    const sideHall = new Bs(
-      fitBoxFacadeUVs(new ks(2.8, 2.08, 2.8), 2.8, 2.08, 2.8, 3.8),
+  const libArtsX = -9.8;
+  const libArtsY = 4.55;
+  const libArtsZ = -10.8;
+  const qPodium = new ks(5.1, 0.3, 5.5);
+  xform(qPodium, [libArtsX, libArtsY + 0.15, libArtsZ]);
+  graniteGeos.push(qPodium);
+  const qBarSpecs = [
+    { pos: [libArtsX, libArtsZ + 1.85], size: [4.6, 2.05, 1.15], roof: { hw: 2.55, hd: 0.72, rot: 0 } },
+    { pos: [libArtsX, libArtsZ - 1.85], size: [4.6, 2.05, 1.15], roof: { hw: 2.55, hd: 0.72, rot: 0 } },
+    { pos: [libArtsX - 1.75, libArtsZ], size: [1.1, 2.05, 2.6], roof: { hw: 2.15, hd: 0.72, rot: Math.PI / 2 } },
+    { pos: [libArtsX + 1.75, libArtsZ], size: [1.1, 2.05, 2.6], roof: { hw: 2.15, hd: 0.72, rot: Math.PI / 2 } }
+  ];
+  for (const bar of qBarSpecs) {
+    const [bx, bz] = bar.pos;
+    const [bw, bh, bd] = bar.size;
+    const wall = new Bs(
+      fitBoxFacadeUVs(new ks(bw, bh, bd), bw, bh, bd, 3.6),
       palette.dormWallMat
     );
-    sideHall.position.set(wingX, wingY + 0.26 + 1.04, wingZ);
-    sideHall.castShadow = true;
-    sideHall.receiveShadow = true;
-    group.add(sideHall);
-    const sideRoof = roofGroup(
+    wall.position.set(bx, libArtsY + 0.3 + bh * 0.5, bz);
+    wall.castShadow = true;
+    wall.receiveShadow = true;
+    group.add(wall);
+    const bRoof = roofGroup(
       {
-        halfW: 1.6,
-        halfD: 1.66,
-        H: 0.9,
-        mode: "hip",
-        lift: 0.2,
-        segU: 16,
-        segV: 8,
-        soffitInward: 0.6,
-        rafters: true
+        halfW: bar.roof.hw,
+        halfD: bar.roof.hd,
+        H: 0.68,
+        mode: "xieshan",
+        inset: 0.34,
+        lift: 0.16,
+        segU: 12,
+        segV: 6,
+        soffitInward: 0.34,
+        rafters: false
       },
       palette.roofMats
     );
-    sideRoof.position.set(wingX, wingY + 2.28, wingZ);
-    group.add(sideRoof);
+    bRoof.rotation.y = bar.roof.rot;
+    bRoof.position.set(bx, libArtsY + 0.3 + bh, bz);
+    group.add(bRoof);
   }
   const libGraniteMesh = new Bs(mergeSafe(graniteGeos), palette.graniteMat);
   libGraniteMesh.castShadow = true;
@@ -15276,6 +15667,271 @@ function createLibraryComponent(textures, palette) {
   libWarmStoneMesh.castShadow = true;
   libWarmStoneMesh.receiveShadow = true;
   group.add(libWarmStoneMesh);
+  lockStatic(group);
+  return {
+    group,
+    setMood() {
+    }
+  };
+}
+
+// src/science.js
+function createScienceComponent(textures, palette) {
+  const group = new jl();
+  group.name = "component-science-building";
+  const graniteGeos = [];
+  const warmStoneGeos = [];
+  const darkSlateGeos = [];
+  const deckSlateMat = palette.graniteMat.clone();
+  deckSlateMat.color.set("#6f747c");
+  deckSlateMat.roughness = 0.86;
+  const sciX = 6.3;
+  const sciY = 4.55;
+  const sciZ = -7.65;
+  const podium = new pu(2.45, 2.52, 0.42, 8);
+  xform(podium, [sciX, sciY + 0.21, sciZ], [0, Math.PI / 8, 0]);
+  graniteGeos.push(podium);
+  for (let s = 0; s < 4; s++) {
+    const stS = new ks(1.55, 0.11, 0.28);
+    xform(stS, [sciX, sciY + 0.06 + s * 0.095, sciZ + 2.48 - s * 0.22]);
+    graniteGeos.push(stS);
+    const stW = new ks(0.28, 0.11, 1.45);
+    xform(stW, [sciX - 2.45 + s * 0.22, sciY + 0.06 + s * 0.095, sciZ]);
+    graniteGeos.push(stW);
+  }
+  const hallH = 2.32;
+  const mainOctHall = new Bs(
+    new pu(1.72, 1.74, hallH, 8),
+    palette.libWallMat
+  );
+  mainOctHall.rotation.y = Math.PI / 8;
+  mainOctHall.position.set(sciX, sciY + 0.42 + hallH * 0.5, sciZ);
+  mainOctHall.castShadow = true;
+  mainOctHall.receiveShadow = true;
+  group.add(mainOctHall);
+  for (let k2 = 0; k2 < 8; k2++) {
+    const a = (k2 + 0.5) * (Math.PI / 4);
+    const pil = new ks(0.2, hallH + 0.08, 0.2);
+    xform(pil, [sciX + Math.cos(a) * 1.72, sciY + 0.42 + hallH * 0.5, sciZ + Math.sin(a) * 1.72], [0, -a, 0]);
+    warmStoneGeos.push(pil);
+  }
+  const mainParapet = new pu(1.86, 1.84, 0.28, 8);
+  xform(mainParapet, [sciX, sciY + 0.42 + hallH + 0.14, sciZ], [0, Math.PI / 8, 0]);
+  warmStoneGeos.push(mainParapet);
+  const roofSlate = new pu(1.74, 1.74, 0.1, 8);
+  xform(roofSlate, [sciX, sciY + 0.42 + hallH + 0.26, sciZ], [0, Math.PI / 8, 0]);
+  darkSlateGeos.push(roofSlate);
+  const cardinalDirs = [
+    { name: "south", rotY: 0, dist: 1.56, w: 1.72, d: 0.94, isPortal: true },
+    { name: "west", rotY: -Math.PI / 2, dist: 1.56, w: 1.68, d: 0.88, isPortal: false },
+    { name: "east", rotY: Math.PI / 2, dist: 1.5, w: 1.56, d: 0.78, isPortal: false },
+    { name: "north", rotY: Math.PI, dist: 1.5, w: 1.62, d: 0.82, isPortal: false }
+  ];
+  for (const card of cardinalDirs) {
+    const cg = new jl();
+    cg.position.set(sciX, sciY + 0.42, sciZ);
+    cg.rotation.y = card.rotY;
+    const projBody = new Bs(
+      fitBoxFacadeUVs(new ks(card.w, 2.24, card.d), card.w, 2.24, card.d, 3.2),
+      palette.libWallMat
+    );
+    projBody.position.set(0, 1.12, card.dist);
+    projBody.castShadow = true;
+    projBody.receiveShadow = true;
+    cg.add(projBody);
+    const projParapet = new Bs(
+      new ks(card.w + 0.12, 0.34, card.d + 0.12),
+      palette.warmStoneMat
+    );
+    projParapet.position.set(0, 2.34, card.dist);
+    projParapet.castShadow = true;
+    cg.add(projParapet);
+    if (card.isPortal) {
+      for (const dx of [-0.42, 0, 0.42]) {
+        const frame = new ks(0.32, 1.18, 0.09);
+        xform(frame, [sciX + dx, sciY + 0.42 + 0.59, sciZ + card.dist + card.d * 0.5 + 0.01]);
+        graniteGeos.push(frame);
+        const door = new Bs(
+          new ks(0.24, 0.9, 0.11),
+          palette.crimsonColumnMat
+        );
+        door.position.set(dx, 0.46, card.dist + card.d * 0.5 + 0.02);
+        cg.add(door);
+      }
+      const stoneLintel = new Bs(
+        new ks(card.w + 0.16, 0.24, 0.14),
+        palette.graniteMat
+      );
+      stoneLintel.position.set(0, 1.32, card.dist + card.d * 0.5 + 0.04);
+      cg.add(stoneLintel);
+    }
+    const eaveCanopy = roofGroup(
+      {
+        halfW: card.w * 0.58,
+        halfD: 0.42,
+        H: 0.38,
+        mode: "xieshan",
+        inset: 0.2,
+        lift: 0.1,
+        segU: 10,
+        segV: 6,
+        soffitInward: 0.2,
+        rafters: false
+      },
+      palette.roofMats
+    );
+    eaveCanopy.position.set(0, 1.62, card.dist + card.d * 0.5 + 0.18);
+    cg.add(eaveCanopy);
+    group.add(cg);
+  }
+  const drumBaseY = sciY + 0.42 + hallH + 0.3;
+  const drumH = 0.62;
+  const drumR = 1.38;
+  const drumWall = new Bs(
+    new pu(drumR, drumR * 1.02, drumH, 16),
+    palette.libWallMat
+  );
+  drumWall.position.set(sciX, drumBaseY + drumH * 0.5, sciZ);
+  drumWall.castShadow = true;
+  drumWall.receiveShadow = true;
+  group.add(drumWall);
+  for (let i = 0; i < 16; i++) {
+    const a = i / 16 * Math.PI * 2;
+    const rib = new ks(0.11, drumH + 0.06, 0.26);
+    xform(
+      rib,
+      [sciX + Math.cos(a) * (drumR + 0.06), drumBaseY + drumH * 0.48, sciZ + Math.sin(a) * (drumR + 0.06)],
+      [0, -a + Math.PI / 2, 0]
+    );
+    warmStoneGeos.push(rib);
+  }
+  const drumRingCap = new pu(drumR + 0.08, drumR + 0.12, 0.14, 20);
+  xform(drumRingCap, [sciX, drumBaseY + drumH + 0.05, sciZ]);
+  warmStoneGeos.push(drumRingCap);
+  const domeBaseY = drumBaseY + drumH + 0.1;
+  const domeGeo = new id(1.36, 28, 16, 0, Math.PI * 2, 0, Math.PI * 0.46);
+  const domeMesh = new Bs(domeGeo, palette.warmStoneMat);
+  domeMesh.position.set(sciX, domeBaseY, sciZ);
+  domeMesh.scale.set(1, 0.88, 1);
+  domeMesh.castShadow = true;
+  domeMesh.receiveShadow = true;
+  group.add(domeMesh);
+  const oculusRim = new pu(0.32, 0.36, 0.12, 16);
+  xform(oculusRim, [sciX, domeBaseY + 1.36 * 0.88 - 0.02, sciZ]);
+  graniteGeos.push(oculusRim);
+  const oculusGlass = new Bs(
+    new pu(0.24, 0.24, 0.1, 14),
+    palette.glazedTileMat
+  );
+  oculusGlass.position.set(sciX, domeBaseY + 1.36 * 0.88 + 0.01, sciZ);
+  group.add(oculusGlass);
+  const apseX = 8.05;
+  const apseZ = -10.25;
+  const apseBody = new Bs(
+    new pu(0.54, 0.56, 1.72, 16),
+    palette.libWallMat
+  );
+  apseBody.position.set(apseX, sciY + 0.86, apseZ);
+  apseBody.castShadow = true;
+  apseBody.receiveShadow = true;
+  group.add(apseBody);
+  const apseCollar = new pu(0.6, 0.58, 0.12, 16);
+  xform(apseCollar, [apseX, sciY + 1.76, apseZ]);
+  warmStoneGeos.push(apseCollar);
+  const apseDome = new Bs(
+    new id(0.54, 18, 10, 0, Math.PI * 2, 0, Math.PI * 0.48),
+    palette.warmStoneMat
+  );
+  apseDome.position.set(apseX, sciY + 1.8, apseZ);
+  apseDome.castShadow = true;
+  group.add(apseDome);
+  const breezeWall = new Bs(
+    new ks(0.95, 1.48, 2.35),
+    palette.libWallMat
+  );
+  breezeWall.position.set(6.72, sciY + 0.74, -10.35);
+  breezeWall.castShadow = true;
+  group.add(breezeWall);
+  const breezeRoof = roofGroup(
+    {
+      halfW: 0.66,
+      halfD: 1.25,
+      H: 0.44,
+      mode: "xieshan",
+      inset: 0.28,
+      lift: 0.1,
+      segU: 10,
+      segV: 6,
+      soffitInward: 0.28,
+      rafters: false
+    },
+    palette.roofMats
+  );
+  breezeRoof.position.set(6.72, sciY + 1.48, -10.35);
+  group.add(breezeRoof);
+  const neWingX = 6.45;
+  const neWingZ = -12.75;
+  const neWingBody = new Bs(
+    fitBoxFacadeUVs(new ks(2.9, 2.15, 2.7), 2.9, 2.15, 2.7, 3.6),
+    palette.dormWallMat
+  );
+  neWingBody.position.set(neWingX, sciY + 1.075, neWingZ);
+  neWingBody.castShadow = true;
+  neWingBody.receiveShadow = true;
+  group.add(neWingBody);
+  const neWingRoof = roofGroup(
+    {
+      halfW: 1.72,
+      halfD: 1.56,
+      H: 0.88,
+      mode: "xieshan",
+      inset: 0.56,
+      lift: 0.2,
+      segU: 16,
+      segV: 8,
+      soffitInward: 0.56,
+      rafters: true
+    },
+    palette.roofMats
+  );
+  neWingRoof.rotation.y = Math.PI / 2;
+  neWingRoof.position.set(neWingX, sciY + 2.15, neWingZ);
+  group.add(neWingRoof);
+  const rearLabX = 6.45;
+  const rearLabZ = -15.85;
+  const rearLabBody = new Bs(
+    fitBoxFacadeUVs(new ks(3.05, 2.45, 2.45), 3.05, 2.45, 2.45, 3.6),
+    palette.dormWallMat
+  );
+  rearLabBody.position.set(rearLabX, sciY + 1.225, rearLabZ);
+  rearLabBody.castShadow = true;
+  rearLabBody.receiveShadow = true;
+  group.add(rearLabBody);
+  const rearLabParapet = new ks(3.16, 0.22, 2.56);
+  xform(rearLabParapet, [rearLabX, sciY + 2.52, rearLabZ]);
+  warmStoneGeos.push(rearLabParapet);
+  const rearLabDeck = new ks(2.86, 0.1, 2.26);
+  xform(rearLabDeck, [rearLabX, sciY + 2.6, rearLabZ]);
+  darkSlateGeos.push(rearLabDeck);
+  for (const dx of [-0.62, 0.62]) {
+    const monitor = new ks(0.84, 0.24, 1.05);
+    xform(monitor, [rearLabX + dx, sciY + 2.74, rearLabZ]);
+    warmStoneGeos.push(monitor);
+    const monitorCap = new ks(0.92, 0.08, 1.12);
+    xform(monitorCap, [rearLabX + dx, sciY + 2.88, rearLabZ]);
+    graniteGeos.push(monitorCap);
+  }
+  const sciGraniteMesh = new Bs(mergeSafe(graniteGeos), palette.graniteMat);
+  sciGraniteMesh.castShadow = true;
+  sciGraniteMesh.receiveShadow = true;
+  group.add(sciGraniteMesh);
+  const sciWarmStoneMesh = new Bs(mergeSafe(warmStoneGeos), palette.warmStoneMat);
+  sciWarmStoneMesh.castShadow = true;
+  sciWarmStoneMesh.receiveShadow = true;
+  group.add(sciWarmStoneMesh);
+  const sciSlateMesh = new Bs(mergeSafe(darkSlateGeos), deckSlateMat);
+  sciSlateMesh.receiveShadow = true;
+  group.add(sciSlateMesh);
   lockStatic(group);
   return {
     group,
@@ -15791,7 +16447,8 @@ function createLakeComponent(textures, palette) {
   }
   const quayThreshold = new ks(0.44, 0.15, 1.34);
   xform(quayThreshold, [9.06, pierY, pierZ]);
-  graniteGeos.push(quayThreshold);
+  applyWorldPlanarUVs(quayThreshold, 0.28, 0.28, false);
+  pierGeos.push(quayThreshold);
   const crossArm1N = new ks(1.15, 0.15, 3.6);
   xform(crossArm1N, [15.4, pierY, pierZ - 2.4]);
   applyWorldPlanarUVs(crossArm1N, 0.28, 0.28, true);
@@ -16349,11 +17006,13 @@ function createFoliageComponent(textures, palette) {
     { pos: [-10.6, 2.15, 2.3], scale: 1.08 },
     { pos: [-12.4, 2.15, 0.6], scale: 1.04 },
     { pos: [-11.4, 2.15, -2.4], scale: 1.06 },
-    { pos: [-9.8, 4.55, -6], scale: 1.04 },
-    { pos: [-10.6, 4.55, -8.6], scale: 1.04 },
-    { pos: [-10.2, 4.55, -11.4], scale: 1.02 },
-    { pos: [-6.2, 4.55, -13.8], scale: 0.98 },
-    { pos: [5.8, 4.55, -13.8], scale: 0.96 }
+    { pos: [-11.8, 4.55, -6], scale: 1.02 },
+    { pos: [-13.2, 4.55, -8.8], scale: 1.04 },
+    { pos: [-13.2, 4.55, -14.6], scale: 1.02 },
+    { pos: [-6.4, 4.55, -17.4], scale: 0.98 },
+    { pos: [3.2, 4.55, -17.8], scale: 0.96 },
+    { pos: [-4.6, 4.55, -6.4], scale: 0.96 },
+    { pos: [-3.2, 4.55, -7.2], scale: 0.9 }
   ];
   const trunkGeos = [];
   const soilMoundGeos = [];
@@ -16443,10 +17102,10 @@ function createFoliageComponent(textures, palette) {
     [-14.5, 0.1, 12.5, 1.3],
     [18.8, 0.1, 22.5, 1.22],
     [-14.8, 2.2, -3.5, 1.35],
-    [-13.5, 4.5, -10.5, 1.4],
-    [-8.5, 4.6, -14.8, 1.38],
-    [-3.2, 4.6, -15.6, 1.42],
-    [4.2, 4.6, -15.4, 1.38],
+    [-16.2, 3.6, -11, 1.4],
+    [-12.2, 4, -19.8, 1.38],
+    [-3.5, 4, -20.8, 1.42],
+    [4.6, 3.4, -20.8, 1.38],
     [-15.5, 1.8, 5.5, 1.25],
     [-17.2, 0.2, 16.5, 1.2],
     [22.8, 0.1, 20.5, 1.22],
@@ -17355,11 +18014,13 @@ function createCampusDiorama(textures, prebuiltComponents = null) {
   const terrain = prebuiltComponents?.terrain || createTerrainComponent(textures, palette);
   const dormitory = prebuiltComponents?.dormitory || createDormitoryComponent(textures, palette);
   const library = prebuiltComponents?.library || createLibraryComponent(textures, palette);
+  const science = prebuiltComponents?.science || createScienceComponent(textures, palette);
   const lake = prebuiltComponents?.lake || createLakeComponent(textures, palette);
   const foliage = prebuiltComponents?.foliage || createFoliageComponent(textures, palette);
   group.add(terrain.group);
   group.add(dormitory.group);
   group.add(library.group);
+  group.add(science.group);
   group.add(lake.group);
   group.add(foliage.group);
   function setMood(mood) {
@@ -17367,6 +18028,7 @@ function createCampusDiorama(textures, prebuiltComponents = null) {
     terrain.setMood(mood);
     dormitory.setMood(mood);
     library.setMood(mood);
+    science.setMood(mood);
     lake.setMood(mood);
     foliage.setMood(mood);
   }
@@ -17377,7 +18039,7 @@ function createCampusDiorama(textures, prebuiltComponents = null) {
   }
   return {
     group,
-    components: { terrain, dormitory, library, lake, foliage },
+    components: { terrain, dormitory, library, science, lake, foliage },
     setMood,
     updateCampus,
     updateWaterReflection: (renderer, scene, camera, keyLight, setSkyLinearOutput, protagonistGroup = null) => lake.updateWaterReflection(renderer, scene, camera, keyLight, setSkyLinearOutput, foliage, protagonistGroup),
@@ -17729,12 +18391,13 @@ function createLightingSystem(scene, renderer) {
     [-4.55, 5.75, -0.8],
     [0, 5.75, -0.8],
     [4.55, 5.75, -0.8],
-    [-2.8, 9.1, -8.8],
-    [2.8, 9.1, -8.8]
+    [-2.4, 9.2, -13],
+    [2.4, 9.2, -13],
+    [6.3, 6.25, -5.8]
   ];
   const pointLights = localLightCoords.map(([x, y2, z2], idx) => {
-    const intensity = idx < 4 ? 2.9 : idx === 4 ? 2.1 : idx === 5 ? 2.6 : idx === 9 ? 2.2 : idx >= 10 && idx <= 12 ? 2.4 : idx >= 13 ? 2.35 : idx >= 7 ? 3.7 : 3;
-    const dist = idx < 4 ? 8.2 : idx === 9 ? 8.5 : idx >= 10 && idx <= 12 ? 5.6 : idx >= 13 ? 7.2 : idx >= 7 ? 7.6 : 11;
+    const intensity = idx < 4 ? 2.9 : idx === 4 ? 2.1 : idx === 5 ? 2.6 : idx === 9 ? 2.2 : idx >= 10 && idx <= 12 ? 2.4 : idx >= 13 ? 2.45 : idx >= 7 ? 3.7 : 3;
+    const dist = idx < 4 ? 8.2 : idx === 9 ? 8.5 : idx >= 10 && idx <= 12 ? 5.6 : idx >= 13 ? 8 : idx >= 7 ? 7.6 : 11;
     const pl2 = new dp(MOODS.night.pointColor, intensity, dist, 2);
     pl2.position.set(x, y2, z2);
     pl2.castShadow = false;
@@ -17831,8 +18494,8 @@ var KF = [
   { pos: [21.5, 16, 34], att: [0.5, 3.8, 17] },
   { pos: [19.5, 16, 21], att: [0, 3.6, 2.5], stop: { id: "sakura", index: 1, label: "02/04 \xB7 \u8001\u658B\u820D & \u6A31\u82B1\u5927\u9053" } },
   { pos: [18.5, 16.5, 12], att: [0, 3.6, 2.5] },
-  { pos: [20.5, 22, 6], att: [0.5, 7.6, -8.5], stop: { id: "library", index: 2, label: "03/04 \xB7 \u6A31\u9876\u8001\u56FE\u4E66\u9986" } },
-  { pos: [22.5, 22.5, -2.5], att: [0.5, 7.6, -8.5] },
+  { pos: [20.5, 22, 6], att: [0.8, 7.2, -11], stop: { id: "library", index: 2, label: "03/04 \xB7 \u6A31\u9876\u8001\u56FE\u4E66\u9986 \xB7 \u7406\u5B66\u697C" } },
+  { pos: [22.5, 22.5, -2.5], att: [0.8, 7.2, -11] },
   { pos: [32, 15.5, 3], att: [13.8, 1.4, -7.2], stop: { id: "lingbo", index: 3, label: "04/04 \xB7 \u4E1C\u6E56\u51CC\u6CE2\u95E8" } },
   { pos: [31.5, 14, 9.5], att: [13.8, 1.4, -7.2] },
   { pos: [38, 24, 28], att: [1.5, 2.8, 2], stop: { id: "overview", index: -1, label: "\u5FAE\u7F29\u5168\u666F \xB7 \u73DE\u73C8\u6C99\u76D8" } },
@@ -18432,43 +19095,87 @@ function createCameraController(camera, domElement, { onStageChange, onPortalPro
 var ANCHORS = {
   archway: [0.4, 0.15, 22.4],
   sakura: [1.8, 2.24, 2.15],
-  library: [3.4, 5.11, -5.95],
+  library: [1.4, 4.62, -6.8],
   lingbo: [15.4, 0.642, -7.8],
   overview: [0.4, 0.15, 22.4]
 };
 function createProtagonist(textures) {
   const group = new jl();
   group.name = "oursongs-protagonist";
-  const frame0 = textures.protagonistFrame(0);
-  const frame1 = textures.protagonistFrame(1);
-  const spriteGeo = new ha(1.18, 1.48);
-  spriteGeo.translate(0, 0.74, 0);
-  const spriteMat = new pd({
-    map: frame0,
-    color: new Kr("#f6e8d8"),
-    emissive: new Kr("#2a1e16"),
-    emissiveMap: frame0,
-    emissiveIntensity: 0.03,
-    roughness: 0.92,
-    metalness: 0,
-    alphaTest: 0.48,
-    side: p
-  });
-  spriteMat.customProgramCacheKey = () => "chibi_shadow_norm_v2";
-  spriteMat.onBeforeCompile = (shader) => {
-    shader.fragmentShader = shader.fragmentShader.replace(
-      "#include <normal_fragment_begin>",
-      `
-      #include <normal_fragment_begin>
-      normal = normalize((viewMatrix * vec4(0.0, 0.88, 0.47, 0.0)).xyz);
-      nonPerturbedNormal = normal;
-      `
-    );
-  };
-  const spriteMesh = new Bs(spriteGeo, spriteMat);
-  spriteMesh.castShadow = false;
-  spriteMesh.receiveShadow = true;
-  group.add(spriteMesh);
+  const parts = textures.protagonistParts();
+  const slotMats = [];
+  function createSlotMat(tex) {
+    const mat = new pd({
+      map: tex,
+      color: new Kr("#f4e8dc"),
+      emissive: new Kr("#1a1410"),
+      emissiveMap: tex,
+      emissiveIntensity: 0,
+      roughness: 0.92,
+      metalness: 0,
+      alphaTest: 0.5,
+      side: p
+    });
+    mat.customProgramCacheKey = () => "chibi_shadow_norm_v2";
+    mat.onBeforeCompile = (shader) => {
+      shader.fragmentShader = shader.fragmentShader.replace(
+        "#include <normal_fragment_begin>",
+        `
+        #include <normal_fragment_begin>
+        normal = normalize((viewMatrix * vec4(0.0, 0.88, 0.47, 0.0)).xyz);
+        nonPerturbedNormal = normal;
+        `
+      );
+    };
+    slotMats.push(mat);
+    return mat;
+  }
+  function makeSlot(name, w2, h, px2, py, pz, tex) {
+    const geo = new ha(w2, h);
+    geo.translate(px2, py, 0);
+    const mat = createSlotMat(tex);
+    const mesh = new Bs(geo, mat);
+    mesh.name = name;
+    mesh.position.z = pz;
+    mesh.castShadow = false;
+    mesh.receiveShadow = true;
+    return mesh;
+  }
+  const rigBillboard = new jl();
+  group.add(rigBillboard);
+  const rigFlip = new jl();
+  rigBillboard.add(rigFlip);
+  const PIXEL_UNIT = 0.0185;
+  const backHairPivot = new jl();
+  backHairPivot.position.set(0, 0.88, -0.022);
+  const backHairMesh = makeSlot("backHair", 48 * PIXEL_UNIT, 52 * PIXEL_UNIT, 0, -0.22, 0, parts.backHair);
+  backHairPivot.add(backHairMesh);
+  rigFlip.add(backHairPivot);
+  const leftLegPivot = new jl();
+  leftLegPivot.position.set(-0.105, 0.46, -8e-3);
+  leftLegPivot.add(makeSlot("leftLeg", 18 * PIXEL_UNIT, 26 * PIXEL_UNIT, 0, -0.22, 0, parts.leg));
+  rigFlip.add(leftLegPivot);
+  const rightLegPivot = new jl();
+  rightLegPivot.position.set(0.105, 0.46, 4e-3);
+  rightLegPivot.add(makeSlot("rightLeg", 18 * PIXEL_UNIT, 26 * PIXEL_UNIT, 0, -0.22, 0, parts.leg));
+  rigFlip.add(rightLegPivot);
+  const torsoPivot = new jl();
+  torsoPivot.position.set(0, 0.44, 0);
+  torsoPivot.add(makeSlot("torso", 28 * PIXEL_UNIT, 28 * PIXEL_UNIT, 0, 0.22, 0, parts.torso));
+  rigFlip.add(torsoPivot);
+  const leftArmPivot = new jl();
+  leftArmPivot.position.set(-0.2, 0.36, -6e-3);
+  leftArmPivot.add(makeSlot("leftArm", 14 * PIXEL_UNIT, 24 * PIXEL_UNIT, -0.01, -0.19, 0, parts.arm));
+  torsoPivot.add(leftArmPivot);
+  const rightArmPivot = new jl();
+  rightArmPivot.position.set(0.2, 0.36, 0.01);
+  rightArmPivot.add(makeSlot("rightArm", 14 * PIXEL_UNIT, 24 * PIXEL_UNIT, 0.01, -0.19, 0, parts.arm));
+  torsoPivot.add(rightArmPivot);
+  const headPivot = new jl();
+  headPivot.position.set(0, 0.39, 0.016);
+  const headMesh = makeSlot("head", 48 * PIXEL_UNIT, 44 * PIXEL_UNIT, 0, 0.29, 0, parts.headOpen);
+  headPivot.add(headMesh);
+  torsoPivot.add(headPivot);
   const aoCanvas = document.createElement("canvas");
   aoCanvas.width = 48;
   aoCanvas.height = 48;
@@ -18505,34 +19212,25 @@ function createProtagonist(textures) {
   });
   const dirShadowMesh = new Bs(dirShadowGeo, dirShadowMat);
   dirShadowMesh.position.y = 0.025;
-  dirShadowMesh.rotation.y = Math.atan2(14, -29);
+  dirShadowMesh.rotation.y = Math.atan2(9.5, -30);
   group.add(dirShadowMesh);
-  const beaconGeo = new ha(0.06, 0.06);
-  const beaconMat = new es({
-    color: new Kr("#ff3b3b"),
-    transparent: true,
-    opacity: 0.9,
-    side: p,
-    depthWrite: false
-  });
-  const beacon = new Bs(beaconGeo, beaconMat);
-  beacon.position.set(0.08, 0.62, 0.02);
-  spriteMesh.add(beacon);
+  const baseAnchorPos = new Ci(...ANCHORS.archway);
   const targetPos = new Ci(...ANCHORS.archway);
   group.position.copy(targetPos);
-  let currentFrame = 0;
   let currentStopId = "archway";
   let currentMoodName = "amber";
+  let walkPhase = 0;
   function refreshShadowState() {
     const isNight = currentMoodName === "night" || currentMoodName === "sunset" || currentMoodName === "convergence";
     const inPorchShade = currentStopId === "library";
-    dirShadowMat.opacity = isNight ? 0.32 : inPorchShade ? 0.16 : 0.74;
+    dirShadowMat.opacity = isNight ? 0.32 : inPorchShade ? 0.36 : 0.74;
     contactAoMat.opacity = isNight ? 0.62 : 0.68;
   }
   function setAnchor(stopId = "archway", snap = false) {
     currentStopId = stopId || "archway";
     const coords = ANCHORS[stopId] || ANCHORS.archway;
-    targetPos.set(coords[0], coords[1], coords[2]);
+    baseAnchorPos.set(coords[0], coords[1], coords[2]);
+    targetPos.copy(baseAnchorPos);
     if (snap || group.position.distanceTo(targetPos) > 10) {
       group.position.copy(targetPos);
     }
@@ -18541,42 +19239,101 @@ function createProtagonist(textures) {
   function setMood(mood) {
     currentMoodName = mood;
     const isNight = mood === "night" || mood === "sunset" || mood === "convergence";
+    for (const mat of slotMats) {
+      if (isNight) {
+        mat.color.set("#dce4f4");
+        mat.emissive.set("#3e5078");
+        mat.emissiveIntensity = 0.22;
+      } else {
+        mat.color.set("#f4e8dc");
+        mat.emissive.set("#1a1410");
+        mat.emissiveIntensity = 0;
+      }
+    }
     if (isNight) {
-      spriteMat.color.set("#bcc6dc");
-      spriteMat.emissive.set("#222c46");
-      spriteMat.emissiveIntensity = 0.08;
       dirShadowMesh.rotation.y = Math.atan2(-26, -5);
       dirShadowMesh.scale.set(1, 1, 0.85);
-      beaconMat.opacity = 1;
     } else {
-      spriteMat.color.set("#e8d5c2");
-      spriteMat.emissive.set("#1a1410");
-      spriteMat.emissiveIntensity = 0;
-      dirShadowMesh.rotation.y = Math.atan2(14, -29);
+      dirShadowMesh.rotation.y = Math.atan2(9.5, -30);
       dirShadowMesh.scale.set(1, 1, 1);
-      beaconMat.opacity = 0.85;
     }
     refreshShadowState();
   }
-  function update(dt2, elapsed, camera) {
-    if (group.position.distanceToSquared(targetPos) > 4e-4) {
-      const alpha = Math.min(1, dt2 * 6);
-      group.position.lerp(targetPos, alpha);
+  function applyPose({ walking, elapsed, speedFrac, facingX }) {
+    rigFlip.scale.x = facingX < -0.02 ? -1 : 1;
+    if (walking) {
+      const s = Math.sin(walkPhase);
+      const absS = Math.abs(s);
+      const hop = absS * 0.068 * speedFrac;
+      rigFlip.position.y = hop;
+      rigFlip.rotation.z = -0.055 * speedFrac;
+      leftLegPivot.rotation.z = s * 0.42 * speedFrac;
+      rightLegPivot.rotation.z = -s * 0.42 * speedFrac;
+      leftArmPivot.rotation.z = -s * 0.36 * speedFrac - 0.06;
+      rightArmPivot.rotation.z = s * 0.36 * speedFrac + 0.06;
+      torsoPivot.scale.set(1 + 0.02 * absS, 1 - 0.03 * absS, 1);
+      headPivot.rotation.z = 0.045 * Math.cos(walkPhase);
+      backHairPivot.rotation.z = -0.1 * speedFrac + Math.sin(walkPhase * 2) * 0.055;
+      backHairPivot.position.y = 0.88 + hop * 0.45;
+      headMesh.material.map = parts.headOpen;
+      headMesh.material.emissiveMap = parts.headOpen;
+      return;
     }
+    const b = Math.sin(elapsed * 3.1);
+    const bLag = Math.sin(elapsed * 3.1 - 0.65);
+    rigFlip.position.y = 0;
+    rigFlip.rotation.z = 0;
+    leftLegPivot.rotation.z = 0;
+    rightLegPivot.rotation.z = 0;
+    torsoPivot.position.y = 0.44 + b * 0.016;
+    torsoPivot.scale.set(1 - b * 0.018, 1 + b * 0.024, 1);
+    leftArmPivot.rotation.z = -0.06 + bLag * 0.045;
+    rightArmPivot.rotation.z = 0.06 - bLag * 0.045;
+    headPivot.rotation.z = bLag * 0.024;
+    backHairPivot.position.y = 0.88 + bLag * 0.014;
+    backHairPivot.rotation.z = Math.sin(elapsed * 2.1 - 0.8) * 0.045;
+    const blinkCycle = elapsed % 3.9;
+    const isBlink = elapsed > 0.25 && blinkCycle > 3.74;
+    const nextTex = isBlink ? parts.headBlink : parts.headOpen;
+    if (headMesh.material.map !== nextTex) {
+      headMesh.material.map = nextTex;
+      headMesh.material.emissiveMap = nextTex;
+    }
+  }
+  function update(dt2, elapsed, camera) {
     if (camera) {
       const dx = camera.position.x - group.position.x;
       const dz = camera.position.z - group.position.z;
-      spriteMesh.rotation.y = Math.atan2(dx, dz);
+      rigBillboard.rotation.y = Math.atan2(dx, dz);
     }
-    const nextFrame2 = Math.floor(elapsed * 2.6) % 2;
-    if (nextFrame2 !== currentFrame) {
-      currentFrame = nextFrame2;
-      const tex = currentFrame === 0 ? frame0 : frame1;
-      spriteMat.map = tex;
-      spriteMat.emissiveMap = tex;
+    if (dt2 <= 0) {
+      applyPose({ walking: false, elapsed: 0, speedFrac: 0, facingX: 1 });
+      return;
     }
-    spriteMesh.position.y = Math.sin(elapsed * 2.6) * 0.018;
-    beacon.visible = Math.floor(elapsed * 1.8) % 5 !== 0;
+    const strollSlot = Math.floor(elapsed / 8);
+    const localTime = elapsed % 8;
+    const activeTransition = group.position.distanceTo(baseAnchorPos) > 1.25;
+    if (!activeTransition) {
+      const patOffset = localTime < 5.5 ? (strollSlot % 2 * 2 - 1) * 0.68 : 0;
+      targetPos.set(baseAnchorPos.x + patOffset, baseAnchorPos.y, baseAnchorPos.z);
+    }
+    const dxMove = targetPos.x - group.position.x;
+    const dist = group.position.distanceTo(targetPos);
+    if (dist > 0.02) {
+      const stepDist = Math.min(dist, dt2 * 2.4);
+      const dir = targetPos.clone().sub(group.position).normalize();
+      group.position.addScaledVector(dir, stepDist);
+      walkPhase += dt2 * 11.5;
+      applyPose({
+        walking: true,
+        elapsed,
+        speedFrac: Zn.clamp(dist / 0.3, 0.35, 1),
+        facingX: Math.abs(dxMove) > 0.01 ? dxMove : 1
+      });
+    } else {
+      group.position.copy(targetPos);
+      applyPose({ walking: false, elapsed, speedFrac: 0, facingX: 1 });
+    }
   }
   return {
     group,
@@ -19361,11 +20118,12 @@ async function init() {
   const archway = createArchway(textures);
   const terrain = createTerrainComponent(textures, palette);
   const dormitory = createDormitoryComponent(textures, palette);
-  await reportProgress(78, "\u6B63\u5728\u6784\u5EFA\u8001\u56FE\u4E66\u9986\u3001\u4E1C\u6E56\u51CC\u6CE2\u95E8\u4E0E\u6A31\u6797...");
+  await reportProgress(78, "\u6B63\u5728\u6784\u5EFA\u8001\u56FE\u4E66\u9986\u3001\u7406\u5B66\u697C\u3001\u4E1C\u6E56\u51CC\u6CE2\u95E8\u4E0E\u6A31\u6797...");
   const library = createLibraryComponent(textures, palette);
+  const science = createScienceComponent(textures, palette);
   const lake = createLakeComponent(textures, palette);
   const foliage = createFoliageComponent(textures, palette);
-  const campus = createCampusDiorama(textures, { palette, terrain, dormitory, library, lake, foliage });
+  const campus = createCampusDiorama(textures, { palette, terrain, dormitory, library, science, lake, foliage });
   const protagonist = createProtagonist(textures);
   const postfx = createHD2DPostFX(renderer, window.innerWidth, window.innerHeight, currentDpr);
   scene.add(campus.group);
@@ -19382,6 +20140,7 @@ async function init() {
     terrain,
     dormitory,
     library,
+    science,
     lake,
     foliage,
     protagonist,
