@@ -5,6 +5,7 @@ import { createCampusPalette } from './materials.js';
 import { createTerrainComponent } from './terrain.js';
 import { createDormitoryComponent } from './dormitory.js';
 import { createLibraryComponent } from './library.js';
+import { createScienceComponent } from './science.js';
 import { createLakeComponent } from './lake.js';
 import { createFoliageComponent } from './foliage.js';
 import { createArchway } from './archway.js';
@@ -100,11 +101,12 @@ async function init() {
   const terrain = createTerrainComponent(textures, palette);
   const dormitory = createDormitoryComponent(textures, palette);
 
-  await reportProgress(78, '正在构建老图书馆、东湖凌波门与樱林...');
+  await reportProgress(78, '正在构建老图书馆、理学楼、东湖凌波门与樱林...');
   const library = createLibraryComponent(textures, palette);
+  const science = createScienceComponent(textures, palette);
   const lake = createLakeComponent(textures, palette);
   const foliage = createFoliageComponent(textures, palette);
-  const campus = createCampusDiorama(textures, { palette, terrain, dormitory, library, lake, foliage });
+  const campus = createCampusDiorama(textures, { palette, terrain, dormitory, library, science, lake, foliage });
   const protagonist = createProtagonist(textures);
   const postfx = createHD2DPostFX(renderer, window.innerWidth, window.innerHeight, currentDpr);
 
@@ -125,6 +127,7 @@ async function init() {
     terrain,
     dormitory,
     library,
+    science,
     lake,
     foliage,
     protagonist,

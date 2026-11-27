@@ -559,196 +559,190 @@ export function createTextureFactory(renderer) {
    * long straight hair, expressive sparkling blue eyes, fitted sky-blue zip tracksuit w/ white stripes,
    * chunky white-sole skate sneakers, silver camera + #ff3b3b red dot).
    */
-  function protagonistFrame(frameIdx = 0) {
-    const label = `protagonist-frame-${frameIdx}`;
-    if (cache.has(label)) return cache.get(label);
+  const PROTAG_PAL = {
+    H_HI: '#fafcff',
+    H_BASE: '#eaeff7',
+    H_MID: '#cdd7e8',
+    H_SHAD: '#9eadc6',
+    H_DEEP: '#7686a4',
+    SKIN: '#fff1eb',
+    SKIN_SHAD: '#ebcfc6',
+    BLUSH: '#ffbac8',
+    EYE_LASH: '#24324e',
+    EYE_DEEP: '#3f5f9e',
+    EYE_MID: '#7ca6ea',
+    EYE_HI: '#ffffff',
+    EYE_WHITE: '#f7faff',
+    SUIT_HI: '#b6d7e8',
+    SUIT: '#96bfd4',
+    SUIT_SHAD: '#749eb5',
+    ZIP: '#45677f',
+    STRIPE: '#f2f8fc',
+    SHOE: '#34486b',
+    SHOE_SHAD: '#23314b',
+    SHOE_LACE: '#768db3',
+    SOLE: '#f2f6fc',
+    SOLE_SHAD: '#cdd8eb',
+    OUTLINE: [38, 50, 76],
+  };
 
-    const W = 64;
-    const H = 80;
-    const c = makeCanvas(W, H);
-    const ctx = c.getContext('2d');
-    ctx.clearRect(0, 0, W, H);
-
-    const H_HI = '#f7faff';
-    const H_BASE = '#d8e6fc';
-    const H_MID = '#a9c2ec';
-    const H_SHAD = '#6d85ba';
-    const H_DEEP = '#4e6396';
-
-    const SKIN = '#ffe2d5';
-    const SKIN_SHAD = '#eab8a6';
-    const BLUSH = '#ffa8ba';
-    const EYE_LASH = '#122248';
-    const EYE_DEEP = '#163578';
-    const EYE_MID = '#357fd8';
-    const EYE_SKY = '#74bdfc';
-    const EYE_HI = '#ffffff';
-
-    const SUIT_HI = '#8ed0f5';
-    const SUIT = '#4a9ee0';
-    const SUIT_SHAD = '#306ca8';
-    const SUIT_DARK = '#1e4470';
-    const STRIPE = '#ffffff';
-
-    const PANT = '#2d4b76';
-    const PANT_HI = '#446aa0';
-    const PANT_SHAD = '#1d3252';
-
-    const SHOE_TOP = '#88c5ee';
-    const SHOE_SHAD = '#5694c4';
-    const SOLE = '#fcfdff';
-    const SOLE_SHAD = '#cdd8eb';
-
-    const CAM_BODY = '#d7e0ec';
-    const CAM_EDGE = '#9aa6ba';
-    const CAM_DARK = '#313a4d';
-    const RED_DOT = '#ff3b3b';
-
-    const bob = frameIdx === 1 ? 1 : 0;
-    const sway = frameIdx === 1 ? 1 : 0;
-    const stride = frameIdx === 1 ? 2 : 0;
-
-    // 1. Flowing waist-length silver-blue back hair (tapering softly inward past waist)
-    px(ctx, 20, 22 + bob, 23, 30, H_SHAD);
-    px(ctx, 18 - sway, 26 + bob, 26, 25, H_SHAD);
-    px(ctx, 21, 30 + bob, 20, 21, H_MID);
-    px(ctx, 16 - sway, 37 + bob, 5, 15, H_MID);
-    px(ctx, 16 - sway, 46 + bob, 4, 8, H_SHAD);
-    px(ctx, 41 + sway, 37 + bob, 5, 14, H_MID);
-    px(ctx, 42 + sway, 46 + bob, 4, 7, H_SHAD);
-    px(ctx, 22, 50 + bob, 7, 4, H_DEEP);
-    px(ctx, 32, 49 + bob, 7, 4, H_DEEP);
-
-    // 2. Slender Legs & Dynamic Athletic Stance (narrower 2px stance, clean ankle taper)
-    const legY = 54;
-    // Left (back) leg
-    px(ctx, 24, legY, 6, 16 - stride, PANT_SHAD);
-    px(ctx, 25, legY, 4, 15 - stride, PANT);
-    px(ctx, 24, legY, 1, 14 - stride, STRIPE);
-    // Right (front) leg
-    px(ctx, 32, legY, 6, 16, PANT);
-    px(ctx, 33, legY, 3, 15, PANT_HI);
-    px(ctx, 37, legY, 1, 15, STRIPE);
-
-    // 3. Chunky light-blue skate sneakers with flat white cupsoles
-    const lsY = 69 - stride;
-    px(ctx, 22, lsY, 8, 4, SHOE_SHAD);
-    px(ctx, 23, lsY, 6, 3, SHOE_TOP);
-    px(ctx, 24, lsY + 1, 4, 1, STRIPE);
-    px(ctx, 22, lsY + 4, 9, 3, SOLE);
-    px(ctx, 22, lsY + 6, 9, 1, SOLE_SHAD);
-    const rsY = 69;
-    px(ctx, 32, rsY, 9, 4, SHOE_SHAD);
-    px(ctx, 33, rsY, 7, 3, SHOE_TOP);
-    px(ctx, 35, rsY + 1, 4, 1, STRIPE);
-    px(ctx, 32, rsY + 4, 10, 3, SOLE);
-    px(ctx, 32, rsY + 6, 10, 1, SOLE_SHAD);
-
-    // 4. Fitted Sky-Blue Stand-Collar Zip Track Jacket (3/4 torso, slim waist, crisp white stripes)
-    const bodyY = 38 + bob;
-    px(ctx, 23, bodyY, 17, 17, SUIT);
-    px(ctx, 23, bodyY + 13, 17, 4, SUIT_SHAD);
-    px(ctx, 24, bodyY + 1, 6, 11, SUIT_HI);
-    px(ctx, 35, bodyY + 2, 5, 13, SUIT_SHAD);
-    // Offset 3/4 center zip slightly right of center for true 3/4 turn
-    px(ctx, 31, bodyY, 2, 16, STRIPE);
-    px(ctx, 30, bodyY + 15, 4, 2, SUIT_DARK); // ribbed waist hem
-    // Stand collar
-    px(ctx, 26, bodyY - 3, 12, 4, SUIT_DARK);
-    px(ctx, 27, bodyY - 3, 10, 3, SUIT_HI);
-
-    // Left arm curving inward with white stripe + cuff
-    px(ctx, 19, bodyY + 1, 4, 11, SUIT);
-    px(ctx, 19, bodyY + 1, 1, 10, STRIPE);
-    px(ctx, 19, bodyY + 11, 4, 2, STRIPE);
-    // Right arm reaching slightly across holding camera
-    px(ctx, 39, bodyY + 2, 4, 10, SUIT_SHAD);
-    px(ctx, 42, bodyY + 2, 1, 9, STRIPE);
-    px(ctx, 39, bodyY + 11, 4, 2, STRIPE);
-
-    // Hands holding silver rangefinder camera
-    px(ctx, 21, bodyY + 10, 5, 4, SKIN);
-    px(ctx, 36, bodyY + 10, 5, 4, SKIN);
-
-    // 5. Crisp Silver Retro Camera + #ff3b3b red recording pixel
-    px(ctx, 25, bodyY + 8, 13, 7, CAM_DARK);
-    px(ctx, 26, bodyY + 9, 11, 5, CAM_BODY);
-    px(ctx, 26, bodyY + 9, 11, 1, STRIPE); // top chrome plate gleam
-    px(ctx, 26, bodyY + 13, 11, 1, CAM_EDGE);
-    px(ctx, 30, bodyY + 9, 5, 5, CAM_DARK); // lens barrel
-    px(ctx, 31, bodyY + 10, 3, 3, EYE_MID); // lens glass
-    px(ctx, 31, bodyY + 10, 1, 1, EYE_HI); // glass specular
-    px(ctx, 35, bodyY + 9, 2, 2, RED_DOT); // iconic OurSongs #ff3b3b dot
-
-    // 6. Chibi Head (slightly turned 3/4 right, soft rounded jaw & radiant face)
-    const headY = 10 + bob;
-    px(ctx, 21, headY + 6, 22, 21, SKIN);
-    px(ctx, 22, headY + 25, 20, 3, SKIN_SHAD);
-    px(ctx, 25, headY + 27, 14, 2, SKIN_SHAD);
-
-    // Crisp 5x6 anime-pixel blue eyes (clean silhouette & no diagonal highlight aliasing at overview distance)
-    // Left eye (x=24..28)
-    px(ctx, 23, headY + 15, 6, 1, EYE_LASH);
-    px(ctx, 24, headY + 16, 5, 6, EYE_DEEP);
-    px(ctx, 25, headY + 19, 3, 2, EYE_MID);
-    px(ctx, 24, headY + 16, 2, 1, EYE_HI);
-    // Right eye (x=35..39)
-    px(ctx, 35, headY + 15, 6, 1, EYE_LASH);
-    px(ctx, 35, headY + 16, 5, 6, EYE_DEEP);
-    px(ctx, 36, headY + 19, 3, 2, EYE_MID);
-    px(ctx, 35, headY + 16, 2, 1, EYE_HI);
-    // Cheek blush & small soft smile
-    px(ctx, 22, headY + 22, 3, 1, BLUSH);
-    px(ctx, 39, headY + 22, 3, 1, BLUSH);
-    px(ctx, 31, headY + 25, 2, 1, '#c87f86');
-
-    // 7. Softly rounded Silver-Blue Hair Crown, Wispy Bangs & Tapered Side Locks
-    px(ctx, 21, headY + 1, 22, 8, H_BASE);
-    px(ctx, 24, headY - 1, 16, 4, H_HI);
-    px(ctx, 19, headY + 4, 26, 8, H_BASE);
-    // Bright specular hair halo band + cute ahoge strand
-    px(ctx, 22, headY + 3, 20, 2, H_HI);
-    px(ctx, 30, headY - 3, 4, 3, H_BASE);
-    px(ctx, 31, headY - 4, 2, 2, H_HI);
-    // Wispy parted bangs framing eyes
-    px(ctx, 19, headY + 9, 5, 7, H_BASE);
-    px(ctx, 24, headY + 9, 4, 5, H_HI);
-    px(ctx, 28, headY + 9, 4, 6, H_MID);
-    px(ctx, 32, headY + 9, 5, 5, H_HI);
-    px(ctx, 37, headY + 9, 6, 7, H_BASE);
-    px(ctx, 29, headY + 12, 2, 4, H_MID);
-    // Tapered front side locks draping gently past shoulders
-    px(ctx, 18, headY + 10, 3, 22, H_BASE);
-    px(ctx, 19, headY + 12, 2, 18, H_HI);
-    px(ctx, 19, headY + 31, 2, 8, H_MID);
-    px(ctx, 43, headY + 10, 3, 22, H_BASE);
-    px(ctx, 43, headY + 12, 2, 18, H_HI);
-    px(ctx, 43, headY + 31, 2, 8, H_MID);
-
-    // 8. Soft 1px warm slate-indigo pixel outline pass over alpha silhouette
-    const img = ctx.getImageData(0, 0, W, H);
+  function outlineCanvas(ctx, w, h, rgb = PROTAG_PAL.OUTLINE) {
+    const img = ctx.getImageData(0, 0, w, h);
     const src = new Uint8ClampedArray(img.data);
-    const outR = 54, outG = 64, outB = 92;
-    for (let y = 1; y < H - 1; y++) {
-      for (let x = 1; x < W - 1; x++) {
-        const i = (y * W + x) * 4;
+    const [r, g, b] = rgb;
+    for (let y = 1; y < h - 1; y++) {
+      for (let x = 1; x < w - 1; x++) {
+        const i = (y * w + x) * 4;
         if (src[i + 3] > 20) continue;
         const n =
-          src[((y - 1) * W + x) * 4 + 3] > 20 ||
-          src[((y + 1) * W + x) * 4 + 3] > 20 ||
-          src[(y * W + x - 1) * 4 + 3] > 20 ||
-          src[(y * W + x + 1) * 4 + 3] > 20;
+          src[((y - 1) * w + x) * 4 + 3] > 20 ||
+          src[((y + 1) * w + x) * 4 + 3] > 20 ||
+          src[(y * w + x - 1) * 4 + 3] > 20 ||
+          src[(y * w + x + 1) * 4 + 3] > 20;
         if (n) {
-          img.data[i] = outR;
-          img.data[i + 1] = outG;
-          img.data[i + 2] = outB;
+          img.data[i] = r;
+          img.data[i + 1] = g;
+          img.data[i + 2] = b;
           img.data[i + 3] = 255;
         }
       }
     }
     ctx.putImageData(img, 0, 0);
+  }
 
-    return register(label, c, { wrap: false, pixel: true, mip: true });
+  function protagonistParts() {
+    if (cache.has('protagonist-parts')) return cache.get('protagonist-parts');
+    const P = PROTAG_PAL;
+
+    // 1. Graceful waist-to-mid-thigh silver back hair with softer slate outline so arms & torso pop cleanly in front
+    const bh = makeCanvas(48, 52);
+    const bhCtx = bh.getContext('2d');
+    px(bhCtx, 11, 5, 26, 20, P.H_BASE);
+    px(bhCtx, 9, 12, 30, 18, P.H_MID);
+    px(bhCtx, 8, 19, 32, 13, P.H_SHAD);
+    px(bhCtx, 13, 16, 22, 18, P.H_DEEP);
+    px(bhCtx, 8, 28, 5, 11, P.H_MID);
+    px(bhCtx, 10, 36, 4, 8, P.H_SHAD);
+    px(bhCtx, 12, 41, 4, 6, P.H_DEEP);
+    px(bhCtx, 15, 33, 18, 8, P.H_DEEP);
+    px(bhCtx, 35, 28, 5, 11, P.H_MID);
+    px(bhCtx, 34, 36, 4, 8, P.H_SHAD);
+    px(bhCtx, 32, 41, 4, 6, P.H_DEEP);
+    outlineCanvas(bhCtx, 48, 52, [96, 112, 142]);
+
+    const lg = makeCanvas(18, 26);
+    const lgCtx = lg.getContext('2d');
+    px(lgCtx, 6, 2, 6, 14, P.SUIT);
+    px(lgCtx, 6, 2, 2, 13, P.SUIT_HI);
+    px(lgCtx, 10, 2, 2, 14, P.SUIT_SHAD);
+    px(lgCtx, 6, 2, 1, 13, P.STRIPE);
+    px(lgCtx, 6, 15, 6, 2, P.SUIT_SHAD);
+    px(lgCtx, 4, 17, 10, 5, P.SHOE);
+    px(lgCtx, 5, 17, 7, 2, P.SHOE_LACE);
+    px(lgCtx, 4, 21, 10, 1, P.SHOE_SHAD);
+    px(lgCtx, 4, 22, 10, 2, P.SOLE);
+    px(lgCtx, 4, 23, 10, 1, P.SOLE_SHAD);
+    outlineCanvas(lgCtx, 18, 26);
+
+    const tr = makeCanvas(28, 28);
+    const trCtx = tr.getContext('2d');
+    px(trCtx, 8, 2, 12, 4, P.SUIT_SHAD);
+    px(trCtx, 9, 2, 10, 3, P.SUIT_HI);
+    px(trCtx, 13, 2, 2, 4, P.ZIP);
+    px(trCtx, 6, 6, 16, 17, P.SUIT);
+    px(trCtx, 7, 7, 5, 13, P.SUIT_HI);
+    px(trCtx, 17, 7, 5, 14, P.SUIT_SHAD);
+    px(trCtx, 13, 6, 2, 17, P.ZIP);
+    px(trCtx, 8, 16, 3, 1, P.ZIP);
+    px(trCtx, 9, 17, 2, 1, P.ZIP);
+    px(trCtx, 17, 16, 3, 1, P.ZIP);
+    px(trCtx, 17, 17, 2, 1, P.ZIP);
+    px(trCtx, 6, 22, 16, 2, P.SUIT_SHAD);
+    outlineCanvas(trCtx, 28, 28);
+
+    const ar = makeCanvas(14, 24);
+    const arCtx = ar.getContext('2d');
+    px(arCtx, 4, 2, 6, 14, P.SUIT);
+    px(arCtx, 4, 2, 2, 13, P.SUIT_HI);
+    px(arCtx, 4, 2, 1, 13, P.STRIPE);
+    px(arCtx, 4, 15, 6, 2, P.SUIT_SHAD);
+    px(arCtx, 5, 17, 4, 4, P.SKIN);
+    px(arCtx, 5, 20, 4, 1, P.SKIN_SHAD);
+    outlineCanvas(arCtx, 14, 24);
+
+    function makeHead(blink) {
+      const hd = makeCanvas(48, 44);
+      const hCtx = hd.getContext('2d');
+      px(hCtx, 13, 14, 22, 18, P.SKIN);
+      px(hCtx, 15, 31, 18, 2, P.SKIN_SHAD);
+      px(hCtx, 19, 33, 10, 1, P.SKIN_SHAD);
+      if (blink) {
+        px(hCtx, 16, 24, 5, 1, P.EYE_LASH);
+        px(hCtx, 17, 25, 3, 1, P.H_DEEP);
+        px(hCtx, 27, 24, 5, 1, P.EYE_LASH);
+        px(hCtx, 28, 25, 3, 1, P.H_DEEP);
+      } else {
+        px(hCtx, 15, 21, 6, 1, P.EYE_LASH);
+        px(hCtx, 16, 22, 5, 5, P.EYE_WHITE);
+        px(hCtx, 17, 22, 4, 4, P.EYE_DEEP);
+        px(hCtx, 17, 24, 4, 2, P.EYE_MID);
+        px(hCtx, 17, 22, 2, 1, P.EYE_HI);
+        px(hCtx, 27, 21, 6, 1, P.EYE_LASH);
+        px(hCtx, 27, 22, 5, 5, P.EYE_WHITE);
+        px(hCtx, 27, 22, 4, 4, P.EYE_DEEP);
+        px(hCtx, 27, 24, 4, 2, P.EYE_MID);
+        px(hCtx, 27, 22, 2, 1, P.EYE_HI);
+      }
+      px(hCtx, 14, 27, 2, 1, P.BLUSH);
+      px(hCtx, 32, 27, 2, 1, P.BLUSH);
+      px(hCtx, 23, 30, 2, 1, '#c88c92');
+      px(hCtx, 12, 4, 24, 11, P.H_BASE);
+      px(hCtx, 15, 2, 18, 4, P.H_HI);
+      px(hCtx, 10, 8, 28, 9, P.H_BASE);
+      px(hCtx, 14, 7, 20, 2, P.H_HI);
+      px(hCtx, 11, 15, 4, 7, P.H_BASE);
+      px(hCtx, 15, 15, 5, 5, P.H_HI);
+      px(hCtx, 20, 15, 3, 7, P.H_MID);
+      px(hCtx, 23, 15, 2, 8, P.H_HI);
+      px(hCtx, 25, 15, 3, 7, P.H_MID);
+      px(hCtx, 28, 15, 5, 5, P.H_HI);
+      px(hCtx, 33, 15, 4, 7, P.H_BASE);
+      px(hCtx, 10, 16, 3, 22, P.H_BASE);
+      px(hCtx, 11, 18, 2, 18, P.H_HI);
+      px(hCtx, 11, 35, 2, 6, P.H_MID);
+      px(hCtx, 35, 16, 3, 22, P.H_BASE);
+      px(hCtx, 35, 18, 2, 18, P.H_HI);
+      px(hCtx, 35, 35, 2, 6, P.H_MID);
+      outlineCanvas(hCtx, 48, 44);
+      return hd;
+    }
+
+    const parts = {
+      backHair: register('protagonist-back-hair', bh, { wrap: false, pixel: true, mip: false }),
+      leg: register('protagonist-leg', lg, { wrap: false, pixel: true, mip: false }),
+      torso: register('protagonist-torso', tr, { wrap: false, pixel: true, mip: false }),
+      arm: register('protagonist-arm', ar, { wrap: false, pixel: true, mip: false }),
+      headOpen: register('protagonist-head-open', makeHead(false), { wrap: false, pixel: true, mip: false }),
+      headBlink: register('protagonist-head-blink', makeHead(true), { wrap: false, pixel: true, mip: false }),
+    };
+    cache.set('protagonist-parts', parts);
+    return parts;
+  }
+
+  function protagonistFrame(frameIdx = 0) {
+    const label = `protagonist-frame-${frameIdx}`;
+    if (cache.has(label)) return cache.get(label);
+    const parts = protagonistParts();
+    const c = makeCanvas(64, 80);
+    const ctx = c.getContext('2d');
+    ctx.drawImage(parts.backHair.image, 4, 16);
+    ctx.drawImage(parts.leg.image, 17, 52);
+    ctx.drawImage(parts.leg.image, 29, 52);
+    ctx.drawImage(parts.torso.image, 18, 30);
+    ctx.drawImage(parts.arm.image, 11, 35);
+    ctx.drawImage(parts.arm.image, 39, 35);
+    ctx.drawImage(frameIdx === 1 ? parts.headBlink.image : parts.headOpen.image, 8, 0);
+    return register(label, c, { wrap: false, pixel: true, mip: false });
   }
 
   /** Continuous single-piece soft-feathered human silhouette shadow anchored smoothly at shoes. */
@@ -840,6 +834,7 @@ export function createTextureFactory(renderer) {
     inscription,
     rosette,
     bark,
+    protagonistParts,
     protagonistFrame,
     chibiShadowMap,
     bokehDot,

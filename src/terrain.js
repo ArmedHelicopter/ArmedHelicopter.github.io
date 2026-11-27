@@ -276,37 +276,47 @@ export function createTerrainComponent(textures, palette) {
   xform(tier1CornerCap, [-15.32, 2.82, 4.32]);
   graniteGeos.push(tier1CornerCap);
 
-  // Tier 2 Terrace (Lion Hill Crest / Old Library level) retaining wall, pilasters & completed West return balustrade
-  const tier2Body = new THREE.BoxGeometry(21.2, 4.42, 11.6);
-  xform(tier2Body, [-1.6, 2.21, -10.2]);
-  applyWorldPlanarUVs(tier2Body, 0.46, 0.52);
-  ashlarGeos.push(tier2Body);
+  // Tier 2 Terrace (Lion Hill Crest / Old Library & Science Building level) with open central stair canyon at x=[-1.10, +1.10]
+  const tier2BodyW = new THREE.BoxGeometry(13.1, 4.42, 15.0);
+  xform(tier2BodyW, [-7.65, 2.21, -11.9]);
+  applyWorldPlanarUVs(tier2BodyW, 0.46, 0.52);
+  ashlarGeos.push(tier2BodyW);
 
-  const tier2EastCoping = new THREE.BoxGeometry(0.56, 0.22, 11.88);
-  xform(tier2EastCoping, [8.96, 4.42, -10.2]);
+  const tier2BodyE = new THREE.BoxGeometry(7.9, 4.42, 15.0);
+  xform(tier2BodyE, [5.05, 2.21, -11.9]);
+  applyWorldPlanarUVs(tier2BodyE, 0.46, 0.52);
+  ashlarGeos.push(tier2BodyE);
+
+  const tier2BodyCenterN = new THREE.BoxGeometry(2.2, 4.42, 13.3);
+  xform(tier2BodyCenterN, [0.0, 2.21, -12.75]);
+  applyWorldPlanarUVs(tier2BodyCenterN, 0.46, 0.52);
+  ashlarGeos.push(tier2BodyCenterN);
+
+  const tier2EastCoping = new THREE.BoxGeometry(0.56, 0.22, 15.28);
+  xform(tier2EastCoping, [8.96, 4.42, -11.9]);
   graniteGeos.push(tier2EastCoping);
 
-  const tier2EastLedge = new THREE.BoxGeometry(0.32, 0.24, 11.76);
-  xform(tier2EastLedge, [9.06, 2.24, -10.2]);
+  const tier2EastLedge = new THREE.BoxGeometry(0.32, 0.24, 15.16);
+  xform(tier2EastLedge, [9.06, 2.24, -11.9]);
   graniteGeos.push(tier2EastLedge);
 
-  const tier2EastBasePlinth = new THREE.BoxGeometry(0.42, 0.56, 11.84);
-  xform(tier2EastBasePlinth, [9.06, 0.28, -10.2]);
+  const tier2EastBasePlinth = new THREE.BoxGeometry(0.42, 0.56, 15.24);
+  xform(tier2EastBasePlinth, [9.06, 0.28, -11.9]);
   graniteGeos.push(tier2EastBasePlinth);
 
-  const tier2SouthCoping = new THREE.BoxGeometry(8.2, 0.22, 0.48);
-  xform(tier2SouthCoping, [5.05, 4.42, -4.34]);
+  const tier2SouthCoping = new THREE.BoxGeometry(8.05, 0.22, 0.48);
+  xform(tier2SouthCoping, [5.12, 4.42, -4.34]);
   graniteGeos.push(tier2SouthCoping);
 
-  const tier2SouthCopingW = new THREE.BoxGeometry(11.3, 0.22, 0.48);
-  xform(tier2SouthCopingW, [-6.65, 4.42, -4.34]);
+  const tier2SouthCopingW = new THREE.BoxGeometry(13.25, 0.22, 0.48);
+  xform(tier2SouthCopingW, [-7.72, 4.42, -4.34]);
   graniteGeos.push(tier2SouthCopingW);
 
-  const tier2WestCoping = new THREE.BoxGeometry(0.52, 0.22, 9.6);
-  xform(tier2WestCoping, [-12.06, 4.42, -9.0]);
+  const tier2WestCoping = new THREE.BoxGeometry(0.52, 0.22, 13.6);
+  xform(tier2WestCoping, [-14.06, 4.42, -11.0]);
   graniteGeos.push(tier2WestCoping);
 
-  const tier2PilasterZs = [-15.5, -13.4, -11.3, -9.2, -7.1, -4.9];
+  const tier2PilasterZs = [-18.9, -16.8, -14.7, -12.6, -10.5, -8.4, -6.4, -4.7];
   tier2PilasterZs.forEach((pz, pIdx) => {
     const pil = new THREE.BoxGeometry(0.34, 4.48, 0.48);
     xform(pil, [9.06, 2.24, pz]);
@@ -329,32 +339,46 @@ export function createTerrainComponent(textures, palette) {
       ashlarGeos.push(lowerPanel);
     }
   });
-  for (const px of [-11.95, -9.8, -6.6, -5.0, -2.6, -1.2, 1.2, 3.8, 6.4, 8.85]) {
+  for (const px of [-13.95, -11.6, -9.2, -6.8, -4.4, -2.0, 1.2, 3.8, 6.4, 8.85]) {
     const sPil = new THREE.BoxGeometry(0.46, 4.48, 0.32);
     xform(sPil, [px, 2.24, -4.34]);
     graniteGeos.push(sPil);
   }
-  for (const wz of [-7.1, -9.8, -12.5]) {
+  for (const wz of [-7.1, -10.2, -13.3, -16.4]) {
     const wPil = new THREE.BoxGeometry(0.34, 4.48, 0.46);
-    xform(wPil, [-12.06, 2.24, wz]);
+    xform(wPil, [-14.06, 2.24, wz]);
     graniteGeos.push(wPil);
   }
 
-  const tier2Lawn = new THREE.BoxGeometry(20.8, 0.18, 11.2);
-  xform(tier2Lawn, [-1.6, 4.48, -10.2]);
-  grassGeos.push(tier2Lawn);
+  const tier2LawnW = new THREE.BoxGeometry(12.7, 0.18, 14.6);
+  xform(tier2LawnW, [-7.65, 4.48, -11.9]);
+  grassGeos.push(tier2LawnW);
+  const tier2LawnE = new THREE.BoxGeometry(7.5, 0.18, 14.6);
+  xform(tier2LawnE, [5.05, 4.48, -11.9]);
+  grassGeos.push(tier2LawnE);
+  const tier2LawnCenterN = new THREE.BoxGeometry(2.2, 0.18, 12.9);
+  xform(tier2LawnCenterN, [0.0, 4.48, -12.75]);
+  grassGeos.push(tier2LawnCenterN);
 
-  // Dressed granite perimeter walkway crowning the Tier 2 South balustrade ridge
-  const tier2SouthWalk = new THREE.Mesh(new THREE.BoxGeometry(21.1, 0.06, 1.32), palette.plazaMat);
-  tier2SouthWalk.position.set(-1.55, 4.565, -5.20);
-  tier2SouthWalk.receiveShadow = true;
-  group.add(tier2SouthWalk);
+  // Dressed granite perimeter walkway across the Tier 2 terrace south ridge & connecting Old Library + Science forecourt
+  const tier2Forecourt = new THREE.Mesh(new THREE.BoxGeometry(22.4, 0.06, 3.2), palette.plazaMat);
+  tier2Forecourt.position.set(-2.5, 4.565, -7.25);
+  tier2Forecourt.receiveShadow = true;
+  group.add(tier2Forecourt);
+  const tier2WalkE = new THREE.Mesh(new THREE.BoxGeometry(7.6, 0.06, 1.35), palette.plazaMat);
+  tier2WalkE.position.set(4.95, 4.565, -5.20);
+  tier2WalkE.receiveShadow = true;
+  group.add(tier2WalkE);
+  const tier2WalkW = new THREE.Mesh(new THREE.BoxGeometry(12.6, 0.06, 1.35), palette.plazaMat);
+  tier2WalkW.position.set(-7.50, 4.565, -5.20);
+  tier2WalkW.receiveShadow = true;
+  group.add(tier2WalkW);
 
-  const tier2EastCurb = new THREE.BoxGeometry(0.22, 0.14, 11.2);
-  xform(tier2EastCurb, [8.86, 4.62, -10.02]);
+  const tier2EastCurb = new THREE.BoxGeometry(0.22, 0.14, 14.4);
+  xform(tier2EastCurb, [8.86, 4.62, -11.6]);
   graniteGeos.push(tier2EastCurb);
-  const tier2EastRail = new THREE.BoxGeometry(0.26, 0.11, 11.26);
-  xform(tier2EastRail, [8.86, 5.34, -10.02]);
+  const tier2EastRail = new THREE.BoxGeometry(0.26, 0.11, 14.46);
+  xform(tier2EastRail, [8.86, 5.34, -11.6]);
   graniteGeos.push(tier2EastRail);
 
   const eastNewelZs = [...tier2PilasterZs, -4.45];
@@ -406,14 +430,14 @@ export function createTerrainComponent(textures, palette) {
   });
 
   // Completed South-West & West-Return Balustrades terminating in a corner newel anchored into Lion Hill
-  const tier2SouthCurbW = new THREE.BoxGeometry(10.8, 0.14, 0.22);
-  xform(tier2SouthCurbW, [-6.65, 4.62, -4.45]);
+  const tier2SouthCurbW = new THREE.BoxGeometry(12.8, 0.14, 0.22);
+  xform(tier2SouthCurbW, [-7.60, 4.62, -4.45]);
   graniteGeos.push(tier2SouthCurbW);
-  const tier2SouthRailW = new THREE.BoxGeometry(10.86, 0.11, 0.26);
-  xform(tier2SouthRailW, [-6.65, 5.34, -4.45]);
+  const tier2SouthRailW = new THREE.BoxGeometry(12.86, 0.11, 0.26);
+  xform(tier2SouthRailW, [-7.60, 5.34, -4.45]);
   graniteGeos.push(tier2SouthRailW);
 
-  const southWestNewelXs = [-11.95, -9.3, -6.65, -4.0, -1.35];
+  const southWestNewelXs = [-13.95, -10.8, -7.6, -4.4, -1.2];
   southWestNewelXs.forEach((px, idx) => {
     const isCorner = idx === 0;
     const post = new THREE.BoxGeometry(isCorner ? 0.34 : 0.26, isCorner ? 0.94 : 0.86, isCorner ? 0.34 : 0.26);
@@ -433,22 +457,43 @@ export function createTerrainComponent(textures, palette) {
     }
   });
 
-  const tier2WestCurb = new THREE.BoxGeometry(0.22, 0.14, 8.2);
-  xform(tier2WestCurb, [-11.95, 4.62, -8.50]);
+  // Stairwell canyon side guardrails linking central arch stair landing cleanly to Tier 2 crest
+  for (const sx of [-1.2, 1.2]) {
+    const canyonCurb = new THREE.BoxGeometry(0.22, 0.14, 1.85);
+    xform(canyonCurb, [sx, 4.62, -5.25]);
+    graniteGeos.push(canyonCurb);
+    const canyonRail = new THREE.BoxGeometry(0.26, 0.11, 1.85);
+    xform(canyonRail, [sx, 5.34, -5.25]);
+    graniteGeos.push(canyonRail);
+    const endPost = new THREE.BoxGeometry(0.26, 0.86, 0.26);
+    xform(endPost, [sx, 4.98, -6.12]);
+    graniteGeos.push(endPost);
+    const endCap = new THREE.BoxGeometry(0.32, 0.10, 0.32);
+    xform(endCap, [sx, 5.44, -6.12]);
+    graniteGeos.push(endCap);
+    for (const bz of [-4.95, -5.55]) {
+      const bal = new THREE.BoxGeometry(0.09, 0.54, 0.09);
+      xform(bal, [sx, 4.96, bz]);
+      graniteGeos.push(bal);
+    }
+  }
+
+  const tier2WestCurb = new THREE.BoxGeometry(0.22, 0.14, 12.2);
+  xform(tier2WestCurb, [-13.95, 4.62, -10.50]);
   graniteGeos.push(tier2WestCurb);
-  const tier2WestRail = new THREE.BoxGeometry(0.26, 0.11, 8.26);
-  xform(tier2WestRail, [-11.95, 5.34, -8.50]);
+  const tier2WestRail = new THREE.BoxGeometry(0.26, 0.11, 12.26);
+  xform(tier2WestRail, [-13.95, 5.34, -10.50]);
   graniteGeos.push(tier2WestRail);
 
-  const westNewelZs = [-4.45, -7.1, -9.8, -12.5];
+  const westNewelZs = [-4.45, -7.5, -10.5, -13.5, -16.5];
   westNewelZs.forEach((pz, idx) => {
     if (idx > 0) {
       const isEnd = idx === westNewelZs.length - 1;
       const post = new THREE.BoxGeometry(isEnd ? 0.36 : 0.26, isEnd ? 1.02 : 0.86, isEnd ? 0.36 : 0.26);
-      xform(post, [-11.95, isEnd ? 5.04 : 4.98, pz]);
+      xform(post, [-13.95, isEnd ? 5.04 : 4.98, pz]);
       graniteGeos.push(post);
       const cap = new THREE.BoxGeometry(isEnd ? 0.44 : 0.32, 0.10, isEnd ? 0.44 : 0.32);
-      xform(cap, [-11.95, isEnd ? 5.58 : 5.44, pz]);
+      xform(cap, [-13.95, isEnd ? 5.58 : 5.44, pz]);
       graniteGeos.push(cap);
     }
     if (idx < westNewelZs.length - 1) {
@@ -456,7 +501,7 @@ export function createTerrainComponent(textures, palette) {
       for (let b = 1; b <= 3; b++) {
         const bz = THREE.MathUtils.lerp(pz, zNext, b / 4);
         const bal = new THREE.BoxGeometry(0.09, 0.54, 0.09);
-        xform(bal, [-11.95, 4.96, bz]);
+        xform(bal, [-13.95, 4.96, bz]);
         graniteGeos.push(bal);
       }
     }
@@ -489,6 +534,16 @@ export function createTerrainComponent(textures, palette) {
     const stepStone = new THREE.DodecahedronGeometry(0.62, 0);
     xform(stepStone, [tx, th - 0.02, tz], [0.1, i * 0.9, 0.05], [1.35, 0.14, 1.10]);
     graniteGeos.push(stepStone);
+  }
+
+  // Stone-rimmed mulch tree pits for Tier 2 forecourt sakura trees (Round 13 MINOR #1)
+  for (const [tx, tz] of [[-4.6, -6.4], [-3.2, -7.2]]) {
+    const pitCurb = new THREE.BoxGeometry(1.42, 0.16, 1.42);
+    xform(pitCurb, [tx, 4.62, tz]);
+    graniteGeos.push(pitCurb);
+    const pitSoil = new THREE.BoxGeometry(1.12, 0.19, 1.12);
+    xform(pitSoil, [tx, 4.63, tz]);
+    soilGeos.push(pitSoil);
   }
 
   const graniteBatch = new THREE.Mesh(mergeSafe(graniteGeos), palette.graniteMat);

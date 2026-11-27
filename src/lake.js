@@ -535,7 +535,8 @@ export function createLakeComponent(textures, palette) {
   }
   const quayThreshold = new THREE.BoxGeometry(0.44, 0.15, 1.34);
   xform(quayThreshold, [9.06, pierY, pierZ]);
-  graniteGeos.push(quayThreshold);
+  applyWorldPlanarUVs(quayThreshold, 0.28, 0.28, false);
+  pierGeos.push(quayThreshold);
 
   // Non-overlapping flush pier cross-arms & end connector (eliminates T-junction Z-fighting)
   const crossArm1N = new THREE.BoxGeometry(1.15, 0.15, 3.6);
